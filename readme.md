@@ -16,3 +16,13 @@
 # Missing 
 - No try catch
 - lexer does a lot of work
+
+# Run Code
+```bash
+go run main.go
+```
+
+# types
+- case sensitive almost
+- Variable type sholud be known in advance
+- Everything is type
