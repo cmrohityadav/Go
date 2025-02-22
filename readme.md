@@ -20,6 +20,17 @@
 # Run Code
 ```bash
 go run main.go
+go mod init main
+go env
+GOOS="windows" go build
+go mod tidy
+go mod verify
+go list
+go list all
+go list -m all
+go mod vendor
+go run -mod=vendor main.go
+
 ```
 
 # types
