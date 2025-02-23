@@ -16,7 +16,7 @@ import (
 type Course struct {
 	CourseId    string  `json:"courseid"`
 	CourseName  string  `json:"coursename"`
-	CoursePrice int     `json:"price"`
+	CoursePrice float64     `json:"price"`
 	Author      *Author `json:"author"`
 }
 type Author struct {
@@ -35,7 +35,24 @@ func (c *Course) IsEmpty() bool {
 }
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/", serveHome).Methods("GET")
+	//seeding fake db
+	courses = append(courses, 
+		Course{CourseId: "1", CourseName: "React JS", CoursePrice: 500, Author: &Author{FullName: "Hitesh Sir", Website: "hitesh@lco.com"}},
+		Course{CourseId: "2", CourseName: "GoLang Basics", CoursePrice: 700, Author: &Author{FullName: "John Doe", Website: "john@go.dev"}},
+		Course{CourseId: "3", CourseName: "Python for Beginners", CoursePrice: 400, Author: &Author{FullName: "Jane Smith", Website: "jane@python.org"}},
+		Course{CourseId: "4", CourseName: "Node.js Masterclass", CoursePrice: 650, Author: &Author{FullName: "Mark Lee", Website: "mark@nodejs.com"}},
+		Course{CourseId: "5", CourseName: "Django Fullstack", CoursePrice: 550, Author: &Author{FullName: "Alice Brown", Website: "alice@django.dev"}},
+	)
+   
+	r.HandleFunc("/",serveHome).Methods("GET")
+	r.HandleFunc("/courses",getAllCourses).Methods("GET")
+	r.HandleFunc("/course/{id}",getOneCourse).Methods("GET")
+	r.HandleFunc("/course",createOneCourse).Methods("POST")
+	r.HandleFunc("/course/{id}",updateOneCourse).Methods("PUT")
+	r.HandleFunc("/course/{id}",deleteOneCourse).Methods("DELETE")
+
+	//listen to a port
+	fmt.Println("Server running on port 4000")
 	log.Fatal(http.ListenAndServe(":4000", r))
 }
 
@@ -46,7 +63,7 @@ func serveHome(res http.ResponseWriter, req *http.Request) {
 	res.Write([]byte("<h1>Welcome to API </h1>"))
 }
 
-func getAllCourses(res http.ResponseWriter, req *http.Response) {
+func getAllCourses(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("Get all courses")
 	res.Header().Set("content-Type", "application/json")
 	json.NewEncoder(res).Encode(courses)
@@ -55,26 +72,28 @@ func getAllCourses(res http.ResponseWriter, req *http.Response) {
 
 func getOneCourse(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("get one course")
-	res.Header().Set("content-Type", "application/json")
+	res.Header().Set("Content-Type", "application/json")
 
 	//grab id from request
 	params := mux.Vars(req)
 
 	//loop through courses, find matching id and return the response
-	for index, course := range courses {
+	for _, course := range courses {
 		if course.CourseId == params["id"] {
 			json.NewEncoder(res).Encode(course)
 			return
 		}
 	}
-	json.NewEncoder(res).Encode("No Course found with given id")
-	return
+	res.WriteHeader(http.StatusNotFound)
+	json.NewEncoder(res).Encode(map[string]string{"error": "No course found with given ID"})
+	
+	
 
 }
 
 func createOneCourse(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("Create one course")
-	res.Header().Set("content-Type", "application/json")
+	res.Header().Set("Content-Type", "application/json")
 
 	//what if : body is empty
 	if req.Body == nil {
@@ -93,9 +112,10 @@ func createOneCourse(res http.ResponseWriter, req *http.Request) {
 	//generate unique id, string
 	rand.Seed(time.Now().UnixNano())
 	course.CourseId=strconv.Itoa(rand.Intn(100))
+	fmt.Println("created course : ",course)
 	courses=append(courses,course)
 	json.NewEncoder(res).Encode(course)
-	return
+	
 
 }
 
@@ -126,5 +146,20 @@ func updateOneCourse(res http.ResponseWriter, req *http.Request){
 }
 
 func deleteOneCourse(res http.ResponseWriter,req *http.Request){
-	
+	fmt.Println("update on course")
+	res.Header().Set("content-Type", "application/json")
+
+	params:=mux.Vars(req)
+
+	var course Course
+
+	course.CourseId=params["id"]
+
+	for index,c:=range courses{
+		if c.CourseId==course.CourseId{
+			courses=append(courses[:index],courses[index+1:]... )
+			break
+		}
+	}
+
 }
