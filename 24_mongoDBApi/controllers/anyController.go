@@ -71,6 +71,19 @@ func updateOneMovie(movieId string){
 	fmt.Println("modified count : ",result.ModifiedCount)
 }
 
+func deleteOneMovie(movieId string){
+	id,_:=primitive.ObjectIDFromHex(movieId)
+	filter:=bson.M{"-id":id}
+	deleteCount,err:=collection.DeleteOne(context.Background(),filter)
+	if err!=nil{
+		log.Fatal(err)
+	}
+	fmt.Println("Movie got delete with delete count :",deleteCount.DeletedCount)
+
+}
+
+//
+
 
 
 
