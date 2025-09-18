@@ -21,17 +21,17 @@ go mod init <module_name>
 -  It creates a new `go.mod` file in the current directory.
 -  The `go.mod` file contains information about the module, its dependencies, and the Go version.
 
-- **go.mod file**
+### **go.mod file**
 
 - **Equivalent of `package.json` in nodeJS**
 - It contains information about the module, its dependencies, and the Go version.
 
-- **Equivalent of `npm install` in nodeJS**
+
 
 ```bash
 go mod tidy
 ```
-
+- **Equivalent of `npm install` in nodeJS**
 - `go mod tidy` is used to add missing and remove unused modules.
 - It updates the go.mod file to use the latest version of the dependencies.
 
