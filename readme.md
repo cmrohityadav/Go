@@ -1,8 +1,41 @@
-# Compiled
+# Go
+
+
+## Start project in Go: Create a Module
+```bash
+mkdir myapp && cd myapp
+go mod init github.com/cmrohityadav/myapp
+
+# for learning
+go mod init main
+
+```
+- **Equivalent of `npm init` in Go**
+
+```bash
+go mod init <module_name>
+```
+
+- `go mod init` is used to initialize a new module.
+-  It creates a new `go.mod` file in the current directory.
+-  The `go.mod` file contains information about the module, its dependencies, and the Go version.
+
+## To Run go program
+
+```bash
+go run <main_file.go>
+```
+- **Equivalent of `npm run start` in Go**
+
+
+
+
+
+## Compiled
 - Go tool can run file directly , without VM
 - Executable are different for OS
 
-# what
+## what
 - System apps to web apps - Cloud
 
 ### Don't bring baggage
