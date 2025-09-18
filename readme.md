@@ -2,6 +2,7 @@
 
 
 ## Start project in Go: Create a Module
+
 ```bash
 mkdir myapp && cd myapp
 go mod init github.com/cmrohityadav/myapp
@@ -10,7 +11,7 @@ go mod init github.com/cmrohityadav/myapp
 go mod init main
 
 ```
-- **Equivalent of `npm init` in Go**
+- **Equivalent of `npm init` in nodeJS**
 
 ```bash
 go mod init <module_name>
@@ -20,12 +21,39 @@ go mod init <module_name>
 -  It creates a new `go.mod` file in the current directory.
 -  The `go.mod` file contains information about the module, its dependencies, and the Go version.
 
+- **go.mod file**
+
+- **Equivalent of `package.json` in nodeJS**
+- It contains information about the module, its dependencies, and the Go version.
+
+- **Equivalent of `npm install` in nodeJS**
+
+```bash
+go mod tidy
+```
+
+- `go mod tidy` is used to add missing and remove unused modules.
+- It updates the go.mod file to use the latest version of the dependencies.
+
 ## To Run go program
 
 ```bash
 go run <main_file.go>
 ```
-- **Equivalent of `npm run start` in Go**
+- **Equivalent of `npm run start` in nodeJS**
+
+## Installing package
+
+```bash
+go get <package_name>
+```
+- **Equivalent of `npm install <package_name>` in nodeJS**
+- `go get` is not a package manager.
+- `go get` is used to download and install packages from remote repositories.
+- It does not handle versioning.
+- This command fetches the package and its dependencies (if any)
+
+
 
 
 
