@@ -10,13 +10,16 @@ const LoginToken string = "abcdefg"
 //above code is not allow in public,it can be only use in method / function
 
 func main() {
-	fmt.Println("Variable")
 
-	var username string = "hitesh"
-	fmt.Println(username)
+	fmt.Println("Learning Variable")
+
+	var username string = "Rohit";
+	fmt.Println(username);
+
 	fmt.Printf("Variable is of type : %T \n", username)
 
-	var isLoggedIn bool = true
+	
+	var isLoggedIn bool = true;
 	fmt.Println(isLoggedIn)
 	fmt.Printf("Variable is of type : %T \n", isLoggedIn)
 
