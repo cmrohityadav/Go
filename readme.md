@@ -295,7 +295,38 @@ for index, value := range nums {
 ```
 ## Arrays
 - An array is a fixed-size, ordered collection of elements all of the same type
+- Define size (mandatory in Go)
+```go
+var arr[4]int
+// array length
+fmt.Println(len(arr));
 
+arr[0]=1;
+
+fmt.Println(arr[0]);
+
+fmt.Println(arr);
+
+
+
+var vals[4]bool;
+vals[2]=true;
+fmt.Println(vals);
+// [false false true false]
+// bydefault all will false
+// int -> 0, string-> "",bool ->false
+
+nums:=[3]string{"rohit","yadav","yadav"};
+
+
+// 2D array
+nums:=[2][2]int{{3,4},{5,6}};
+
+
+
+
+
+```
 
 
 

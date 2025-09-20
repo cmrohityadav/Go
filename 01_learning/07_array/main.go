@@ -22,4 +22,11 @@ func main() {
 	fmt.Println("Top 3 indices of India:", arrayIndex)
 	fmt.Println("Size of arrayIndex:", len(arrayIndex))
 
+
+	var vals[4]bool;
+	vals[2]=true;
+	fmt.Println(vals);
+
+	
+
 }
