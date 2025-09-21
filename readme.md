@@ -126,7 +126,7 @@ const LoginToken string = "abcdefg"
 
 ## Conditionals
 
-### if
+### Basic if Statement
 ```go
 age:=10;
 
@@ -172,6 +172,83 @@ if temp:=30 ; temp>40 {
 ```
 - temp exists only inside this if-else block.
 - Use logical operator when possible [&&(and),||(or),!(not)]
+- Go does not have ternary operator, you will have to use normal if else
+
+## Switch
+
+### Basic Switch
+```go
+day := "Tuesday"
+
+    switch day {
+    case "Monday":
+        fmt.Println("Start of the week")
+    case "Tuesday":
+        fmt.Println("Second day of the week")
+    case "Friday":
+        fmt.Println("Almost weekend")
+    default:
+        fmt.Println("Midweek days")
+    }
+```
+- default is optional but recommended
+- No break needed: Go automatically stops after the first match
+
+### Multiple Cases in One Line
+```go
+score := 85
+
+switch {
+case score >= 90:
+    fmt.Println("Grade A")
+case score >= 75 && score < 90:
+    fmt.Println("Grade B")
+case score >= 50 && score < 75:
+    fmt.Println("Grade C")
+default:
+    fmt.Println("Grade F")
+}
+```
+- Go allows condition expressions, not just simple values.
+- Great for ranges or complex checks
+
+### Type Switch (Advanced, for Interfaces)
+```go
+var val interface{} = 42
+
+switch v := val.(type) {
+case int:
+    fmt.Println("Integer:", v)
+case string:
+    fmt.Println("String:", v)
+default:
+    fmt.Println("Unknown type")
+}
+```
+- Checks the dynamic type of an interface.
+- Essential for writing generic libraries or handling polymorphic data
+
+### Fallthrough
+```go
+num := 2
+
+switch num {
+case 1:
+    fmt.Println("One")
+case 2:
+    fmt.Println("Two")
+    fallthrough
+case 3:
+    fmt.Println("Three")
+}
+
+```
+- fallthrough forces execution to the next case, even if it doesn’t match.
+- Use carefully—most of the time, Go’s default “break after case” is safer
+
+
+
+
 
 ## Loops
 - Unlike some languages, Go has only one loop keyword: **for**
@@ -216,7 +293,62 @@ for index, value := range nums {
     fmt.Println("Index:", index, "Value:", value)
 }
 ```
+## Arrays
+- An array is a fixed-size, ordered collection of elements all of the same type
+- Define size (mandatory in Go)
+```go
+var arr[4]int
+// array length
+fmt.Println(len(arr));
 
+arr[0]=1;
+
+fmt.Println(arr[0]);
+
+fmt.Println(arr);
+
+
+
+var vals[4]bool;
+vals[2]=true;
+fmt.Println(vals);
+// [false false true false]
+// bydefault all will false
+// int -> 0, string-> "",bool ->false
+
+nums:=[3]string{"rohit","yadav","yadav"};
+
+
+// 2D array
+nums:=[2][2]int{{3,4},{5,6}};
+
+
+
+
+
+```
+## Slice
+- Dynamic Array
+```go
+nums:=[]string{"rohit","yadav"};
+
+
+
+var rollNo[]int;
+// Above uninitialized slice is nill
+
+var prices=make([]int,2);
+//it set all 2 element to Zero: eg.  [0 0]
+
+fmt.Println(cap(prices));
+// capacity -> maximium numbers of elements can fit
+
+
+
+
+
+
+```
 
 
 
