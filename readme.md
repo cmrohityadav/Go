@@ -327,6 +327,28 @@ nums:=[2][2]int{{3,4},{5,6}};
 
 
 ```
+## Slice
+- Dynamic Array
+```go
+nums:=[]string{"rohit","yadav"};
+
+
+
+var rollNo[]int;
+// Above uninitialized slice is nill
+
+var prices=make([]int,2);
+//it set all 2 element to Zero: eg.  [0 0]
+
+fmt.Println(cap(prices));
+// capacity -> maximium numbers of elements can fit
+
+
+
+
+
+
+```
 
 
 

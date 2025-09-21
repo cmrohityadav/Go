@@ -26,7 +26,8 @@ func main() {
 	fmt.Println("sliceNumberLine[5:9]:", sliceNumberLine[5:9])
 
 	fmt.Println("\nUsing make in slice")
-	sliceHighScore := make([]int, 4)
+	sliceHighScore := make([]int, 4);
+	fmt.Println("sliceHighScore: ",sliceHighScore);
 	sliceHighScore[0] = 50
 	sliceHighScore[1] = 91
 	sliceHighScore[2] = 52
