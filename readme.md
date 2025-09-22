@@ -393,6 +393,18 @@ for k,v:=range m {
 ```go
 delete(m,"rohit");
 ```
+### Checking key
+```go
+m:=map[int]string{1:"rohit",2:"yadav"};
+
+k,ok:=m[1];
+// k:value of key,ok:bool
+if ok {
+    fmt.Println("all okay");
+}else {
+    fmt.Println("Not Okay");
+}
+```
 
 
 
