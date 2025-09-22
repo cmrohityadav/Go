@@ -351,6 +351,63 @@ fmt.Println(cap(prices));
 ```
 
 
+## Map
+- A map is Go’s built-in hash table or dictionary type.
+- It stores data as key–value pairs so you can quickly look up a value by its key
+
+### create
+```go
+//Using make
+m:=make(map[keyType]keyValueType);
+m:=make(map[int]string);
+
+// using Map literal
+m:=map[string]int{"rohit":1,"yadav":2};
+
+// declareing then assigning
+var m map[string]int;
+m=make(map[string]int);
+
+
+```
+### Access
+```go 
+fmt.Println(m["rohit"]);
+// if key does not exists in the map then it returns ZERO value
+
+```
+### Add/update
+```go 
+m["india"]=91;
+
+```
+### Iteration
+```go
+for k,v:=range m {
+    fmt.Printf("For key %v, value is %v\n", key, value)
+}
+
+```
+
+### Deletion
+```go
+delete(m,"rohit");
+```
+### Checking key
+```go
+m:=map[int]string{1:"rohit",2:"yadav"};
+
+k,ok:=m[1];
+// k:value of key,ok:bool
+if ok {
+    fmt.Println("all okay");
+}else {
+    fmt.Println("Not Okay");
+}
+```
+
+
+
 
 
 
