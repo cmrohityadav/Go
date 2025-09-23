@@ -407,6 +407,106 @@ if ok {
 ```
 
 
+## Functions
+```go
+func add(a int,b int) int{
+    return a+b
+}
+
+// if same datatype of parameter
+func add(a ,b int) int{
+    return a+b
+}
+
+```
+
+```go
+// Multiple Returns
+func multipleReturn()(string,string,int){
+    return "first","second",3
+}
+
+first,second,third:=multipleReturn();
+
+
+// Using the Blank Identifier: _
+// If you don’t need all the results:
+
+_, second,third := multipleReturn();
+fmt.Println(second, number);
+
+```
+
+### Variadic Function
+- Accepts any number of arguments of the same type.
+- Inside, the parameter behaves like a slice
+
+```go
+func sum(nums ...int) int {
+    total := 0
+    for _, n := range nums {
+        total += n
+    }
+    return total
+}
+fmt.Println(sum(1,2,3,4)) // 10
+```
+
+### Anonymous / Closure
+- Functions without a name can be stored in variables
+- They can also close over variables from the surrounding scope
+```go
+square := func(x int) int {
+    return x * x
+}
+fmt.Println(square(4)) // 16
+```
+
+### Functions in Go are first-class citizens
+#### Assign to a Variable
+
+```go
+package main
+import "fmt"
+
+func greet(name string) string {
+    return "Hello, " + name
+}
+
+func main() {
+    // assign function to a variable
+    sayHello := greet
+    fmt.Println(sayHello("Rohit")) // Hello, Rohit
+}
+```
+
+#### Pass a Function as an Argument
+```go
+func operate(a, b int, anyFunName func(int, int) int) int {
+    return anyFunName(a, b)
+}
+
+func main() {
+    add := func(x, y int) int { return x + y }
+    fmt.Println(operate(3, 4, add)) // 7
+}
+```
+#### Return a Function (Closure)
+```go 
+func multiplier(factor int) func(int) int {
+    return func(x int) int {
+        return x * factor
+    }
+}
+
+func main() {
+    times2 := multiplier(2)
+    fmt.Println(times2(5)) // 10
+}
+```
+- func(int) int: Return type: instead of a simple type (like int), it returns a function.
+That returned function itself takes one int and returns an int
+
 
 
 

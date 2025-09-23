@@ -1,7 +1,9 @@
 package main
 
 import "fmt"
-
+func doubleNumber(num int) int{
+	return 2*num;
+}
 func main() {
 	fmt.Println("Welcome to functions")
 	greeter()
@@ -14,6 +16,10 @@ func main() {
 
 	iFirst,sSecond:=twoValueReturn(1,2)
 	fmt.Println(iFirst,sSecond)
+
+// take function as parameter
+fmt.Println("Take return function: ",takeFunction(1,2,doubleNumber))
+
 }
 
 func adder(iValueOne int, iValueTwo int) int {
@@ -38,4 +44,11 @@ func twoValueReturn(iOne int,iTwo int)(int,string){
 		iSum:=iOne+iTwo
 		sMsg:="This is return msg"
 		return  iSum,sMsg
+}
+
+func takeFunction(a int,b int,anyFunction func(int) int) int{
+
+	num:=anyFunction(a);
+	return num+b;
+
 }
