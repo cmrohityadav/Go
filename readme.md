@@ -124,6 +124,64 @@ const LoginToken string = "abcdefg"
 
 - numberOfUser := 30000 // This code is not allow in public,it can be only use in method / function
 
+
+## Pointers
+- A pointer is a variable that stores the memory address of another variable
+- Instead of copying a value, you pass around a “reference” to where that value lives in memory
+- Think of it like sharing a Google Drive link instead of sending a huge video file. You can edit the video in one place and everyone sees the update
+### compare with c/c++
+```bash
+# c/c++
+int* pMyPointer
+int *pMyPointer
+
+# go
+var pMyPointer *int
+
+# note: here’s no alternative syntax
+var name *Type 
+```
+- get address/reference : &anyVariable
+- dereference: *anyPointerVariable
+### example of pointers
+```go
+x := 42
+fmt.Println(x) //42
+fmt.Println(&x) // 0xc0000120a0 
+p := &x        // &x → address of x
+fmt.Println(p) // 0xc0000120a0
+fmt.Println(*p) // 42
+y := *p        // *p → value stored at that address (42)
+fmt.Println(y) //42
+```
+```go
+var x int          // declare x as int, default value is 0
+    x = 42             // assign a value
+
+    fmt.Println(x)     // 42  (value of x)
+
+    fmt.Println(&x)    // 0xc0000120a0 (address of x — varies each run)
+
+    var p *int         // declare p as pointer to int
+    p = &x             // assign address of x to p
+    fmt.Println(p)     // same as &x (pointer value)
+
+    fmt.Println(*p)    // 42  (value stored at the address p points to)
+
+    var y int          // declare y as int
+    y = *p             // copy the value pointed to by p
+    fmt.Println(y)     // 42
+```
+- **func changeByReference(&num int) is: ❌ Invalid in Go**
+```bash
+C++	void f(int &num) → call with f(x)
+
+C	void f(int *num) → call with f(&x)
+Go	func f(num *int) → call with f(&x)
+```
+
+
+
 ## Conditionals
 
 ### Basic if Statement
@@ -406,6 +464,106 @@ if ok {
 }
 ```
 
+
+## Functions
+```go
+func add(a int,b int) int{
+    return a+b
+}
+
+// if same datatype of parameter
+func add(a ,b int) int{
+    return a+b
+}
+
+```
+
+```go
+// Multiple Returns
+func multipleReturn()(string,string,int){
+    return "first","second",3
+}
+
+first,second,third:=multipleReturn();
+
+
+// Using the Blank Identifier: _
+// If you don’t need all the results:
+
+_, second,third := multipleReturn();
+fmt.Println(second, number);
+
+```
+
+### Variadic Function
+- Accepts any number of arguments of the same type.
+- Inside, the parameter behaves like a slice
+
+```go
+func sum(nums ...int) int {
+    total := 0
+    for _, n := range nums {
+        total += n
+    }
+    return total
+}
+fmt.Println(sum(1,2,3,4)) // 10
+```
+
+### Anonymous / Closure
+- Functions without a name can be stored in variables
+- They can also close over variables from the surrounding scope
+```go
+square := func(x int) int {
+    return x * x
+}
+fmt.Println(square(4)) // 16
+```
+
+### Functions in Go are first-class citizens
+#### Assign to a Variable
+
+```go
+package main
+import "fmt"
+
+func greet(name string) string {
+    return "Hello, " + name
+}
+
+func main() {
+    // assign function to a variable
+    sayHello := greet
+    fmt.Println(sayHello("Rohit")) // Hello, Rohit
+}
+```
+
+#### Pass a Function as an Argument
+```go
+func operate(a, b int, anyFunName func(int, int) int) int {
+    return anyFunName(a, b)
+}
+
+func main() {
+    add := func(x, y int) int { return x + y }
+    fmt.Println(operate(3, 4, add)) // 7
+}
+```
+#### Return a Function (Closure)
+```go 
+func multiplier(factor int) func(int) int {
+    return func(x int) int {
+        return x * factor
+    }
+}
+
+func main() {
+    times2 := multiplier(2)
+    fmt.Println(times2(5)) // 10
+}
+```
+- func(int) int: Return type: instead of a simple type (like int), it returns a function.
+That returned function itself takes one int and returns an int
 
 
 
