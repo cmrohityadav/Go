@@ -124,6 +124,64 @@ const LoginToken string = "abcdefg"
 
 - numberOfUser := 30000 // This code is not allow in public,it can be only use in method / function
 
+
+## Pointers
+- A pointer is a variable that stores the memory address of another variable
+- Instead of copying a value, you pass around a “reference” to where that value lives in memory
+- Think of it like sharing a Google Drive link instead of sending a huge video file. You can edit the video in one place and everyone sees the update
+### compare with c/c++
+```bash
+# c/c++
+int* pMyPointer
+int *pMyPointer
+
+# go
+var pMyPointer *int
+
+# note: here’s no alternative syntax
+var name *Type 
+```
+- get address/reference : &anyVariable
+- dereference: *anyPointerVariable
+### example of pointers
+```go
+x := 42
+fmt.Println(x) //42
+fmt.Println(&x) // 0xc0000120a0 
+p := &x        // &x → address of x
+fmt.Println(p) // 0xc0000120a0
+fmt.Println(*p) // 42
+y := *p        // *p → value stored at that address (42)
+fmt.Println(y) //42
+```
+```go
+var x int          // declare x as int, default value is 0
+    x = 42             // assign a value
+
+    fmt.Println(x)     // 42  (value of x)
+
+    fmt.Println(&x)    // 0xc0000120a0 (address of x — varies each run)
+
+    var p *int         // declare p as pointer to int
+    p = &x             // assign address of x to p
+    fmt.Println(p)     // same as &x (pointer value)
+
+    fmt.Println(*p)    // 42  (value stored at the address p points to)
+
+    var y int          // declare y as int
+    y = *p             // copy the value pointed to by p
+    fmt.Println(y)     // 42
+```
+- **func changeByReference(&num int) is: ❌ Invalid in Go**
+```bash
+C++	void f(int &num) → call with f(x)
+
+C	void f(int *num) → call with f(&x)
+Go	func f(num *int) → call with f(&x)
+```
+
+
+
 ## Conditionals
 
 ### Basic if Statement
