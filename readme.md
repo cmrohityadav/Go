@@ -465,6 +465,119 @@ if ok {
 ```
 
 
+## Struct
+- Struct is a way to group together different pieces of data (fields) under one name
+- Think of it like a blueprint for an object
+```go
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+// Define the struct
+type order struct {
+    id        string
+    amount    float32
+    status    string
+    createdAt time.Time // nanoseconds precision
+}
+
+func main() {
+    // ===============================
+    // WAY 1: Zero value / default struct
+    // ===============================
+    var mobileOrder order
+    mobileOrder.id = "101"
+    mobileOrder.amount = 12000.50
+    mobileOrder.status = "pending"
+    mobileOrder.createdAt = time.Now()
+    fmt.Println("Mobile Order:", mobileOrder)
+
+    // ===============================
+    // WAY 2: Struct literal with field names
+    // ===============================
+    laptopOrder := order{
+        id:        "64",
+        amount:    50000.14,
+        status:    "on the way",
+        createdAt: time.Now(),
+    }
+    fmt.Println("Laptop Order:", laptopOrder)
+
+    // ===============================
+    // WAY 3: Struct literal without field names
+    // Must follow the order of fields in struct!
+    // ===============================
+    bookOrder := order{"201", 999.99, "delivered", time.Now()}
+    fmt.Println("Book Order:", bookOrder)
+
+    // ===============================
+    // WAY 4: Using pointer to struct
+    // ===============================
+    penOrder := &order{
+        id:        "301",
+        amount:    49.99,
+        status:    "shipped",
+        createdAt: time.Now(),
+    }
+
+    // Go auto-dereferences
+    fmt.Println("Pen Order (pointer):", penOrder)
+    fmt.Println("Pen Order ID via pointer:", penOrder.id) 
+    // Dereferencing is automatic for struct field access
+
+    // Modifying through pointer
+    penOrder.status = "delivered"
+    fmt.Println("Updated Pen Order:", penOrder)
+
+    // ===============================
+    // WAY 5: Using new() to create pointer to struct
+    // ===============================
+    bagOrder := new(order) // returns *order
+    bagOrder.id = "401"
+    bagOrder.amount = 1200.50
+    bagOrder.status = "pending"
+    bagOrder.createdAt = time.Now()
+    fmt.Println("Bag Order (new):", bagOrder)
+
+    // ===============================
+    // WAY 6: Anonymous struct
+    // ===============================
+    anonymousOrder := struct {
+        id     string
+        amount float32
+    }{
+        id:     "501",
+        amount: 350.75,
+    }
+    fmt.Println("Anonymous Order:", anonymousOrder)
+
+    // ===============================
+    // WAY 7: Using methods with struct
+    // ===============================
+    laptopOrder.PrintSummary()
+}
+
+// Method attached to struct
+func (o order) PrintSummary() {
+    fmt.Printf("Order %s of amount %.2f is %s\n", o.id, o.amount, o.status)
+}
+
+// (o order) → value receiver → gets a copy of the struct.
+
+// If you change o.status inside this method, the original struct won’t change.
+
+// (o *order) → pointer receiver → gets the address, can modify original struct
+
+```
+
+- **If x is a pointer to a struct, x.f is shorthand for (*x).f**
+
+
+
+
 ## Functions
 ```go
 func add(a int,b int) int{
