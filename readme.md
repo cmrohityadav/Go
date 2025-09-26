@@ -575,6 +575,33 @@ func (o order) PrintSummary() {
 
 - **If x is a pointer to a struct, x.f is shorthand for (*x).f**
 
+- Just like constructor in other programming language
+```go
+func newOrder(id string,amount float32,status)*orde{
+    // initial setup goes here...
+    myOrder:=order{
+        id:id,
+        amount:amount,
+        status:status,
+    }
+    return &myOrder;
+}
+
+```
+### Struct Embedding
+```go
+type Address struct {
+    City  string
+    State string
+}
+
+type Person struct {
+    Name string
+    Age  int
+    Address   // embedded struct (no field name)
+}
+
+```
 
 
 
