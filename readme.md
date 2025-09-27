@@ -608,6 +608,42 @@ type Person struct {
 - If a type (a struct, usually) has all those methods with the same signatures, it automatically satisfies the interface.
 - No keywords like “implements” are needed
 
+```go
+package main
+
+import "fmt"
+
+// 1. Define the interface (the contract)
+type Speaker interface {
+    Speak() string
+}
+
+// 2. Create types that match the contract
+type Person struct{}
+func (p Person) Speak() string {
+    return "Hello, I'm a person."
+}
+
+type Dog struct{}
+func (d Dog) Speak() string {
+    return "Woof!"
+}
+
+// 3. Use the interface as a parameter
+func SaySomething(s Speaker) {
+    fmt.Println(s.Speak())
+}
+
+func main() {
+    p := Person{}
+    d := Dog{}
+
+    SaySomething(p)  // works
+    SaySomething(d)  // works
+}
+
+
+```
 
 | Concept              | C++                               | Go                                          |
 |----------------------|------------------------------------|---------------------------------------------|
@@ -615,6 +651,7 @@ type Person struct {
 | Explicit inheritance | `class Circle : public Shape`     | Nahi hota (automatic / implicit)             |
 | Method override      | `override` keyword optional       | Bas method signature match karo              |
 | Multiple inheritance | Limited / complex                 | Easy, ek type multiple interfaces satisfy kar sakta |
+
 
 
 
