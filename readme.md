@@ -601,7 +601,22 @@ type Person struct {
     Address   // embedded struct (no field name)
 }
 
-```
+``` 
+## Interfaces
+- It is just Contract
+- An interface is a type that specifies a set of method signatures—just the method names and parameters, no code
+- If a type (a struct, usually) has all those methods with the same signatures, it automatically satisfies the interface.
+- No keywords like “implements” are needed
+
+
+| Concept              | C++                               | Go                                          |
+|----------------------|------------------------------------|---------------------------------------------|
+| Declare behaviour    | Pure virtual class                | `interface`                                  |
+| Explicit inheritance | `class Circle : public Shape`     | Nahi hota (automatic / implicit)             |
+| Method override      | `override` keyword optional       | Bas method signature match karo              |
+| Multiple inheritance | Limited / complex                 | Easy, ek type multiple interfaces satisfy kar sakta |
+
+
 
 
 
