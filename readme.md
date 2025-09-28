@@ -653,8 +653,46 @@ func main() {
 | Multiple inheritance | Limited / complex                 | Easy, ek type multiple interfaces satisfy kar sakta |
 
 
+## Enums
+- Go doesn’t have a native enum keyword like C, Java, or Rust.
+- Instead, Go gives you simple primitives—constants + iota + custom types—that you combine to achieve the same (and often better) result.
+```go
+// Step 1: create a named type
+type OrderStatus int
 
+// Step 2: declare constants using iota
+const (
+    Pending OrderStatus = iota  // 0
+    Processing                  // 1
+    Shipped                     // 2
+    Delivered                   // 3
+    Cancelled                   // 4
+)
 
+```
+
+## Generics
+- Generics let you write one function or type that works with many data types, instead of writing the same code multiple times
+- Generics = code that works for many types
+### Without generics
+- two functions that do the exact same thing, only the types differ
+```go
+func SumInt(a, b int) int {
+    return a + b
+}
+func SumFloat(a, b float64) float64 {
+    return a + b
+}
+
+```
+### With generics
+- One function now works for both int and float64
+- T is a type parameter—a placeholder for any type that matches the rule int | float64.
+```go
+func Sum[T int | float64](a, b T) T {
+    return a + b
+}
+```
 
 
 ## Functions
