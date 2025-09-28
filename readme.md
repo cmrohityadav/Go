@@ -796,6 +796,75 @@ func main() {
 That returned function itself takes one int and returns an int
 
 
+## Goroutines
+- Think of a goroutine as a tiny, lightweight worker that Go can run at the same time as your main program
+- They’re like “threads,” but cheaper and easier
+- You can start thousands of them without eating much memory
+
+## Wait Group
+### The Problem WaitGroup Solves
+```go
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func worker(id int) {
+    time.Sleep(1 * time.Second)
+    fmt.Println("Worker", id, "done")
+}
+
+func main() {
+    for i := 1; i <= 3; i++ {
+        go worker(i)
+    }
+    // main returns immediately → goroutines may not finish
+}
+
+```
+- Sometimes you’ll see no output, because main ends and the process exits
+### Meet sync.WaitGroup
+- A WaitGroup is like a counter + gate
+- You “add” the number of goroutines you plan to start
+- Each goroutine “done” lowers(-) the counter
+- Wait() blocks until the counter hits zero
+### Basic Steps
+1. Create a WaitGroup.
+2. Add the number of goroutines.
+3. Run goroutines and call Done() when finished.
+4. Wait in main until all are done
+
+```go
+package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+func worker(id int, wg *sync.WaitGroup) {
+    defer wg.Done() // mark this worker as finished when the function ends
+    time.Sleep(time.Second)
+    fmt.Println("Worker", id, "done")
+}
+
+func main() {
+    var wg sync.WaitGroup
+
+    for i := 1; i <= 3; i++ {
+        wg.Add(1)               // step 1: increment counter
+        go worker(i, &wg)       // step 2: start goroutine
+    }
+
+    wg.Wait()                   // step 3: block until all Done() calls happen
+    fmt.Println("All workers finished!")
+}
+
+```
+
 
 
 
