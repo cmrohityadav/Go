@@ -865,6 +865,30 @@ func main() {
 
 ```
 
+## Channels
+- A goroutine is a lightweight, concurrent worker
+- If several goroutines run at the same time, they often need to talk to each other
+- Without a safe way to communicate, you’d have to share variables and worry about “race conditions.”
+That’s where channels come in
+- Think of a `channel` as a `pipe` that lets one goroutine send a value and another goroutine receive it.
+```go
+ch := make(chan int)     // channel that carries int
+// You use make to create it, just like a slice or map.
+
+// Send a value
+ch <- 42    // send 42 into the channel
+
+
+// Receive a value
+v := <- ch  // take a value out of the channel
+
+
+```
+
+## Mutex
+
+
+
 
 
 
