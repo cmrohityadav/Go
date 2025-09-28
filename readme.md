@@ -575,7 +575,124 @@ func (o order) PrintSummary() {
 
 - **If x is a pointer to a struct, x.f is shorthand for (*x).f**
 
+- Just like constructor in other programming language
+```go
+func newOrder(id string,amount float32,status)*orde{
+    // initial setup goes here...
+    myOrder:=order{
+        id:id,
+        amount:amount,
+        status:status,
+    }
+    return &myOrder;
+}
 
+```
+### Struct Embedding
+```go
+type Address struct {
+    City  string
+    State string
+}
+
+type Person struct {
+    Name string
+    Age  int
+    Address   // embedded struct (no field name)
+}
+
+``` 
+## Interfaces
+- It is just Contract
+- An interface is a type that specifies a set of method signatures—just the method names and parameters, no code
+- If a type (a struct, usually) has all those methods with the same signatures, it automatically satisfies the interface.
+- No keywords like “implements” are needed
+
+```go
+package main
+
+import "fmt"
+
+// 1. Define the interface (the contract)
+type Speaker interface {
+    Speak() string
+}
+
+// 2. Create types that match the contract
+type Person struct{}
+func (p Person) Speak() string {
+    return "Hello, I'm a person."
+}
+
+type Dog struct{}
+func (d Dog) Speak() string {
+    return "Woof!"
+}
+
+// 3. Use the interface as a parameter
+func SaySomething(s Speaker) {
+    fmt.Println(s.Speak())
+}
+
+func main() {
+    p := Person{}
+    d := Dog{}
+
+    SaySomething(p)  // works
+    SaySomething(d)  // works
+}
+
+
+```
+
+| Concept              | C++                               | Go                                          |
+|----------------------|------------------------------------|---------------------------------------------|
+| Declare behaviour    | Pure virtual class                | `interface`                                  |
+| Explicit inheritance | `class Circle : public Shape`     | Nahi hota (automatic / implicit)             |
+| Method override      | `override` keyword optional       | Bas method signature match karo              |
+| Multiple inheritance | Limited / complex                 | Easy, ek type multiple interfaces satisfy kar sakta |
+
+
+## Enums
+- Go doesn’t have a native enum keyword like C, Java, or Rust.
+- Instead, Go gives you simple primitives—constants + iota + custom types—that you combine to achieve the same (and often better) result.
+```go
+// Step 1: create a named type
+type OrderStatus int
+
+// Step 2: declare constants using iota
+const (
+    Pending OrderStatus = iota  // 0
+    Processing                  // 1
+    Shipped                     // 2
+    Delivered                   // 3
+    Cancelled                   // 4
+)
+
+```
+
+## Generics
+- Generics let you write one function or type that works with many data types, instead of writing the same code multiple times
+- Generics = code that works for many types
+### Without generics
+- two functions that do the exact same thing, only the types differ
+```go
+func SumInt(a, b int) int {
+    return a + b
+}
+func SumFloat(a, b float64) float64 {
+    return a + b
+}
+
+```
+### With generics
+- One function now works for both int and float64
+- T is a type parameter—a placeholder for any type that matches the rule int | float64.
+```go
+func Sum[T int | float64](a, b T) T {
+    return a + b
+}
+```
 
 
 ## Functions
