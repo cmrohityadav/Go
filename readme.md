@@ -886,6 +886,10 @@ v := <- ch  // take a value out of the channel
 ```
 
 ## Mutex
+- Mutex stands for Mutual Exclusion
+- It’s like a key to the whiteboard
+- Only the person holding the key can write
+- Everyone else must wait until the key is returned
 
 
 
