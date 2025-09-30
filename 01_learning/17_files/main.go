@@ -5,12 +5,13 @@ import (
 	// "io"
 	// "io/ioutil"
 	"os"
+
 )
 
 func main() {
 
 	f,err:=os.Open("example.txt");
-	
+
 	if err!=nil{
 		fmt.Println(err);
 	}
@@ -29,7 +30,44 @@ func main() {
 	fmt.Println("file permission: ",fileInfo.Mode());
 	fmt.Println("file modified at: ",fileInfo.ModTime());
 
+	buf:=make([]byte,3);
 
+	d,err:=f.Read(buf);
+
+	if err!= nil {
+		panic(err);
+	}
+
+	fmt.Println("buffer data: ",buf,"size: ",d);
+	fmt.Println("buffer in string: ",string(buf));
+
+
+
+	// for small file
+	data,err:=os.ReadFile("example.txt");
+	if err!= nil{
+		panic(err);
+	}
+
+	fmt.Println("Reading data using ReadFile(): ",string(data));
+	
+
+	//-------Read folder---------
+	dir,err:=os.Open("../");
+	if err!=nil {
+		panic(err);
+	}
+	defer dir.Close();
+
+
+	dirInfo,err:=dir.ReadDir(int(-1));
+	if err!= nil{
+		panic(err);
+	}
+	
+	for i:=0;i<len(dirInfo);i++ {
+		fmt.Println("dir info at index ",i,"value at this ",dirInfo[i])
+	}
 
 
 
