@@ -43,7 +43,7 @@ func main() {
 
 
 
-	// for small file
+	//-------------for small file reading--------
 	data,err:=os.ReadFile("example.txt");
 	if err!= nil{
 		panic(err);
@@ -52,22 +52,38 @@ func main() {
 	fmt.Println("Reading data using ReadFile(): ",string(data));
 	
 
+
 	//-------Read folder---------
-	dir,err:=os.Open("../");
+
+	dir,err:=os.Open("../../");
 	if err!=nil {
 		panic(err);
 	}
 	defer dir.Close();
 
 
-	dirInfo,err:=dir.ReadDir(int(-1));
+	dirInfo,err:=dir.ReadDir(-1);
 	if err!= nil{
 		panic(err);
 	}
 	
 	for i:=0;i<len(dirInfo);i++ {
-		fmt.Println("dir info at index ",i,"value at this ",dirInfo[i])
+		fmt.Println("\n dir info at index ",i,"value at this ",dirInfo[i]);
+		fmt.Println("is  folder: ",dirInfo[i].IsDir()," -> name of it: ",dirInfo[i].Name());
 	}
+
+
+	// -------Create File-----------
+
+	pCreateFile,err:=os.Create("output.txt");
+	if err!=nil {
+		panic(err);
+	}
+	defer pCreateFile.Close();
+
+	pCreateFile.WriteString("Hello writing string");
+	pCreateFile.WriteString("Writing second time");
+
 
 
 

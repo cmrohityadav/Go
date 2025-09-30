@@ -893,7 +893,64 @@ v := <- ch  // take a value out of the channel
 
 
 ## File
+- In Go, whenever you want to open, read, or write files, you use the os package
+- **func Open(name string) (*os.File, error)**
+- Parameter: name string — a Go string containing the pathname the OS should open
+e.g 
+"example.txt" → file in current directory
 
+"./data/input.txt" → relative path
+
+"/home/user/docs/file.txt" → absolute path
+
+- Returns:
+
+- *os.File — a pointer to an os.File object that wraps the OS file descriptor.
+
+- error — non-nil if opening failed
+
+
+```go
+f, err := os.Open("example.txt")
+
+if err != nil {
+    log.Fatal(err) // stop the program if opening fails
+}
+defer f.Close() // make sure to close the file when done
+
+```
+- `os.Open` → asks the OS to open the file in `read-only mode`
+- Returns:
+    - f → a pointer to an os.File
+
+    - err → an error (check this every time)
+
+### Reading from a file
+```go
+buffer := make([]byte, 100)    // create a buffer of 100 bytes
+dataReadedSize, err := f.Read(buf)       // read into buffer
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println("Readed data in Byte: ",dataReadedSize)
+fmt.Println("Buffer in string ": ,string(dataReadedSize))
+
+```
+
+### Writing to a file
+```go
+f, err := os.Create("output.txt") // creates a new file (or overwrites if exists)
+if err != nil {
+    log.Fatal(err)
+}
+defer f.Close()
+
+_, err = f.Write([]byte("Hello, Techie!")) 
+if err != nil {
+    log.Fatal(err)
+}
+```
+- `f.Write` → writes `bytes` into it.
 
 
 
