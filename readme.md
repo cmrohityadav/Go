@@ -2,7 +2,7 @@
 ## Content
 ---
 [File](##start-project-in-go-create-a-module)
-[File](##file)
+[File](#file)
 ---
 
 ---
