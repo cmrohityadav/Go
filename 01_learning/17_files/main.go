@@ -1,11 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	// "io"
 	// "io/ioutil"
 	"os"
-
 )
 
 func main() {
@@ -82,8 +82,52 @@ func main() {
 	defer pCreateFile.Close();
 
 	pCreateFile.WriteString("Hello writing string");
-	pCreateFile.WriteString("Writing second time");
+	pCreateFile.WriteString("Writing second time\n");
 
+	pCreateFile.Write([]byte("Hello bro"))
+
+
+
+
+	// -------Streaming---------
+
+	pSourceFile,err:=os.Open("./output.txt");
+	if err!= nil {
+		panic(err);
+	}
+	defer pSourceFile.Close()
+
+
+	pDestFile,err:=os.Create("destfile.txt")
+	if err!= nil {
+		panic(err);
+	}
+	defer pDestFile.Close();
+
+	reader:=bufio.NewReader(pSourceFile);
+	writer:=bufio.NewWriter(pDestFile);
+
+	for {
+		b,err:=reader.ReadByte();
+		if err!=nil{
+			if err.Error()!="EOF"{
+				panic(err);
+			}
+			break;
+		}
+
+		er:=writer.WriteByte(b);
+		if er!=nil {
+			panic(er);
+		}
+	}
+
+	writer.Flush();
+	fmt.Println("Writen to destfile successfully")
+
+
+
+	
 
 
 
