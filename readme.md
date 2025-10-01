@@ -1,11 +1,34 @@
 # Go
 ## Content
----
-[File](##start-project-in-go-create-a-module)
-[File](#file)
----
 
----
+## Content
+
+- [Start Project](#start-project-in-go-create-a-module)
+- [File Operations](#file-operations)
+- [Primitive Data Types](#primitive-data-types)
+- [Variables](#variables)
+- [Constants](#constants)
+- [Pointers](#pointers)
+- [Conditionals](#conditionals)
+- [Switch](#switch)
+- [Loops](#loops)
+- [Arrays](#arrays)
+- [Slices](#slices)
+- [Maps](#maps)
+- [Structs](#structs)
+- [Interfaces](#interfaces)
+- [Enums](#enums)
+- [Generics](#generics)
+- [Functions](#functions)
+- [Goroutines](#goroutines)
+- [WaitGroup](#waitgroup)
+- [Channels](#channels)
+- [Mutex](#mutex)
+- [Compiled Programs](#compiled-programs)
+- [Object-Oriented in Go](#object-oriented-in-go)
+- [Missing Features](#missing-features)
+- [Running Go Code](#running-go-code)
+- [Memory Management](#memory-management)
 
 ## Start project in Go: Create a Module
 
@@ -1203,7 +1226,7 @@ func FindProcess(pid int) (*os.Process, error)
 - Finds a process by PID.  
 
 
-# *os.File Type Methods
+### *os.File Type Methods
 
 | Method | Description |
 |--------|-------------|
@@ -1227,9 +1250,9 @@ func FindProcess(pid int) (*os.Process, error)
 
 ---
 
-## Method Details
+### Method Details
 
-### Read
+#### Read
 ```go
 func (f *os.File) Read(b []byte) (n int, err error)
 ```
@@ -1247,7 +1270,7 @@ if err != nil {
 }
 ```
 
-### ReadAt
+#### ReadAt
 ```go
 func (f *os.File) ReadAt(b []byte, off int64) (n int, err error)
 ```
@@ -1262,7 +1285,7 @@ if err != nil {
 }
 ```
 
-### ReadDir
+#### ReadDir
 ```go
 func (f *os.File) ReadDir(n int) ([]os.DirEntry, error)
 ```
@@ -1280,7 +1303,7 @@ for _, e := range entries {
 }
 ```
 
-### ReadFrom
+#### ReadFrom
 ```go
 func (f *os.File) ReadFrom(r io.Reader) (n int64, err error)
 ```
@@ -1295,7 +1318,7 @@ if err != nil {
 }
 ```
 
-### Write
+#### Write
 ```go
 func (f *os.File) Write(b []byte) (n int, err error)
 ```
@@ -1310,7 +1333,7 @@ if err != nil {
 }
 ```
 
-### WriteAt
+#### WriteAt
 ```go
 func (f *os.File) WriteAt(b []byte, off int64) (n int, err error)
 ```
@@ -1325,67 +1348,67 @@ if err != nil {
 }
 ```
 
-### WriteString
+#### WriteString
 ```go
 func (f *os.File) WriteString(s string) (ret int, err error)
 ```
 - Writes a string to the file.  
 
-### WriteTo
+#### WriteTo
 ```go
 func (f *os.File) WriteTo(w io.Writer) (n int64, err error)
 ```
 - Writes file contents to an io.Writer.  
 
-### Close
+#### Close
 ```go
 func (f *os.File) Close() error
 ```
 - Closes the file.  
 
-### Sync
+#### Sync
 ```go
 func (f *os.File) Sync() error
 ```
 - Flushes file contents to disk.  
 
-### Chmod
+#### Chmod
 ```go
 func (f *os.File) Chmod(mode os.FileMode) error
 ```
 - Changes file permissions.  
 
-### Chown
+#### Chown
 ```go
 func (f *os.File) Chown(uid, gid int) error
 ```
 - Changes file owner.  
 
-### Truncate
+#### Truncate
 ```go
 func (f *os.File) Truncate(size int64) error
 ```
 - Truncates file to a specific size.  
 
-### Seek
+#### Seek
 ```go
 func (f *os.File) Seek(offset int64, whence int) (ret int64, err error)
 ```
 - Moves the file pointer.  
 
-### Name
+#### Name
 ```go
 func (f *os.File) Name() string
 ```
 - Returns the file name.  
 
-### Fd
+#### Fd
 ```go
 func (f *os.File) Fd() uintptr
 ```
 - Returns the file descriptor.  
 
-### Stat
+#### Stat
 ```go
 func (f *os.File) Stat() (os.FileInfo, error)
 ```
@@ -1393,7 +1416,7 @@ func (f *os.File) Stat() (os.FileInfo, error)
 
 
 
-# FileInfo Interface Methods
+### FileInfo Interface Methods
 
 | Method | Description |
 |--------|-------------|
@@ -1408,37 +1431,37 @@ func (f *os.File) Stat() (os.FileInfo, error)
 
 ## Method Details
 
-### Name
+#### Name
 ```go
 func (fi FileInfo) Name() string
 ```
 - Returns the name of the file or directory.  
 
-### Size
+#### Size
 ```go
 func (fi FileInfo) Size() int64
 ```
 - Returns the size of the file in bytes.  
 
-### Mode
+#### Mode
 ```go
 func (fi FileInfo) Mode() os.FileMode
 ```
 - Returns the file permissions/mode.  
 
-### ModTime
+#### ModTime
 ```go
 func (fi FileInfo) ModTime() time.Time
 ```
 - Returns the last modification time.  
 
-### IsDir
+#### IsDir
 ```go
 func (fi FileInfo) IsDir() bool
 ```
 - Returns `true` if the file is a directory.  
 
-### Sys
+#### Sys
 ```go
 func (fi FileInfo) Sys() interface{}
 ```
@@ -1448,7 +1471,7 @@ func (fi FileInfo) Sys() interface{}
 
 
 
-# Process Type Methods
+### Process Type Methods
 
 | Method | Description |
 |--------|-------------|
@@ -1459,16 +1482,16 @@ func (fi FileInfo) Sys() interface{}
 
 ---
 
-## Method Details
+### Method Details
 
-### Release
+#### Release
 ```go
 func (p *Process) Release() error
 ```
 - Releases any resources associated with the process.  
 - **Returns:** `error` → non-nil if releasing fails
 
-### Signal
+#### Signal
 ```go
 func (p *Process) Signal(sig os.Signal) error
 ```
@@ -1476,58 +1499,14 @@ func (p *Process) Signal(sig os.Signal) error
 - **Parameters:** `sig os.Signal` → signal to send  
 - **Returns:** `error` → non-nil if sending fails
 
-### Kill
+#### Kill
 ```go
 func (p *Process) Kill() error
 ```
 - Kills the process.  
 - **Returns:** `error` → non-nil if killing fails
 
-### Wait
-```go
-func (p *Process) Wait() (*os.ProcessState, error)
-```
-- Waits for the process to exit.  
-- **Returns:**  
-  - `*os.ProcessState` → state information of the exited process  
-  - `error` → non-nil if waiting fails
-
-# Process Type Methods
-
-| Method | Description |
-|--------|-------------|
-| `Release() error` | Releases resources associated with the process. |
-| `Signal(sig Signal) error` | Sends a signal to the process. |
-| `Kill() error` | Kills the process. |
-| `Wait() (*ProcessState, error)` | Waits for the process to exit. |
-
----
-
-## Method Details
-
-### Release
-```go
-func (p *Process) Release() error
-```
-- Releases any resources associated with the process.  
-- **Returns:** `error` → non-nil if releasing fails
-
-### Signal
-```go
-func (p *Process) Signal(sig os.Signal) error
-```
-- Sends a signal to the process.  
-- **Parameters:** `sig os.Signal` → signal to send  
-- **Returns:** `error` → non-nil if sending fails
-
-### Kill
-```go
-func (p *Process) Kill() error
-```
-- Kills the process.  
-- **Returns:** `error` → non-nil if killing fails
-
-### Wait
+#### Wait
 ```go
 func (p *Process) Wait() (*os.ProcessState, error)
 ```
@@ -1537,7 +1516,10 @@ func (p *Process) Wait() (*os.ProcessState, error)
   - `error` → non-nil if waiting fails
 
 
-# ProcessState Type Methods
+
+
+
+### ProcessState Type Methods
 
 | Method | Description |
 |--------|-------------|
@@ -1550,39 +1532,39 @@ func (p *Process) Wait() (*os.ProcessState, error)
 
 ---
 
-## Method Details
+### Method Details
 
-### Pid
+#### Pid
 ```go
 func (ps *ProcessState) Pid() int
 ```
 - Returns the PID of the exited process.  
 
-### Exited
+#### Exited
 ```go
 func (ps *ProcessState) Exited() bool
 ```
 - Returns `true` if the process has exited.  
 
-### Success
+#### Success
 ```go
 func (ps *ProcessState) Success() bool
 ```
 - Returns `true` if the process exited with code 0.  
 
-### Sys
+#### Sys
 ```go
 func (ps *ProcessState) Sys() interface{}
 ```
 - Returns OS-specific exit information.  
 
-### String
+#### String
 ```go
 func (ps *ProcessState) String() string
 ```
 - Returns a human-readable description of the process state.  
 
-### ExitCode
+#### ExitCode
 ```go
 func (ps *ProcessState) ExitCode() int
 ```
