@@ -1,5 +1,6 @@
 # Go
 
-## [Learning notes](/01_learning/readme.md)
+## [GoPathshala](/01_learning/readme.md)
+- [Start any Go project and its basic Fundamental](/01_learning/readme.md#start-project-in-go-create-a-module)
 
-## [Learning Porjects]()
+## [GoGyanYatra](/02_ProtoGo/)
