@@ -1,5 +1,35 @@
 # Go
+## Content
 
+## Content
+
+- [Start Project](#start-project-in-go-create-a-module)
+- [File Operations](#file-operations)
+- [Primitive Data Types](#primitive-data-types)
+- [Variables](#variables)
+- [Constants](#constants)
+- [Pointers](#pointers)
+- [Conditionals](#conditionals)
+- [Switch](#switch)
+- [Loops](#loops)
+- [Arrays](#arrays)
+- [Slices](#slices)
+- [Maps](#maps)
+- [Structs](#structs)
+- [Interfaces](#interfaces)
+- [Enums](#enums)
+- [Generics](#generics)
+- [Functions](#functions)
+- [Goroutines](#goroutines)
+- [WaitGroup](#waitgroup)
+- [Channels](#channels)
+- [Mutex](#mutex)
+- [Package](#package)
+- [Compiled Programs](#compiled-programs)
+- [Object-Oriented in Go](#object-oriented-in-go)
+- [Missing Features](#missing-features)
+- [Running Go Code](#running-go-code)
+- [Memory Management](#memory-management)
 
 ## Start project in Go: Create a Module
 
@@ -796,8 +826,835 @@ func main() {
 That returned function itself takes one int and returns an int
 
 
+## Goroutines
+- Think of a goroutine as a tiny, lightweight worker that Go can run at the same time as your main program
+- They’re like “threads,” but cheaper and easier
+- You can start thousands of them without eating much memory
+
+## Wait Group
+### The Problem WaitGroup Solves
+```go
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func worker(id int) {
+    time.Sleep(1 * time.Second)
+    fmt.Println("Worker", id, "done")
+}
+
+func main() {
+    for i := 1; i <= 3; i++ {
+        go worker(i)
+    }
+    // main returns immediately → goroutines may not finish
+}
+
+```
+- Sometimes you’ll see no output, because main ends and the process exits
+### Meet sync.WaitGroup
+- A WaitGroup is like a counter + gate
+- You “add” the number of goroutines you plan to start
+- Each goroutine “done” lowers(-) the counter
+- Wait() blocks until the counter hits zero
+### Basic Steps
+1. Create a WaitGroup.
+2. Add the number of goroutines.
+3. Run goroutines and call Done() when finished.
+4. Wait in main until all are done
+
+```go
+package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+func worker(id int, wg *sync.WaitGroup) {
+    defer wg.Done() // mark this worker as finished when the function ends
+    time.Sleep(time.Second)
+    fmt.Println("Worker", id, "done")
+}
+
+func main() {
+    var wg sync.WaitGroup
+
+    for i := 1; i <= 3; i++ {
+        wg.Add(1)               // step 1: increment counter
+        go worker(i, &wg)       // step 2: start goroutine
+    }
+
+    wg.Wait()                   // step 3: block until all Done() calls happen
+    fmt.Println("All workers finished!")
+}
+
+```
+
+## Channels
+- A goroutine is a lightweight, concurrent worker
+- If several goroutines run at the same time, they often need to talk to each other
+- Without a safe way to communicate, you’d have to share variables and worry about “race conditions.”
+That’s where channels come in
+- Think of a `channel` as a `pipe` that lets one goroutine send a value and another goroutine receive it.
+```go
+ch := make(chan int)     // channel that carries int
+// You use make to create it, just like a slice or map.
+
+// Send a value
+ch <- 42    // send 42 into the channel
 
 
+// Receive a value
+v := <- ch  // take a value out of the channel
+
+
+```
+
+## Mutex
+- Mutex stands for Mutual Exclusion
+- It’s like a key to the whiteboard
+- Only the person holding the key can write
+- Everyone else must wait until the key is returned
+
+
+## File
+- In Go, whenever you want to open, read, or write files, you use the os package
+
+### Package Functions (os)
+| Function | Description |
+|----------|-------------|
+| `Create(name string) (*File, error)` | Creates a new file (truncates if exists). |
+| `Open(name string) (*File, error)` | Opens a file for reading. |
+| `OpenFile(name string, flag int, perm FileMode) (*File, error)` | Opens a file with specific flags and permissions. |
+| `Mkdir(name string, perm FileMode) error` | Creates a single directory. |
+| `MkdirAll(path string, perm FileMode) error` | Creates a directory path recursively. |
+| `Remove(name string) error` | Deletes a file or empty directory. |
+| `RemoveAll(path string) error` | Deletes a directory and all its contents. |
+| `Rename(oldpath, newpath string) error` | Renames a file or directory. |
+| `ReadDir(name string) ([]DirEntry, error)` | Reads directory entries. |
+| `Stat(name string) (FileInfo, error)` | Returns file info. |
+| `Lstat(name string) (FileInfo, error)` | Like Stat, but does not follow symlinks. |
+| `Chmod(name string, mode FileMode) error` | Changes file permissions. |
+| `Chown(name string, uid, gid int) error` | Changes file owner. |
+| `Chtimes(name string, atime, mtime time.Time) error` | Changes access/modification time. |
+| `Getwd() (dir string, err error)` | Returns current working directory. |
+| `Chdir(dir string) error` | Changes working directory. |
+| `Hostname() (name string, err error)` | Returns host machine name. |
+| `UserHomeDir() (string, error)` | Returns user’s home directory. |
+| `Getenv(key string) string` | Gets environment variable. |
+| `Setenv(key, value string) error` | Sets environment variable. |
+| `Unsetenv(key string) error` | Deletes environment variable. |
+| `Environ() []string` | Returns all environment variables. |
+| `TempDir() string` | Returns the default temp directory. |
+| `CreateTemp(dir, pattern string) (*File, error)` | Creates a temp file. |
+| `StartProcess(name string, argv []string, attr *ProcAttr) (*Process, error)` | Starts a new process. |
+| `Getpid() int` | Returns current process ID. |
+| `Getppid() int` | Returns parent process ID. |
+| `FindProcess(pid int) (*Process, error)` | Finds a process by PID. |
+
+---
+
+#### Create
+```go
+func Create(name string) (*os.File, error)
+```
+- Creates a new file. Truncates if the file already exists.  
+- **Parameters:** `name string` → path of new file.  
+- **Returns:**  
+  - `*os.File` → writable file handle.  
+  - `error` → non-nil if creation fails.
+
+```go
+f, err := os.Create("newfile.txt")
+if err != nil {
+    log.Fatal(err)
+}
+defer f.Close()
+```
+
+#### Open
+```go
+func Open(name string) (*os.File, error)
+```
+- Opens a file for reading.  
+- **Parameters:** `name string` → path to file.  
+- **Returns:**  
+  - `*os.File` → read-only file handle.  
+  - `error` → non-nil if opening fails.
+
+```go
+f, err := os.Open("example.txt")
+if err != nil {
+    log.Fatal(err)
+}
+defer f.Close()
+```
+
+#### OpenFile
+```go
+func OpenFile(name string, flag int, perm os.FileMode) (*os.File, error)
+```
+- Opens a file with specific flags and permissions.  
+- **Parameters:**  
+  - `name string` → file path  
+  - `flag int` → mode (e.g., `os.O_RDONLY`, `os.O_CREATE|os.O_WRONLY`)  
+  - `perm os.FileMode` → file permissions  
+- **Returns:**  
+  - `*os.File` → file handle  
+  - `error` → non-nil if opening fails
+
+```go
+f, err := os.OpenFile("log.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+if err != nil {
+    log.Fatal(err)
+}
+defer f.Close()
+f.WriteString("New log entry\n")
+```
+
+#### Mkdir
+```go
+func Mkdir(name string, perm os.FileMode) error
+```
+- Creates a single directory.  
+- **Parameters:** `name string`, `perm os.FileMode`  
+- **Returns:** `error` → non-nil if creation fails
+
+```go
+err := os.Mkdir("testdir", 0755)
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+#### MkdirAll
+```go
+func MkdirAll(path string, perm os.FileMode) error
+```
+- Creates a directory path recursively.  
+- **Parameters:** `path string`, `perm os.FileMode`  
+- **Returns:** `error` → non-nil if creation fails
+
+```go
+err := os.MkdirAll("parent/child/grandchild", 0755)
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+#### Remove
+```go
+func Remove(name string) error
+```
+- Deletes a file or empty directory.  
+- **Parameters:** `name string`  
+- **Returns:** `error` → non-nil if deletion fails
+
+```go
+err := os.Remove("file.txt")
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+#### RemoveAll
+```go
+func RemoveAll(path string) error
+```
+- Deletes a directory and all its contents.  
+- **Parameters:** `path string`  
+- **Returns:** `error` → non-nil if deletion fails
+
+```go
+err := os.RemoveAll("parent")
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+#### Rename
+```go
+func Rename(oldpath, newpath string) error
+```
+- Renames a file or directory.  
+- **Parameters:** `oldpath string`, `newpath string`  
+- **Returns:** `error` → non-nil if rename fails
+
+```go
+err := os.Rename("old.txt", "new.txt")
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+#### ReadDir
+```go
+func ReadDir(name string) ([]os.DirEntry, error)
+```
+- Reads directory entries.  
+- **Parameters:** `name string`  
+- **Returns:**  
+  - `[]os.DirEntry` → slice of entries  
+  - `error` → non-nil if reading fails
+
+```go
+entries, err := os.ReadDir(".")
+if err != nil {
+    log.Fatal(err)
+}
+for _, e := range entries {
+    fmt.Println(e.Name())
+}
+```
+
+#### Stat
+```go
+func Stat(name string) (os.FileInfo, error)
+```
+- Returns file info.  
+
+#### Lstat
+```go
+func Lstat(name string) (os.FileInfo, error)
+```
+- Like Stat, but does not follow symlinks.  
+
+#### Chmod
+```go
+func Chmod(name string, mode os.FileMode) error
+```
+- Changes file permissions.  
+
+#### Chown
+```go
+func Chown(name string, uid, gid int) error
+```
+- Changes file owner.  
+
+#### Chtimes
+```go
+func Chtimes(name string, atime, mtime time.Time) error
+```
+- Changes access and modification time.  
+
+#### Getwd
+```go
+func Getwd() (dir string, err error)
+```
+- Returns current working directory.  
+
+#### Chdir
+```go
+func Chdir(dir string) error
+```
+- Changes working directory.  
+
+#### Hostname
+```go
+func Hostname() (name string, err error)
+```
+- Returns host machine name.  
+
+#### UserHomeDir
+```go
+func UserHomeDir() (string, error)
+```
+- Returns user’s home directory.  
+
+#### Getenv
+```go
+func Getenv(key string) string
+```
+- Gets environment variable.  
+
+#### Setenv
+```go
+func Setenv(key, value string) error
+```
+- Sets environment variable.  
+
+#### Unsetenv
+```go
+func Unsetenv(key string) error
+```
+- Deletes environment variable.  
+
+#### Environ
+```go
+func Environ() []string
+```
+- Returns all environment variables.  
+
+#### TempDir
+```go
+func TempDir() string
+```
+- Returns the default temp directory.  
+
+#### CreateTemp
+```go
+func CreateTemp(dir, pattern string) (*os.File, error)
+```
+- Creates a temporary file.  
+
+#### StartProcess
+```go
+func StartProcess(name string, argv []string, attr *os.ProcAttr) (*os.Process, error)
+```
+- Starts a new process.  
+
+#### Getpid
+```go
+func Getpid() int
+```
+- Returns current process ID.  
+
+#### Getppid
+```go
+func Getppid() int
+```
+- Returns parent process ID.  
+
+#### FindProcess
+```go
+func FindProcess(pid int) (*os.Process, error)
+```
+- Finds a process by PID.  
+
+
+### *os.File Type Methods
+
+| Method | Description |
+|--------|-------------|
+| `Read(b []byte) (n int, err error)` | Reads bytes from the file. |
+| `ReadAt(b []byte, off int64) (n int, err error)` | Reads bytes from a specific offset. |
+| `ReadDir(n int) ([]DirEntry, error)` | Reads directory entries. |
+| `ReadFrom(r io.Reader) (n int64, err error)` | Reads data from an io.Reader. |
+| `Write(b []byte) (n int, err error)` | Writes bytes to the file. |
+| `WriteAt(b []byte, off int64) (n int, err error)` | Writes bytes at a specific offset. |
+| `WriteString(s string) (ret int, err error)` | Writes a string to the file. |
+| `WriteTo(w io.Writer) (n int64, err error)` | Writes data to an io.Writer. |
+| `Close() error` | Closes the file. |
+| `Sync() error` | Flushes file contents to disk. |
+| `Chmod(mode FileMode) error` | Changes file permissions. |
+| `Chown(uid, gid int) error` | Changes file owner. |
+| `Truncate(size int64) error` | Truncates the file to a specific size. |
+| `Seek(offset int64, whence int) (ret int64, err error)` | Moves the file pointer. |
+| `Name() string` | Returns the file name. |
+| `Fd() uintptr` | Returns the file descriptor. |
+| `Stat() (FileInfo, error)` | Returns file info. |
+
+---
+
+### Method Details
+
+#### Read
+```go
+func (f *os.File) Read(b []byte) (n int, err error)
+```
+- Reads bytes from the file.  
+- **Parameters:** `b []byte` → buffer to store data.  
+- **Returns:**  
+  - `n int` → number of bytes read  
+  - `err error` → error if reading fails
+
+```go
+buf := make([]byte, 100)
+n, err := f.Read(buf)
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+#### ReadAt
+```go
+func (f *os.File) ReadAt(b []byte, off int64) (n int, err error)
+```
+- Reads bytes from a specific offset in the file.  
+- **Parameters:** `b []byte`, `off int64`  
+- **Returns:** `n int`, `err error`
+
+```go
+n, err := f.ReadAt(buf, 50) // read 100 bytes from offset 50
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+#### ReadDir
+```go
+func (f *os.File) ReadDir(n int) ([]os.DirEntry, error)
+```
+- Reads directory entries from an opened directory.  
+- **Parameters:** `n int` → number of entries to read, -1 for all.  
+- **Returns:** `[]os.DirEntry`, `error`
+
+```go
+entries, err := f.ReadDir(-1)
+if err != nil {
+    log.Fatal(err)
+}
+for _, e := range entries {
+    fmt.Println(e.Name())
+}
+```
+
+#### ReadFrom
+```go
+func (f *os.File) ReadFrom(r io.Reader) (n int64, err error)
+```
+- Reads from an io.Reader and writes to the file.  
+- **Parameters:** `r io.Reader`  
+- **Returns:** `n int64`, `err error`
+
+```go
+n, err := f.ReadFrom(reader)
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+#### Write
+```go
+func (f *os.File) Write(b []byte) (n int, err error)
+```
+- Writes bytes to the file.  
+- **Parameters:** `b []byte`  
+- **Returns:** `n int`, `err error`
+
+```go
+n, err := f.Write([]byte("Hello World"))
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+#### WriteAt
+```go
+func (f *os.File) WriteAt(b []byte, off int64) (n int, err error)
+```
+- Writes bytes at a specific offset in the file.  
+- **Parameters:** `b []byte`, `off int64`  
+- **Returns:** `n int`, `err error`
+
+```go
+n, err := f.WriteAt([]byte("GoLang"), 10)
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+#### WriteString
+```go
+func (f *os.File) WriteString(s string) (ret int, err error)
+```
+- Writes a string to the file.  
+
+#### WriteTo
+```go
+func (f *os.File) WriteTo(w io.Writer) (n int64, err error)
+```
+- Writes file contents to an io.Writer.  
+
+#### Close
+```go
+func (f *os.File) Close() error
+```
+- Closes the file.  
+
+#### Sync
+```go
+func (f *os.File) Sync() error
+```
+- Flushes file contents to disk.  
+
+#### Chmod
+```go
+func (f *os.File) Chmod(mode os.FileMode) error
+```
+- Changes file permissions.  
+
+#### Chown
+```go
+func (f *os.File) Chown(uid, gid int) error
+```
+- Changes file owner.  
+
+#### Truncate
+```go
+func (f *os.File) Truncate(size int64) error
+```
+- Truncates file to a specific size.  
+
+#### Seek
+```go
+func (f *os.File) Seek(offset int64, whence int) (ret int64, err error)
+```
+- Moves the file pointer.  
+
+#### Name
+```go
+func (f *os.File) Name() string
+```
+- Returns the file name.  
+
+#### Fd
+```go
+func (f *os.File) Fd() uintptr
+```
+- Returns the file descriptor.  
+
+#### Stat
+```go
+func (f *os.File) Stat() (os.FileInfo, error)
+```
+- Returns file info.  
+
+
+
+### FileInfo Interface Methods
+
+| Method | Description |
+|--------|-------------|
+| `Name() string` | Returns file or directory name. |
+| `Size() int64` | Returns file size in bytes. |
+| `Mode() FileMode` | Returns file permissions/mode. |
+| `ModTime() time.Time` | Returns last modification time. |
+| `IsDir() bool` | Returns true if it’s a directory. |
+| `Sys() interface{}` | Returns OS-specific information. |
+
+---
+
+## Method Details
+
+#### Name
+```go
+func (fi FileInfo) Name() string
+```
+- Returns the name of the file or directory.  
+
+#### Size
+```go
+func (fi FileInfo) Size() int64
+```
+- Returns the size of the file in bytes.  
+
+#### Mode
+```go
+func (fi FileInfo) Mode() os.FileMode
+```
+- Returns the file permissions/mode.  
+
+#### ModTime
+```go
+func (fi FileInfo) ModTime() time.Time
+```
+- Returns the last modification time.  
+
+#### IsDir
+```go
+func (fi FileInfo) IsDir() bool
+```
+- Returns `true` if the file is a directory.  
+
+#### Sys
+```go
+func (fi FileInfo) Sys() interface{}
+```
+- Returns OS-specific information about the file.  
+
+
+
+
+
+### Process Type Methods
+
+| Method | Description |
+|--------|-------------|
+| `Release() error` | Releases resources associated with the process. |
+| `Signal(sig Signal) error` | Sends a signal to the process. |
+| `Kill() error` | Kills the process. |
+| `Wait() (*ProcessState, error)` | Waits for the process to exit. |
+
+---
+
+### Method Details
+
+#### Release
+```go
+func (p *Process) Release() error
+```
+- Releases any resources associated with the process.  
+- **Returns:** `error` → non-nil if releasing fails
+
+#### Signal
+```go
+func (p *Process) Signal(sig os.Signal) error
+```
+- Sends a signal to the process.  
+- **Parameters:** `sig os.Signal` → signal to send  
+- **Returns:** `error` → non-nil if sending fails
+
+#### Kill
+```go
+func (p *Process) Kill() error
+```
+- Kills the process.  
+- **Returns:** `error` → non-nil if killing fails
+
+#### Wait
+```go
+func (p *Process) Wait() (*os.ProcessState, error)
+```
+- Waits for the process to exit.  
+- **Returns:**  
+  - `*os.ProcessState` → state information of the exited process  
+  - `error` → non-nil if waiting fails
+
+
+
+
+
+### ProcessState Type Methods
+
+| Method | Description |
+|--------|-------------|
+| `Pid() int` | Returns PID of exited process. |
+| `Exited() bool` | Returns true if the process exited. |
+| `Success() bool` | Returns true if the exit code was 0. |
+| `Sys() interface{}` | Returns OS-specific exit information. |
+| `String() string` | Returns a human-readable description. |
+| `ExitCode() int` | Returns the exit code of the process. |
+
+---
+
+### Method Details
+
+#### Pid
+```go
+func (ps *ProcessState) Pid() int
+```
+- Returns the PID of the exited process.  
+
+#### Exited
+```go
+func (ps *ProcessState) Exited() bool
+```
+- Returns `true` if the process has exited.  
+
+#### Success
+```go
+func (ps *ProcessState) Success() bool
+```
+- Returns `true` if the process exited with code 0.  
+
+#### Sys
+```go
+func (ps *ProcessState) Sys() interface{}
+```
+- Returns OS-specific exit information.  
+
+#### String
+```go
+func (ps *ProcessState) String() string
+```
+- Returns a human-readable description of the process state.  
+
+#### ExitCode
+```go
+func (ps *ProcessState) ExitCode() int
+```
+- Returns the exit code of the process.  
+
+
+
+
+
+
+### Reading from a file
+```go
+buffer := make([]byte, 100)    // create a buffer of 100 bytes
+dataReadedSize, err := f.Read(buf)       // read into buffer
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println("Readed data in Byte: ",dataReadedSize)
+fmt.Println("Buffer in string ": ,string(dataReadedSize))
+
+```
+
+### Writing to a file
+```go
+f, err := os.Create("output.txt") // creates a new file (or overwrites if exists)
+if err != nil {
+    log.Fatal(err)
+}
+defer f.Close()
+
+_, err = f.Write([]byte("Hello, Techie!")) 
+if err != nil {
+    log.Fatal(err)
+}
+```
+- `f.Write` → writes `bytes` into it.
+
+
+
+## Package
+- Package = Code ka Dibba (Box)
+- Ek folder ke andar rakhe Go files → ek package banate hain
+- Ek folder = Ek package ✅
+- Ek folder me multiple packages ❌ not allowed
+- Multiple files ek hi folder me → same package (agar sabme package naam same hai)
+- Nested folder = new package
+- Import karte waqt → folder/module ka path
+- Function call karte waqt → package ka naam
+- Helps in organizing, reusing, and maintaining code
+```go
+package main
+
+import "github.com/cmrohityadav/go/01_learning/29_package/auth"
+
+
+func main(){
+auth.LoginWithCredentials("cmrohityadav","123456")
+}
+```
+- **Capital** letter se start → Exported (public, usable outside package).
+- **Small** letter se start → Unexported (private, only inside that package)
+```go
+func Hello() {}   // Exported
+func bye() {}     // Not exported
+```
+
+```bash
+# Multiple Files in One Package
+greet/
+│── hello.go   (package greetings)
+│── bye.go     (package greetings)
+
+## Usage:
+greetings.Hello("Bhai")
+greetings.Bye("Bhai")
+
+
+
+# Nested Packages
+mathutils/
+│── square.go   (package mathutils)
+│── any/
+    └── cube.go (package any)
+
+## Usage:
+mathutils.Square(4)   // parent package
+any.Cube(4)           // nested package
+
+```
 
 
 ## Compiled
