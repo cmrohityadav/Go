@@ -24,6 +24,7 @@
 - [WaitGroup](#waitgroup)
 - [Channels](#channels)
 - [Mutex](#mutex)
+- [Package](#package)
 - [Compiled Programs](#compiled-programs)
 - [Object-Oriented in Go](#object-oriented-in-go)
 - [Missing Features](#missing-features)
@@ -1604,7 +1605,56 @@ if err != nil {
 
 
 
+## Package
+- Package = Code ka Dibba (Box)
+- Ek folder ke andar rakhe Go files → ek package banate hain
+- Ek folder = Ek package ✅
+- Ek folder me multiple packages ❌ not allowed
+- Multiple files ek hi folder me → same package (agar sabme package naam same hai)
+- Nested folder = new package
+- Import karte waqt → folder/module ka path
+- Function call karte waqt → package ka naam
+- Helps in organizing, reusing, and maintaining code
+```go
+package main
 
+import "github.com/cmrohityadav/go/01_learning/29_package/auth"
+
+
+func main(){
+auth.LoginWithCredentials("cmrohityadav","123456")
+}
+```
+- **Capital** letter se start → Exported (public, usable outside package).
+- **Small** letter se start → Unexported (private, only inside that package)
+```go
+func Hello() {}   // Exported
+func bye() {}     // Not exported
+```
+
+```bash
+# Multiple Files in One Package
+greet/
+│── hello.go   (package greetings)
+│── bye.go     (package greetings)
+
+## Usage:
+greetings.Hello("Bhai")
+greetings.Bye("Bhai")
+
+
+
+# Nested Packages
+mathutils/
+│── square.go   (package mathutils)
+│── any/
+    └── cube.go (package any)
+
+## Usage:
+mathutils.Square(4)   // parent package
+any.Cube(4)           // nested package
+
+```
 
 
 ## Compiled
