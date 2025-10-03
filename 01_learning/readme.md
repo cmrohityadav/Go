@@ -830,7 +830,8 @@ That returned function itself takes one int and returns an int
 - Think of a goroutine as a tiny, lightweight worker that Go can run at the same time as your main program
 - They’re like “threads,” but cheaper and easier
 - You can start thousands of them without eating much memory
-
+![Concurrency vs Parallelism](./../media/ConcurrencyvsParallelism.png)
+- `do not communicate by sharing memroy..,instead,share memory by communicating`
 ## Wait Group
 ### The Problem WaitGroup Solves
 ```go

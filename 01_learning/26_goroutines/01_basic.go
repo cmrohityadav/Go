@@ -7,6 +7,8 @@ import (
 func task(id int){
 	fmt.Println("Doing task ",id);
 }
+
+
 func main(){
 
 	for i:=0;i<=10;i++ {
@@ -14,4 +16,8 @@ func main(){
 	}
 
 	time.Sleep(time.Second*2)
+
+// ---------02 code----------------
+	go Greeter("hello");
+	Greeter("world");
 }
