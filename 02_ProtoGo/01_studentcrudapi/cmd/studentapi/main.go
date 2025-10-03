@@ -6,6 +6,7 @@ import (
 	"log"
 	"log/slog"
 	"main/internal/config"
+	"main/internal/http/handlers/student"
 	"net/http"
 	"os"
 	"os/signal"
@@ -28,6 +29,8 @@ router:=http.NewServeMux();
 router.HandleFunc("GET /",func (w http.ResponseWriter, r *http.Request){
 	w.Write([]byte("Welocome to HOME students api"));
 })
+
+router.HandleFunc("POST /api/student",student.New());
 
 
 
