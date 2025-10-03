@@ -13,12 +13,17 @@ import (
 
 func New() http.HandlerFunc{
 	return func(w http.ResponseWriter,r *http.Request){
-
+		slog.Info("create student");
 		var student types.Student;
 
 		err:=json.NewDecoder(r.Body).Decode(&student);
 		if errors.Is(err,io.EOF){
-			response.WriteJson(w,http.StatusBadRequest,err.Error());
+			response.WriteJson(w,http.StatusBadRequest,response.GeneralError(err));
+			return;
+		}
+
+		if err!=nil {
+			response.WriteJson(w,http.StatusBadRequest,response.GeneralError(err));
 			return;
 		}
 

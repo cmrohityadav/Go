@@ -5,8 +5,15 @@ import (
 	"net/http"
 )
 
+const (
+	StatusOk= "OK"
+	StatusError ="Error"
+)
 
-
+type Response struct{
+	Status string `json:"status"`
+	Error string	`json:"error"`
+}
 
 func WriteJson(w http.ResponseWriter,status int, data interface{})error{
 	
@@ -16,5 +23,11 @@ func WriteJson(w http.ResponseWriter,status int, data interface{})error{
 
 	return json.NewEncoder(w).Encode(data);
 
+}
 
+func GeneralError(err error) Response{
+	return Response{
+		Status: StatusError,
+		Error: err.Error(),
+	}
 }
