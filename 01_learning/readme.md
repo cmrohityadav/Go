@@ -1170,6 +1170,10 @@ Sender Goroutine
      |------> Receiver 1 gets data till available
      |------> After data: zero-value + ok=false
 ```
+- ok == false → matlab channel close ho gaya hai aur aur data nahi bacha.
+
+val → zero-value of type (int ke liye 0)
+
 ```go
 val, ok := <-ch
 if !ok {
@@ -1177,7 +1181,7 @@ if !ok {
 }
 
 ```
-- ok == false ka matlab channel close ho gaya
+
 
 ```go
 package main
@@ -1230,6 +1234,9 @@ func main() {
 
 ```
 - select wait karta hai jab tak koi ek channel ready na ho
+- Select basically dono channels pe ek hi time me nazar rakhta hai.
+- Jaise hi koi channel ready hota hai, uska case execute ho jaata hai.
+
 
 ### Deadlock Situation
 
