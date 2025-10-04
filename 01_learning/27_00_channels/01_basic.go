@@ -27,6 +27,7 @@ func sum(result chan int,num1 ,num2 int){
 }
 
 func main() {
+    
     rand.Seed(time.Now().UnixNano())
 
     numChan := make(chan int)

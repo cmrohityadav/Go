@@ -830,7 +830,8 @@ That returned function itself takes one int and returns an int
 - Think of a goroutine as a tiny, lightweight worker that Go can run at the same time as your main program
 - They’re like “threads,” but cheaper and easier
 - You can start thousands of them without eating much memory
-
+![Concurrency vs Parallelism](./../media/ConcurrencyvsParallelism.png)
+- `do not communicate by sharing memroy..,instead,share memory by communicating`
 ## Wait Group
 ### The Problem WaitGroup Solves
 ```go
@@ -901,6 +902,362 @@ func main() {
 - Without a safe way to communicate, you’d have to share variables and worry about “race conditions.”
 That’s where channels come in
 - Think of a `channel` as a `pipe` that lets one goroutine send a value and another goroutine receive it.
+- Ek goroutine data send karega, aur doosra receive karega — bina kisi global variable ke
+```go
+ch := make(chan int) // create a channel which carries int type data
+// chan int → channel carrying integers
+// make → channel banane ke liye use hota hai
+```
+
+### Unbuffered Channel
+- Unbuffered channel ka matlab — send aur receive dono ek saath hone chahiye.
+Agar ek side missing ho, to blocking hota hai
+- Go ka unbuffered channel ek direct wire jaisa hota hai —
+jisme sender aur receiver dono ek saath online hone chahiye tabhi data bheja/lia ja sakta hai
+```
+- Scene Imagine Karo:
+
+- Soch lo 2 log hain —
+👉 Sender bhai
+👉 Receiver bhai
+Aur beech me ek pipe (channel) laga hua hai
+
+Sender bhai kehta hai:
+“Main 10 bhejna chahta hoon channel me.”
+
+"ch <- 10"
+
+Lekin Go kehta hai:
+“Thoda ruk ja bhai 😅 — main tab tak tera message aage nahi bhej sakta jab tak koi receive karne wala ready na ho.”
+
+Is waqt Sender block ho jaata hai (ruk jaata hai).
+
+Jab Receiver bhai kehta hai:
+“Ab main ready hoon, mujhe de data.”
+
+val := <-ch
+
+Tab Go dono ko ek saath jod deta hai
+
+Sender --> (data: 10) --> Receiver
+
+Is process ko kehte hain "Synchronization"
+
+Unbuffered channel me send aur receive dono ek time par hone chahiye.
+Agar ek bhi side absent hai → pura system ruk jaata hai (blocking ho jaata hai).
+
+```
+```
+   [Goroutine 1 - Sender]          [Goroutine 2 - Receiver]
+            |                                |
+            |  ch <- 10                      |  val := <-ch
+            |   (waits till receiver ready)  |
+            |--------------------------------|
+                        |
+                     Channel (unbuffered)
+                        |
+                        V
+              (Data transferred instantly)
+
+```
+- Sender ch <- 10 karega, lekin tab tak rukega jab tak receiver ready na ho.
+- Jab receiver <-ch karega, dono sync ho jaate hain aur data transfer ho jaata hai.
+- Blocking behavior hai
+
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+    ch := make(chan int) // unbuffered channel
+
+    // Sender goroutine
+    go func() {
+        fmt.Println("Sending value...")
+        ch <- 10 // this will block until someone receives
+        fmt.Println("Sent!")
+    }()
+
+    // Receiver
+    fmt.Println("Receiving value...")
+    val := <-ch // will unblock the sender
+    fmt.Println("hello rohit here ")
+    fmt.Println("Received:", val)
+}
+
+
+// OUTPUT
+
+// Receiving value...
+// Sending value...
+// Sent!
+// hello rohit here 
+// Received: 10
+
+
+```
+- Jab tak receiver <-ch ready nahi hota, sender ch <- 10 pe ruk jaata hai.
+
+- Jab receiver ready hota hai, dono ek saath proceed karte hain.
+
+- Isko kehte hain blocking behavior.
+
+
+### Buffered Channel
+- Buffered channel me aap n number of values rakh sakte ho bina immediately receive kiye hue
+```go
+ch := make(chan int, 3) // buffer size 3
+```
+- Jab tak buffer full nahi hota, send block nahi hota
+- Jab buffer empty nahi hota, receive block nahi hotta
+
+```
+Buffered channel ke paas andar ek chhota storage box (queue) hota hai —
+jisme data temporarily store ho sakta hai
+
+Matlab sender ko har baar receiver ka wait nahi karna padta.
+Go automatically data ko channel ke buffer me daal deta hai
+
+
+Scene Imagine Karo:
+Soch lo tumhare paas ek box hai jisme 3 slot hain (capacity = 3).
+
+[   ] [   ] [   ]   ←  Empty slots initially
+
+
+Sender bhejta hai pehla item:
+ch <- 10
+
+Box me jagah hai → data store ho gaya → sender aage badh gaya
+[10] [   ] [   ]
+
+Sender bhejta hai aur data:
+ch <- 20
+ch <- 30
+
+Ab box full ho gaya.
+[10] [20] [30]
+
+Sender ne 3 items bhej diye bina kisi wait ke.
+
+Ab sender agar aur bhejta hai:
+ch <- 40
+
+Ab box full hai → sender block ho jaata hai (ruk jaata hai).
+Go kehta hai: “Pehle koi ek item nikaale, tab main naya daalunga.”
+
+
+Receiver aata hai:
+val := <-ch
+
+Receiver ne pehla item (10) nikaal liya:
+[   ] [20] [30]
+
+Ab ek slot khali hua → sender fir se data bhej sakta hai (40).
+
+
+
+| Step             | Action                                         | Result |
+| ---------------- | ---------------------------------------------- | ------ |
+| Buffer not full  | Sender send kar sakta hai freely               |        |
+| Buffer full      | Sender block ho jaata hai                      |        |
+| Buffer not empty | Receiver receive kar sakta hai freely          |        |
+| Buffer empty     | Receiver block ho jaata hai                    |        |
+| Receiver nikaale | Ek slot khali hota hai, sender resume hota hai |        |
+
+
+
+Isiliye isko partially blocking behavior kehte hain —
+kabhi free, kabhi block, depending on buffer capacity
+
+```
+
+```
+      [Sender Goroutine]                [Receiver Goroutine]
+             |                                 |
+             | ch <- 1                         | val := <-ch
+             | ch <- 2                         | val := <-ch
+             | ch <- 3                         |
+             |                                 |
+             V                                 V
+      -------------------------------
+      | Buffer Queue: [1] [2] [3]   |   (Capacity = 3)
+      -------------------------------
+
+
+
+```
+- Jab tak buffer full nahi hota, sender ko wait nahi karna padta.
+- Jaise hi buffer full ho gaya (3 items), agla send block ho jaata hai
+- Receiver jab ek item nikaalega, space khali hoga, aur sender fir se send kar sakta hai
+- Partially blocking behavior hota hai
+
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+    ch := make(chan int, 2) // buffer size 2
+
+    ch <- 10
+    fmt.Println("Sent 10")
+
+    ch <- 20
+    fmt.Println("Sent 20")
+
+    // Buffer full hai, ab next send block karega jab tak koi receive nahi kare
+    go func() {
+        ch <- 30
+        fmt.Println("Sent 30")
+    }()
+
+    fmt.Println("Receiving...")
+    fmt.Println(<-ch)
+    fmt.Println(<-ch)
+    fmt.Println(<-ch)
+}
+
+
+// OUTPUT:
+
+// Sent 10
+// Sent 20
+// Receiving...
+// 10
+// 20
+// Sent 30
+// 30
+
+```
+| Type       | Send Blocks When     | Receive Blocks When |
+| ---------- | -------------------- | ------------------- |
+| Unbuffered | Until receiver ready | Until sender ready  |
+| Buffered   | When buffer full     | When buffer empty   |
+
+
+### Channel Direction (Send-only / Receive-only)
+- Sometimes a function sirf send karega, ya sirf receive karega.
+Is case me hum restricted channel use karte hain
+```go
+func send(ch chan<- int) { // send-only
+    ch <- 100
+}
+
+func receive(ch <-chan int) { // receive-only
+    fmt.Println(<-ch)
+}
+
+func main() {
+    ch := make(chan int)
+    go send(ch)
+    receive(ch)
+}
+```
+### Close a Channel
+- Agar aapko batana hai ki ab aur data nahi aayega channel se, to aap channel ko close karte ho
+
+```
+Sender Goroutine
+     |
+     | close(ch)
+     V
+  Channel Closed
+     |
+     |------> Receiver 1 gets data till available
+     |------> After data: zero-value + ok=false
+```
+- ok == false → matlab channel close ho gaya hai aur aur data nahi bacha.
+
+val → zero-value of type (int ke liye 0)
+
+```go
+val, ok := <-ch
+if !ok {
+    fmt.Println("Channel closed")
+}
+
+```
+
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+    ch := make(chan int, 2)
+    ch <- 1
+    ch <- 2
+    close(ch)
+
+    for val := range ch {
+        fmt.Println(val)
+    }
+}
+
+
+// OUTPUT:
+// 1
+// 2
+
+```
+
+### Select Statement (Multiple Channels Handling)
+- Agar multiple channels hain, aur aapko jo pehle ready ho uska data lena hai — use select karte hain
+```go
+package main
+
+import "fmt"
+
+func main() {
+    ch1 := make(chan string)
+    ch2 := make(chan string)
+
+    go func() {
+        ch1 <- "Hello from ch1"
+    }()
+    go func() {
+        ch2 <- "Hi from ch2"
+    }()
+
+    select {
+    case msg1 := <-ch1:
+        fmt.Println(msg1)
+    case msg2 := <-ch2:
+        fmt.Println(msg2)
+    }
+}
+
+```
+- select wait karta hai jab tak koi ek channel ready na ho
+- Select basically dono channels pe ek hi time me nazar rakhta hai.
+- Jaise hi koi channel ready hota hai, uska case execute ho jaata hai.
+
+
+### Deadlock Situation
+
+- Deadlock tab hota hai jab channel ke sender ya receiver dono hi block ho gaye aur koi bhi proceed nahi kar raha
+
+```
+[Goroutine Main]
+     |
+     | ch <- 10   (no receiver waiting)
+     |
+     X ❌ Deadlock!
+```
+
+```go
+func main() {
+    ch := make(chan int)
+    ch <- 1 // no receiver
+}
+```
+
+
 ```go
 ch := make(chan int)     // channel that carries int
 // You use make to create it, just like a slice or map.
@@ -914,6 +1271,7 @@ v := <- ch  // take a value out of the channel
 
 
 ```
+
 
 ## Mutex
 - Mutex stands for Mutual Exclusion
