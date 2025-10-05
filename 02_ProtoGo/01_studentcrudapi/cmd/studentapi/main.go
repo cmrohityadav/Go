@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"main/internal/config"
 	"main/internal/http/handlers/student"
+	"main/internal/storage/sqlite"
 	"net/http"
 	"os"
 	"os/signal"
@@ -21,6 +22,12 @@ fmt.Println("Welcome student API");
 cfg:=config.MustLoad()
 	
 // ----------Database setup---------
+_,err1:=sqlite.New(cfg);
+if err1!=nil {
+	log.Fatal(err1);
+}
+
+slog.Info("Storage initialized",slog.String("Env",cfg.Env));
 
 
 // ----------setup router-----------
