@@ -10,6 +10,7 @@ import (
 	"main/internal/types"
 	"main/internal/utils/response"
 	"net/http"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -53,5 +54,31 @@ func New(storage storage.Storage) http.HandlerFunc{
 		// w.Write([]byte("Welcome to student api handler"));
 
 		// response.WriteJson(w,http.StatusCreated,map[string]string{"success":"OK"})
+	}
+}
+
+
+
+func GetById(s storage.Storage) http.HandlerFunc{
+	return func (w http.ResponseWriter,r *http.Request){
+		id:=r.PathValue("id");
+		slog.Info("Getting a student",slog.String("id",id));
+
+		intId,err:=strconv.ParseInt(id,10,64);
+		if err!=nil{
+			response.WriteJson(w,400,response.GeneralError(err));
+			return;
+		}
+		student,err:=s.GetStudentById(intId);
+
+		if err!=nil{
+
+			response.WriteJson(w,http.StatusInternalServerError,response.GeneralError(err));
+
+			return;
+		}
+
+		response.WriteJson(w,200,student);
+
 	}
 }
