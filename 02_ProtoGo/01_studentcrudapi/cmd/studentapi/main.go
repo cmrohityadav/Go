@@ -22,7 +22,7 @@ fmt.Println("Welcome student API");
 cfg:=config.MustLoad()
 	
 // ----------Database setup---------
-_,err1:=sqlite.New(cfg);
+storage,err1:=sqlite.New(cfg);
 if err1!=nil {
 	log.Fatal(err1);
 }
@@ -37,7 +37,7 @@ router.HandleFunc("GET /",func (w http.ResponseWriter, r *http.Request){
 	w.Write([]byte("Welocome to HOME students api"));
 })
 
-router.HandleFunc("POST /api/student",student.New());
+router.HandleFunc("POST /api/student",student.New(storage));
 
 
 

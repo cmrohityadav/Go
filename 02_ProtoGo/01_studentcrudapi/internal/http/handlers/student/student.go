@@ -3,8 +3,10 @@ package student
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log/slog"
+	"main/internal/storage"
 	"main/internal/types"
 	"main/internal/utils/response"
 	"net/http"
@@ -13,7 +15,7 @@ import (
 )
 
 
-func New() http.HandlerFunc{
+func New(storage storage.Storage) http.HandlerFunc{
 	return func(w http.ResponseWriter,r *http.Request){
 		slog.Info("create student");
 		var student types.Student;
@@ -38,12 +40,18 @@ func New() http.HandlerFunc{
 			return;
 		}
 
-		
+		lastId,err:=storage.CreateStudent(student.Name,student.Email,student.Age);
 
+		if err!= nil {
+			response.WriteJson(w,http.StatusInternalServerError,err);
+			return;
+		}
 
-		slog.Info("create student");
+		slog.Info("create student succesfully",slog.String("userId",fmt.Sprint(lastId)));
+		response.WriteJson(w,200,map[string]int64{"id":lastId});
+
 		// w.Write([]byte("Welcome to student api handler"));
 
-		response.WriteJson(w,http.StatusCreated,map[string]string{"success":"OK"})
+		// response.WriteJson(w,http.StatusCreated,map[string]string{"success":"OK"})
 	}
 }
