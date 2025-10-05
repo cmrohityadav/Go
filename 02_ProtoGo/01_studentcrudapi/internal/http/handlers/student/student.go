@@ -8,6 +8,8 @@ import (
 	"main/internal/types"
 	"main/internal/utils/response"
 	"net/http"
+
+	"github.com/go-playground/validator/v10"
 )
 
 
@@ -27,6 +29,16 @@ func New() http.HandlerFunc{
 			return;
 		}
 
+
+		// request validation
+		if err:=validator.New().Struct(student); err!=nil{
+			validateErrs:=err.(validator.ValidationErrors);
+			response.WriteJson(w,http.StatusBadRequest,response.ValidateError(validateErrs));
+
+			return;
+		}
+
+		
 
 
 		slog.Info("create student");
