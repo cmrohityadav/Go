@@ -9,4 +9,6 @@ type Storage interface{
 	GetStudentById(id int64)(types.Student,error);
 
 	GetStudentList()([]types.Student,error);
+
+	DeleteStudentById(id int64) (bool,error);
 }

@@ -89,7 +89,26 @@ func GetList(s storage.Storage) http.HandlerFunc{
 		if err!=nil{
 			response.WriteJson(w,500,response.GeneralError(err));
 		}
-		response.WriteJson(w,500,studentList);
+		response.WriteJson(w,200,studentList);
 
+	}
+}
+
+func DeleteStudentById(s storage.Storage) http.HandlerFunc{
+	return func (w http.ResponseWriter,r *http.Request){
+		userId:=r.PathValue("id");
+		usedIdInt,err:=strconv.ParseInt(userId,10,64);
+		if err!=nil{
+			response.WriteJson(w,400,response.GeneralError(err));
+			return;
+		}
+		isDeleted,err:=s.DeleteStudentById(usedIdInt);
+		if err!=nil{
+			response.WriteJson(w,500,response.GeneralError(err));
+			return;
+		}
+		if isDeleted{
+			response.WriteJson(w,200,map[string]bool{"Success":true});
+		}
 	}
 }
