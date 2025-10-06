@@ -39,6 +39,7 @@ router.HandleFunc("GET /",func (w http.ResponseWriter, r *http.Request){
 
 router.HandleFunc("POST /api/student",student.New(storage));
 router.HandleFunc("GET /api/student/{id}",student.GetById(storage));
+router.HandleFunc("GET /api/students",student.GetList(storage));
 
 
 
