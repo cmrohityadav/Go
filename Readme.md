@@ -1740,7 +1740,7 @@ mathutils.Square(4)   // parent package
 any.Cube(4)           // nested package
 
 ```
-## http
+## HTTP
 
 ### All possible handler registration methods
 ```go
@@ -1797,6 +1797,31 @@ type HandlerFunc func(ResponseWriter, *Request)
 // ServeHTTP calls f(w, r).
 func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
     f(w, r)
+}
+
+
+```
+```go
+package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+type anyHandlerObject struct{}
+
+func (a anyHandlerObject) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Hello from anyHandlerObject!")
+}
+
+func main() {
+	var h http.Handler = anyHandlerObject{}
+
+	http.DefaultServeMux.Handle("/anyhandlerObject", h)
+
+	fmt.Println("Server running at http://localhost:8080")
+	http.ListenAndServe(":8080", nil)
 }
 
 
