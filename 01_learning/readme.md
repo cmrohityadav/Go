@@ -1,8 +1,6 @@
 # Go
 ## Content
 
-## Content
-
 - [Start Project](#start-project-in-go-create-a-module)
 - [File Operations](#file-operations)
 - [Primitive Data Types](#primitive-data-types)
