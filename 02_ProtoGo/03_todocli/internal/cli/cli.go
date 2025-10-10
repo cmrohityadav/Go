@@ -2,7 +2,9 @@ package cli
 
 import (
 	"fmt"
+
 	"github.com/cmrohityadav/go/02_protogo/03_todocli/internal/cli/addmenu"
+	"github.com/cmrohityadav/go/02_protogo/03_todocli/internal/cli/updatemenu"
 	"github.com/cmrohityadav/go/02_protogo/03_todocli/internal/cli/viewmenu"
 	"github.com/cmrohityadav/go/02_protogo/03_todocli/internal/constant"
 )
@@ -26,6 +28,7 @@ func MainCLI(){
 		switch constant.OptionsMainMenu(selected){
 		case constant.VIEW:
 			viewmenu.ViewMenu();
+			updatemenu.UpdateMenu();
 		case constant.ADD:
 			addmenu.AddMenu();
 		case constant.DELETE:

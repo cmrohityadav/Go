@@ -23,7 +23,6 @@ func (t *Todos) ADD(title string){
 		Title: title,
 		Status: "pending",
 		CreatedAt: time.Now(),
-		UpdatedAt: time.Time{},
 	}
 
 	t.List=append(t.List, temTodo);
@@ -41,10 +40,46 @@ func (t *Todos) View(){
 
 	for _, myTodo := range t.List {
 		fmt.Println("-------------------------------------------------------------------------");
+		createdAt:=myTodo.CreatedAt.Format("02-01-2006 15:04:05");
 
-		fmt.Printf("ID: %d | Status: %s | CreatedAt: %v  | UpdatedAt: %v\n",myTodo.ID,myTodo.Status,myTodo.CreatedAt,myTodo.UpdatedAt);
+		updateAt:="-";
+		if !myTodo.UpdatedAt.IsZero(){
+			updateAt=myTodo.UpdatedAt.Format("02-01-2006 15:04:05");
+		}
+
+
+		fmt.Printf("ID: %d | Status: %s | CreatedAt: %s  | UpdatedAt: %s\n",myTodo.ID,myTodo.Status,createdAt,updateAt);
 		fmt.Println("Task: ",myTodo.Title);
 
 	}
+	
+}
+func (t *Todos) ValidateId(id int) bool{
+	if id <=len(t.List) && id>=1{
+		return true;
+	}
+	return false;
+}
+
+func (t *Todos)UpdateTitleById(id int,newTitle string)error{
+	
+	if !t.ValidateId(id){
+		return fmt.Errorf("please Enter Valid Id");
+	}
+
+	t.List[id-1].Title=newTitle;
+	t.List[id-1].UpdatedAt=time.Now();
+
+	return nil;
+}
+
+
+func (t *Todos) CompleteById(id int) error {
+	if !t.ValidateId(id) {
+		return fmt.Errorf("please enter a valid Id")
+	}
+	t.List[id-1].Status = "done"
+	t.List[id-1].UpdatedAt = time.Now()
+	return nil
 }
 
