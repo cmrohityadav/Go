@@ -15,17 +15,19 @@ type Todo struct{
 
 type Todos struct{
 	List []Todo
+	Next int
 }
 
 func (t *Todos) ADD(title string){
 	var temTodo=Todo{
-		ID: len(t.List)+1,
+		ID: t.Next,
 		Title: title,
 		Status: "pending",
 		CreatedAt: time.Now(),
 	}
 
 	t.List=append(t.List, temTodo);
+	t.Next++;
 	fmt.Println("✅ Task added successfully!");
 }
 
@@ -69,6 +71,7 @@ func (t *Todos)UpdateTitleById(id int,newTitle string)error{
 
 	t.List[id-1].Title=newTitle;
 	t.List[id-1].UpdatedAt=time.Now();
+	fmt.Println("✅ Successfully Update!");
 
 	return nil;
 }
@@ -80,6 +83,24 @@ func (t *Todos) CompleteById(id int) error {
 	}
 	t.List[id-1].Status = "done"
 	t.List[id-1].UpdatedAt = time.Now()
+	fmt.Println("✅ Successfully Update!");
+
 	return nil
+}
+
+func (t *Todos)DeleteById(id int)error{
+	if !t.ValidateId(id){
+		return fmt.Errorf("please enter a valid Id")
+	}
+	index:=id-1;
+
+	t.List=append(t.List[:index],t.List[index+1:]...);
+
+	for i := range t.List {
+		t.List[i].ID = i + 1
+	}
+	t.Next--;
+
+	return nil;
 }
 
