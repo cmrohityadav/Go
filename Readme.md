@@ -1827,6 +1827,135 @@ func main() {
 
 ```
 
+## TCP
+
+**TCP (Transmission Control Protocol)** is a **connection-oriented**, **reliable**, **byte-stream** protocol that ensures:
+- Ordered delivery of data
+- No packet loss (retransmission)
+- No duplication
+- Full-duplex communication
+
+It follows a **client-server** model:
+- **Server** → Listens for incoming connections
+- **Client** → Initiates connection
+
+### Traditional TCP Socket Flow (C/C++ Style)
+
+```C++
+int sockfd = socket(AF_INET, SOCK_STREAM, 0);   // 1. Create socket
+bind(sockfd, ...);                              // 2. Bind IP/port
+listen(sockfd, backlog);                        // 3. Listen
+int client = accept(sockfd, ...);               // 4. Accept client
+recv(client, buffer, ...);                      // 5. Receive data
+send(client, buffer, ...);                      // 6. Send data
+close(client); close(sockfd);                   // 7. Close sockets
+```
+### In Golang
+```go
+listener, err := net.Listen("tcp", "0.0.0.0:9000") // Create, bind, and listen
+conn, err := listener.Accept()                     // Accept client
+n, _ := conn.Read(buffer)                          // Receive
+conn.Write([]byte("Hello"))                        // Send
+conn.Close()                                       // Close connection
+```
+
+- **net.Listener** → represents a TCP server listening on a port
+- **net.Conn** → represents a TCP connection (read/write data)
+```bash
+Server (main goroutine)
+┌─────────────┐
+│ net.Listen()│
+└─────┬───────┘
+      │
+      ▼
+Accept() blocks waiting for Client 1
+      │
+      ▼
+Client 1 connects → net.Conn returned → handled in goroutine
+      │
+      ▼
+Loop goes back → Accept() blocks waiting for Client 2
+
+
+```
+- net.Listener always waits for the next client
+- Accepting one client does not stop the listener
+- Use goroutines to handle each client, otherwise the server will be blocked while serving the first client
+
+- when Accept() happens:
+
+    - Server creates new socket for the client
+
+    - Client already has its own socket from Dial()
+
+    - They use these sockets to talk privately, independently
+
+
+
+### C/Go Comparing
+
+| Step          | C Function | Go Equivalent       | Happens Internally            |
+| ------------- | ---------- | ------------------- | ----------------------------- |
+| Create socket | `socket()` | `net.Listen()`      | syscall to create TCP socket  |
+| Bind          | `bind()`   | `net.Listen()`      | binds IP:Port                 |
+| Listen        | `listen()` | `net.Listen()`      | starts listening queue        |
+| Accept        | `accept()` | `listener.Accept()` | creates new connection socket |
+| Receive       | `recv()`   | `conn.Read()`       | reads bytes                   |
+| Send          | `send()`   | `conn.Write()`      | writes bytes                  |
+| Close         | `close()`  | `conn.Close()`      | closes gracefully             |
+
+### Sever and Client for Go
+
+| Step                 | Server Code                                        | Client Code                                    |
+| -------------------- | -------------------------------------------------- | ---------------------------------------------- |
+| Create socket / bind | `listener, _ := net.Listen("tcp", "0.0.0.0:9000")` | `conn, _ := net.Dial("tcp", "127.0.0.1:9000")` |
+| Listen               | implicit in `net.Listen`                           | N/A                                            |
+| Accept connection    | `conn, _ := listener.Accept()`                     | N/A                                            |
+| Read                 | `n, _ := conn.Read(buffer)`                        | `n, _ := conn.Read(buffer)`                    |
+| Write                | `conn.Write([]byte(msg))`                          | `conn.Write([]byte(msg))`                      |
+| Close                | `defer conn.Close()`                               | `defer conn.Close()`                           |
+
+
+
+
+
+| Concept               | Variable        | Type           | Purpose                                | Used for                            |
+| --------------------- | --------------- | -------------- | -------------------------------------- | ----------------------------------- |
+| **Listening Socket**  | `netListener`   | `net.Listener` | Binds to IP:Port and waits for clients | `.Accept()` new connections         |
+| **Connection Socket** | `netConnection` | `net.Conn`     | Represents an active connection        | `.Read()`, `.Write()` data transfer |
+
+### Simple Analogy
+| Real-world example | Go term         | Description                                      |
+| ------------------ | --------------- | ------------------------------------------------ |
+| A hotel front desk | `netListener`   | Waits for guests (clients) to arrive             |
+| Each guest’s room  | `netConnection` | A private space for conversation (data exchange) |
+
+### Blocking at server side
+
+| Function                   | Blocking?                 | When / Why                              |
+| -------------------------- | ------------------------- | --------------------------------------- |
+| `net.Listen()`             | ❌                         | Creates the socket, returns immediately |
+| `netListner.Accept()`      | ✅                         | Waits for a client to connect           |
+| `clientConnection.Read()`  | ✅                         | Waits for the client to send data       |
+| `clientConnection.Write()` | ⚠️ Usually yes, but quick | Waits for system to send bytes          |
+| `clientConnection.Close()` | ❌                         | Closes connection, returns instantly    |
+
+
+### Blocking at client side
+
+| Step | Function     | Blocking Until          | Description                        |
+| ---- | ------------ | ----------------------- | ---------------------------------- |
+| 1    | `net.Dial()` | TCP handshake completes | Client waits for server to accept  |
+| 2    | `Write()`    | Data is sent (or error) | Waits until OS confirms bytes sent |
+| 3    | `Read()`     | Data received           | Waits until server sends response  |
+
+### Blocking at client side and its solution
+
+| Function     | Blocking? | Until What             | Common Fix                       |
+| ------------ | --------- | ---------------------- | -------------------------------- |
+| `net.Dial()` | ✅         | Connection established | Use timeout                      |
+| `Write()`    | ✅         | Bytes sent             | Use goroutine or buffer          |
+| `Read()`     | ✅         | Data arrives           | Use goroutine or SetReadDeadline |
 
 
 
