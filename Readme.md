@@ -1958,6 +1958,156 @@ Loop goes back → Accept() blocks waiting for Client 2
 | `Read()`     | ✅         | Data arrives           | Use goroutine or SetReadDeadline |
 
 
+## UDP
+**UDP (User Datagram Protocol) is a connectionless, unreliable, message-oriented protocol that provides**
+
+- No guaranteed delivery
+- No order guarantee
+- No retransmission
+- Lightweight, low latency
+- One-shot communication (no connection setup)
+
+
+### UDP Socket Flow (C/C++ Style)
+```cpp
+int sockfd = socket(AF_INET, SOCK_DGRAM, 0); // 1. Create UDP socket
+bind(sockfd, ...);                           // 2. Bind IP/port (for server)
+recvfrom(sockfd, buffer, ...);               // 3. Receive datagram
+sendto(sockfd, buffer, ...);                 // 4. Send datagram
+close(sockfd);                               // 5. Close socket
+
+```
+### In Golang
+```go
+// UDP Server
+addr, _ := net.ResolveUDPAddr("udp", "0.0.0.0:9000")
+conn, _ := net.ListenUDP("udp", addr)
+buffer := make([]byte, 1024)
+
+n, clientAddr, _ := conn.ReadFromUDP(buffer)        // Receive datagram
+fmt.Println("Got:", string(buffer[:n]))
+conn.WriteToUDP([]byte("Hello UDP Client"), clientAddr) // Reply
+conn.Close()
+
+
+
+// UDP Client
+serverAddr, _ := net.ResolveUDPAddr("udp", "127.0.0.1:9000")
+conn, _ := net.DialUDP("udp", nil, serverAddr)
+
+conn.Write([]byte("Ping from client")) // Send datagram
+buffer := make([]byte, 1024)
+n, _, _ := conn.ReadFromUDP(buffer)    // Receive reply
+fmt.Println("Server says:", string(buffer[:n]))
+conn.Close()
+
+
+```
+- net.ResolveUDPAddr() ek address object banata hai jo IP aur Port store karta hai
+```go
+type UDPAddr struct {
+    IP   net.IP
+    Port int
+}
+```
+- Ye basically ek postal address jaisa hota hai — “yaha par bhejo”.
+
+**conn, _ := net.ListenUDP("udp", addr)**
+- Ye ek UDP socket kholta hai aur usse addr pe bind karta hai
+- Yani ab ye address 0.0.0.0:9000 pe koi bhi message bheje, ye conn usse receive karega.
+
+- Return karta hai *net.UDPConn, jise hum use karte hain ReadFromUDP() aur WriteToUDP() ke liye.
+
+```go
+buffer := make([]byte, 1024)
+n, clientAddr, _ := conn.ReadFromUDP(buffer)
+fmt.Println("Got:", string(buffer[:n]))
+
+```
+- Ye line wait karegi jab tak koi client message nahi bhejta.
+
+- ReadFromUDP() do cheezein return karta hai:
+
+- Data (bytes) — message jo aaya.
+
+- Client address (clientAddr) — kisne bheja.
+
+- Ye zaroori hai, kyunki UDP me koi connection nahi hota, to har baar hume pata lagana padta hai kisne bheja.
+
+```go
+conn.WriteToUDP([]byte("Hello UDP Client"), clientAddr)
+```
+- Ab hum reply bhejte hain usi client ko jiska address humne receive kiya tha.
+
+- Agar 10 alag clients message bhej rahe ho, to har ek ka apna clientAddr alag hoga.
+
+####  Client Side
+```go
+serverAddr, _ := net.ResolveUDPAddr("udp", "127.0.0.1:9000")
+
+```
+- Client ke liye ye “server ke gate ka address” hai jaha message bhejna hai.
+
+- "127.0.0.1" → local machine
+
+- :9000 → port number
+
+```go
+conn, _ := net.DialUDP("udp", nil, serverAddr)
+```
+- Client ka ek temporary socket ban jata hai (system random port assign karta hai).
+
+- "nil" ka matlab — “client apna address system se auto le le.”
+
+- Iske baad conn se hum directly Write() aur Read() kar sakte hain.
+
+```go
+conn.Write([]byte("Ping from client"))
+buffer := make([]byte, 1024)
+n, _, _ := conn.ReadFromUDP(buffer)
+fmt.Println("Server says:", string(buffer[:n]))
+conn.Close()
+
+```
+- Client ne ek datagram (packet) bheja.
+
+- Fir ReadFromUDP() wait karta hai jab tak server reply nahi bhejta.
+
+- Fir connection close kar diya — simple one-shot exchange.
+
+
+### UDP ke Go Objects
+| Concept             | Variable     | Type           | Purpose                                 |
+| ------------------- | ------------ | -------------- | --------------------------------------- |
+| **Socket (Server)** | `conn`       | `*net.UDPConn` | Listens for incoming datagrams          |
+| **Address**         | `addr`       | `*net.UDPAddr` | Holds IP + Port info                    |
+| **Client Address**  | `clientAddr` | `*net.UDPAddr` | Identifies sender (since no connection) |
+
+
+### Difference from TCP in Go
+| Step          | TCP (Go) Example                | UDP (Go) Example                |
+| ------------- | ------------------------------- | ------------------------------- |
+| Create Socket | `net.Listen("tcp", ":9000")`    | `net.ListenUDP("udp", addr)`    |
+| Connection    | `listener.Accept()` (handshake) | ❌ No connection                 |
+| Send          | `conn.Write([]byte("msg"))`     | `conn.WriteToUDP([]byte, addr)` |
+| Receive       | `conn.Read(buffer)`             | `conn.ReadFromUDP(buffer)`      |
+| Close         | `conn.Close()`                  | `conn.Close()`                  |
+
+### Real-world Analogy
+| Real-world Example | Protocol | Description                                |
+| ------------------ | -------- | ------------------------------------------ |
+| 📞 **Phone call**  | TCP      | Connection-based, both sides talk reliably |
+| 📬 **Postcard**    | UDP      | Send once, no delivery guarantee           |
+
+### Blocking in UDP (Go)
+
+| Function             | Blocking?  | Until What Happens                |
+| -------------------- | ---------- | --------------------------------- |
+| `net.ListenUDP()`    | ❌          | Creates socket, returns instantly |
+| `conn.ReadFromUDP()` | ✅          | Waits for datagram to arrive      |
+| `conn.WriteToUDP()`  | ⚠️ Usually | Waits until data sent to network  |
+| `conn.Close()`       | ❌          | Closes socket immediately         |
+
 
 
 ## Compiled
