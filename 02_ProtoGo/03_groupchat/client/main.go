@@ -43,7 +43,7 @@ func main() {
 			continue
 		}
 
-		_, err = conn.Write([]byte(text))
+		_, err = netConnServer.Write([]byte(text))
 		if err != nil {
 			log.Println("Error sending message:", err)
 		}
