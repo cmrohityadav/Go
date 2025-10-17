@@ -86,6 +86,10 @@ go get <package_name>
 - It does not handle versioning.
 - This command fetches the package and its dependencies (if any)
 
+## To Build the binary
+```bash
+go build -o anyBinaryName main.go
+```
 
 ## Primitve Data type
 - int, float64, byte, string, rune & bool
