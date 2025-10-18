@@ -103,6 +103,31 @@ go build -o anyBinaryName main.go
 | **string**| `"hi"`  | Immutable sequence of bytes (UTF-8 encoded text)                |
 | **bool**  | `true`  | Boolean logic (`true` or `false`)                               |
 
+- Zero value for `int` = `0` 
+- Zero value for `bool` = `false`
+- Zero value for `string`=`""`
+
+### int
+- int8
+
+- int16
+
+- int32
+
+- int64
+
+### uint
+
+### byte
+- alias for int32
+### rune
+- alias for int32
+### uint
+- either 32 or 64 bits dependent on the system architecture
+### int
+- either 32 or 64 bits dependent on the system architecture
+
+
 ## Variable
 
 ```go
