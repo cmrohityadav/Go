@@ -1769,7 +1769,7 @@ mathutils.Square(4)   // parent package
 any.Cube(4)           // nested package
 
 ```
-## HTTP
+## HTTP Server
 
 ### All possible handler registration methods
 ```go
@@ -1855,6 +1855,28 @@ func main() {
 
 
 ```
+
+## HTTP Client
+- HTTP stands for Hypertext Transfer Protocol
+- It is a layer 7 protocol of the OSI network model
+- The net/http package export default HTTP Client
+
+| Function / Method              | Short Example                                                       | Kya karta hai (use)                                                            | Short Signature                                                        | Package         |
+| ------------------------------ | ------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------- | --------------- |
+| `http.Get`                     | `resp, _ := http.Get("https://api.example.com")`                    | Quick GET request                                                              | `func Get(url string)`                                                 | `net/http`      |
+| `http.Post`                    | `resp, _ := http.Post(url, "application/json", bytes.NewReader(b))` | Simple POST                                                                    | `func Post(url, contentType string, body io.Reader)`                   | `net/http`      |
+| `http.NewRequest`              | `req, _ := http.NewRequest("PUT", url, bytes.NewReader(b))`         | Custom request banata hai                                                      | `func NewRequest(method, url string, body io.Reader)`                  | `net/http`      |
+| `http.NewRequestWithContext`   | `req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)`        | Context ke sath request                                                        | `func NewRequestWithContext(ctx, method, url, body)`                   | `net/http`      |
+| `req.WithContext`              | `req = req.WithContext(ctx)`                                        | Existing request me context attach karna                                       | `func (r *Request) WithContext(ctx)`                                   | `net/http`      |
+| `client.Do`                    | `resp, _ := client.Do(req)`                                         | Generic way to send request                                                    | `func (c *Client) Do(req *Request)`                                    | `net/http`      |
+| **`client := &http.Client{}`** | `client := &http.Client{Timeout: 10*time.Second}`                   | Custom client banata hai — timeout, transport, keepalive etc set karne ke liye | `type Client struct { Timeout time.Duration; Transport RoundTripper }` | `net/http`      |
+| `resp.Body.Close()`            | `defer resp.Body.Close()`                                           | Body close karna (must)                                                        | `func (rc io.ReadCloser) Close()`                                      | `io`            |
+| `json.NewDecoder`              | `json.NewDecoder(resp.Body).Decode(&out)`                           | Direct JSON decode from body                                                   | `func NewDecoder(r io.Reader)`                                         | `encoding/json` |
+| `req.Header.Set` / `Add`       | `req.Header.Set("Authorization","Bearer token")`                    | Headers set/add karna                                                          | `type Header map[string][]string`                                      | `net/http`      |
+                 |
+
+
+
 
 ## TCP
 
