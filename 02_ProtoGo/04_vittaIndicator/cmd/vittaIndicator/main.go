@@ -5,4 +5,6 @@ import "fmt"
 func main() {
 
 	fmt.Println("Welcome to Vitta Indicator");
+
+	
 }
