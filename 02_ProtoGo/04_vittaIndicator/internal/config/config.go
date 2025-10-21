@@ -38,5 +38,7 @@ func (c *Config) LoadConfig(path string) error {
 
 	defer pOsFile.Close();
 
-	json.NewDecoder(pOsFile).Decode()
+	json.NewDecoder(pOsFile).Decode(&c);
+
+	return nil;
 }
