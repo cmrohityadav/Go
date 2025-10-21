@@ -25,7 +25,7 @@ type Priceband struct {
 
 type ExchangeDetail struct {
 	URL  string  `json:"url"`
-	Time float32 `json:"time"`
+	Time string `json:"time"`
 }
 
 func (c *Config) LoadConfig(path string) error {
