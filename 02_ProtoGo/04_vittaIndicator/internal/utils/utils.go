@@ -9,28 +9,43 @@ import (
 )
 
 func ParseUrlWithPresentDate(url string) string {
-	return url
+	return url;
 }
 
 func ExtractCSVFromZip(zipPath, destDir string) {
-	r, err := zip.OpenReader(zipPath)
-	if err != nil {
-		log.Println("Failed to open zip:", err)
-		return
-	}
-	defer r.Close()
+			pZipReaderCloser,err:=zip.OpenReader(zipPath);
+			if err!=nil{
+				log.Println("Error while opening zip file :",err);
+				return;
+			}
+			
+			defer pZipReaderCloser.Close();
 
-	for _, f := range r.File {
-		if filepath.Ext(f.Name) != ".csv" {
-			continue
-		}
+			for _,fileInZip:=range pZipReaderCloser.File{
+				if filepath.Ext(fileInZip.Name)!=".csv"{
+					continue;
+				}
 
-		rc, _ := f.Open()
-		outPath := filepath.Join(destDir, f.Name)
-		outFile, _ := os.Create(outPath)
-		_, _ = io.Copy(outFile, rc)
-		rc.Close()
-		outFile.Close()
-		log.Println("Extracted CSV:", outPath)
-	}
+				pfileContentStream,err:=fileInZip.Open();
+				if err!=nil{
+					log.Println("error while reading file of zip:",err);
+				}
+
+
+				outPutPath:=filepath.Join(destDir,fileInZip.Name);
+
+				pOsFileOutPut,err:=os.Create(outPutPath);
+
+				if err!=nil{
+					log.Println("error while creating output file from zip:",err);
+				};
+				
+				io.Copy(pOsFileOutPut,pfileContentStream);
+
+				pOsFileOutPut.Close();
+				pfileContentStream.Close();
+
+				log.Printf("Extracted from zip %s to %s",zipPath,outPutPath);
+
+			}
 }
