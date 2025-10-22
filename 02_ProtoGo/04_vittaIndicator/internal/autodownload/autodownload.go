@@ -1,6 +1,7 @@
 package autodownload
 
 import (
+	
 	"io"
 	"log"
 	"net/http"
@@ -104,23 +105,27 @@ func AutoDownload(cfg config.Config) {
 
 func scheduleDownload(url, timeStr string) {
 	for {
-		now := time.Now()
-		parsedTime, err := time.Parse("15:04", timeStr)
-		if err != nil {
-			log.Println("Invalid time format:", timeStr)
-			return
+		currentTime:=time.Now();
+
+		parsedTime,err:=time.Parse("15:04",timeStr);
+		if err!=nil{
+			log.Println("Error while parsing time: ",err);
+			continue;
 		}
 
-		next := time.Date(now.Year(), now.Month(), now.Day(),
-			parsedTime.Hour(), parsedTime.Minute(), 0, 0, now.Location())
-		if next.Before(now) {
-			next = next.Add(24 * time.Hour)
+		downloadingTime:=time.Date(currentTime.Year(),currentTime.Month(),currentTime.Day(),parsedTime.Hour(),parsedTime.Minute(),0,0,currentTime.Location());
+		
+		if downloadingTime.Before(currentTime){
+			downloadingTime=downloadingTime.Add(time.Hour*24)
 		}
 
-		waitDuration := next.Sub(now);
-		log.Printf("Next download for %s in %v\n", url, waitDuration);
-		time.Sleep(waitDuration);
+		serverSleepTime:=downloadingTime.Sub(currentTime);
 
-		DownloadFile(url)
+		log.Printf("Next download scheduled at %v (in %v)\n", downloadingTime, serverSleepTime);
+
+		time.Sleep(serverSleepTime);
+
+		DownloadFile(url);
+
 	}
 }
