@@ -11,6 +11,16 @@ type Config struct {
 	Port        int         `json:"port"`
 	Bhavcopyurl Bhavcopyurl `json:"bhavcopyurl"`
 	Priceband   Priceband   `json:"priceband"`
+	Database    DBConfig    `json:"database"`
+}
+
+type DBConfig struct {
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	User     string `json:"user"`
+	Password string `json:"password"`
+	DBName   string `json:"dbname"`
+	SSLMode  string `json:"sslmode"`
 }
 
 type Bhavcopyurl struct {

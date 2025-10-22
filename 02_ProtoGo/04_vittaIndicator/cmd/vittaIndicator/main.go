@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"vittaindicator/internal/autodownload"
 	"vittaindicator/internal/config"
+	"vittaindicator/internal/database"
 )
 
 
@@ -29,6 +30,12 @@ func main() {
 
 	go func(){
 		autodownload.AutoDownload(cfg);
+
+		
+	}()
+
+	go func(){
+		database.ScheduledBulkInsert(cfg);
 	}()
 
 	quite:=make(chan os.Signal,1);
