@@ -4,7 +4,7 @@
     "bhavcopyurl":{
         "nse":{
             "url":"https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_20251017_F_0000.csv.zip",
-            "time":"00:09"
+            "time":"01:05"
 
         },
         "bse":{
@@ -16,7 +16,7 @@
     "priceband":{
         "nse":{
             "url":"https://nsearchives.nseindia.com/content/equities/sec_list_17102025.csv",
-            "time":"13:30"
+            "time":"01:05"
 
         },
         "bse":{

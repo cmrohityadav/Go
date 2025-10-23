@@ -38,3 +38,11 @@ type Bhavcopy struct {
 	Rsvd3               string
 	Rsvd4               string
 }
+
+type PriceBand struct {
+	Symbol  string
+	Series  string
+	Name    string
+	Band    int
+	Remarks string
+}
