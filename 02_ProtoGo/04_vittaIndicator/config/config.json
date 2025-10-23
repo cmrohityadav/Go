@@ -4,7 +4,7 @@
     "bhavcopyurl":{
         "nse":{
             "url":"https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_20251017_F_0000.csv.zip",
-            "time":"00:23"
+            "time":"00:09"
 
         },
         "bse":{
@@ -25,12 +25,12 @@
         }
     },
     "database":{
-        "host": "",
+        "host": "localhost",
         "port": 5432,
         "user": "postgres",
-        "password": "",
+        "password": "123456",
         "dbname": "postgres",
-        "sslmode": "require"
+        "sslmode": "disable"
     }
  
 }

@@ -7,7 +7,7 @@ import (
 )
 
 type Config struct {
-	ServerIp    string         `json:"serverip"`
+	ServerIp    string      `json:"serverip"`
 	Port        int         `json:"port"`
 	Bhavcopyurl Bhavcopyurl `json:"bhavcopyurl"`
 	Priceband   Priceband   `json:"priceband"`
