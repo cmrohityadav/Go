@@ -1,15 +1,26 @@
 # Go
+- Golang is a high-level programming language. It is a well-established language used for a wide range of programming needs
+- Robert Griesemer, Rob Pike, and Ken Thompson are the creator of Golang
+- Fast compilation and execution
+- Readability
+- General-purpose language
+- Static Typing
+- Does not impose Object-Oriented Design
+- Concurrency
+- Great garbage collection
+- Language of Cloud
 
 ## GoGyanYatra
 
 # [GoPathshala]
 
 ## Content
-
+- [Environment](#environment)
 - [Start Project](#start-project-in-go-create-a-module)
-- [File Operations](#file-operations)
-- [Primitive Data Types](#primitive-data-types)
 - [Variables](#variables)
+- [Primitive Data Types](#primitive-data-types)
+- [File Operations](#file-operations)
+
 - [Constants](#constants)
 - [Pointers](#pointers)
 - [Conditionals](#conditionals)
@@ -33,6 +44,24 @@
 - [Missing Features](#missing-features)
 - [Running Go Code](#running-go-code)
 - [Memory Management](#memory-management)
+
+## Environment
+### GOROOT – Go ka installation location
+- Ye wo folder hai jahan Go language khud installed hoti hai.
+- Yahan standard library aur compiler tools rehte hain.
+- Ye automatically set hota hai jab Go install karte ho.
+- Windows → C:\Go
+- Linux/macOS → /usr/local/go
+
+- Tumhe ise change nahi karna chahiye.
+
+### GOPATH
+- Project kahin bhi ho sakta hai (D drive, Desktop, etc.)
+- `go.mod` aur `go.sum` ke through dependencies ka version control hota hai
+- GOPATH ab “optional” ho gaya hai
+- Project ka location → Aap decide karte ho, Go ko `GOPATH/src` me rakhne ki zarurat nahi.
+- Dependencies → Go module cache me save karta hai (`$GOPATH/pkg/mod`)
+- Binaries → Agar aap go install chalate ho, wo default `GOPATH/bin` me save hoti hai.
 
 ## Start project in Go: Create a Module
 
@@ -86,10 +115,114 @@ go get <package_name>
 - It does not handle versioning.
 - This command fetches the package and its dependencies (if any)
 
+## First Programm
+- main function Go program ka entry point hai
+```go
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    fmt.Println("Hello, Go World!")
+}
+```
+
 ## To Build the binary
 ```bash
 go build -o anyBinaryName main.go
 ```
+
+## Variable
+- A variable is the name of an allocated, reserved space in memory
+
+### Valid and Invalid
+```bash
+# Valid Identifiers
+
+Xyz
+val2
+val_22
+_val22
+_VAL234
+vAL123
+Val_23_ABC
+
+# Invalid Identifiers
+22val
+for
+int
+var
+continue
+string
+
+
+```
+
+```go
+
+// Explicit
+var name string="rohit";
+
+
+// Implicit type [Type inference (Go infers the type)]
+var website = "cmrohityadav.in";
+
+// No var style
+// Short declaration (only inside functions)
+numberOfUser := 30000;
+
+
+```
+### Single Variable Declaration Without Initialization
+```go
+var <variable_name> <type>
+
+var val_1 int
+var val_2 float32
+```
+### Single Variable Declaration With Initialization
+```go
+var <variable_name> <type> = {value}
+
+var val_1 int = 10
+var val_2 float32 = 20
+```
+
+### Multiple Variable Declarations Without Initialization
+```go
+var <variable_name1>, <variable_name2>......, <variable_nameN> <type> 
+
+var val_1, val_2, val_3 int
+```
+### Multiple Variable Declarations With Initialization
+```go
+var <variable_name1>, <variable_name2>......, <variable_nameN> <type> = {value1}, {value2}...., {valueN}
+
+var val_1, val_2, val_3 int = 10, 11, 12
+
+```
+###  Declare Variables of Multiple Types
+```go
+var (
+<variable_name1> <type> = {value1}
+<variable_name2> <type> = {value2}
+<variable_name3> <type> = {value3}
+.
+.
+<variable_nameN> <type> = {valueN}
+)
+
+
+var (
+		val_1   int = 10
+		message string
+		val_2   int = 20
+	)
+
+```
+
 
 ## Primitve Data type
 - int, float64, byte, string, rune & bool
@@ -127,21 +260,118 @@ go build -o anyBinaryName main.go
 ### int
 - either 32 or 64 bits dependent on the system architecture
 
+## Go Memory Allocation
+### Primitive Types (int, float, bool, etc.)
+```go
+var rollno int
+```
+- Memory allocated on stack (usually).
 
-## Variable
+- Default value = 0.
+
+- Sometimes compiler may escape it to heap if needed (e.g., returned from function).
 
 ```go
+var rollno int = 10
+```
+- Memory allocated on stack (or heap if escape occurs).
 
-// Explicit
-var name string="rohit";
+- Value initialized = 10
+- Rule: Primitive types always get default/assigned value
+
+### Reference Types (map, slice, channel)
+```go
+var mymap map[int]string
+
+```
+- Declaration allocates header only (stack or heap).
+
+- Actual map data not allocated yet → value is nil.
+
+- Trying to use it (e.g., mymap[1] = "a") panics
+
+```go
+var mymap = make(map[int]string)
+
+```
+- `make` allocates actual data structure in heap.
+
+- Header still exists on stack or heap, depending on escape analysis.
+
+- Now you can safely store key-value pairs.
 
 
-// Implicit type [Type inference (Go infers the type)]
-var website = "cmrohityadav.in";
+| Type    | Declaration                | Header Memory             | Data Memory        | Default Value | Usable? |
+| ------- | -------------------------- | ------------------------- | ------------------ | ------------- | ------- |
+| int     | `var x int`                | Allocated (stack or heap) | Allocated          | 0             | ✅       |
+| float64 | `var f float64`            | Allocated (stack or heap) | Allocated          | 0.0           | ✅       |
+| bool    | `var b bool`               | Allocated (stack or heap) | Allocated          | false         | ✅       |
+| string  | `var s string`             | Allocated (stack or heap) | Heap when assigned | ""            | ✅       |
+| map     | `var m map[K]V`            | Allocated (stack or heap) | Not allocated      | nil           | ❌       |
+| map     | `var m = make(map[K]V)`    | Allocated (stack or heap) | Heap allocated     | ready         | ✅       |
+| slice   | `var s []T`                | Allocated (stack or heap) | Not allocated      | nil           | ❌       |
+| slice   | `var s = make([]T, n)`     | Allocated (stack or heap) | Heap allocated     | ready         | ✅       |
+| channel | `var ch chan T`            | Allocated (stack or heap) | Not allocated      | nil           | ❌       |
+| channel | `var ch = make(chan T, n)` | Allocated (stack or heap) | Heap allocated     | ready         | ✅       |
+| pointer | `var p *T`                 | Allocated (stack or heap) | Not allocated      | nil           | ❌       |
 
-// No var style
-// Short declaration (only inside functions)
-numberOfUser := 30000;
+
+### Go new Keyword
+- `new` is a built-in Go function used to allocate memory for any type (primitive, struct, array, etc.).
+- It always allocates zero-initialized memory.
+- Returns a pointer to the allocated memory (*T).
+- Important: new does not call any constructor. Only memory allocation and zero-initialization happen
+```go
+p := new(Type)
+```
+
+| Type              | Zero Value          |
+| ----------------- | ------------------- |
+| int, int32, int64 | 0                   |
+| float32, float64  | 0.0                 |
+| bool              | false               |
+| pointer           | nil                 |
+| struct            | all fields zeroed   |
+| array             | all elements zeroed |
+
+#### Why new is not normally used for channel, map, slice
+- Channel, map, and slice are reference types.
+- new only allocates memory for a pointer/header, not the underlying data.
+- Using new for these types creates a pointer to a nil reference → not ready to use.
+- Sirf header/pointer memory allocate hoti hai → zero-initialized/zero value (nil)
+- Actual data structure allocate nahi hoti → cannot use yet
+```go
+// slice
+s := new([]int) // type = *[]int
+fmt.Println(*s) // nil
+(*s)[0] = 10    // ❌ panic: index out of range
+
+// Header is allocated, but backing array not allocated.
+
+s := make([]int, 5) // allocates header + backing array
+s[0] = 10           // ✅ works
+
+
+
+// map
+
+m := new(map[int]string) // type = *map[int]string
+fmt.Println(*m)          // nil
+(*m)[1] = "a"            // ❌ panic: assignment to entry in nil map
+
+
+m := make(map[int]string) // allocates map data
+m[1] = "a"               // ✅ works
+
+
+
+//channel
+ch := new(chan int) // type = *chan int
+*ch <- 5           // ❌ panic: send on nil channel
+
+
+ch := make(chan int, 10) // allocates channel buffer
+ch <- 5                  // ✅ works
 
 
 ```
@@ -1769,6 +1999,40 @@ mathutils.Square(4)   // parent package
 any.Cube(4)           // nested package
 
 ```
+
+### Function Naming Rules Across Packages
+#### Same package me
+- Ek hi package me same name ka function allowed nahi hai
+#### Different packages me
+- Alag packages me same name ka function allowed hai
+- Is case me package name se distinguish hota hai
+```go
+package auth
+func Login() {}
+
+package users
+func Login() {}
+
+// Usage
+auth.Login()   // auth package ka
+users.Login()  // users package ka
+```
+
+####  2 alag packages, same naam ke package aur same naam ke function
+- Maan lijiye aapne do alag sources se packages install kiye, dono ka package name utils hai
+- alias package name
+```go
+import (
+    utils1 "project/pkg1/utils"
+    utils2 "project/pkg2/utils"
+)
+
+func main() {
+    utils1.Hello() // prints "Hello from pkg1"
+    utils2.Hello() // prints "Hello from pkg2"
+}
+```
+
 ## HTTP Server
 
 ### All possible handler registration methods
