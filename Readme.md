@@ -20,6 +20,8 @@
 - [Variables](#variables)
 - [Primitive Data Types](#primitive-data-types)
 - [Go Memory Allocation](#go-memory-allocation)
+- [Constant](#Constant)
+- [Pointers](#Pointers)
 
 
 
@@ -264,6 +266,7 @@ var (
 ### int
 - either 32 or 64 bits dependent on the system architecture
 
+- We use `unsafe.Sizeof(variable)` to Check Size of Variable, it return in `Bytes`
 ## Go Memory Allocation
 ### Primitive Types (int, float, bool, etc.)
 ```go
@@ -482,7 +485,6 @@ C++	void f(int &num) → call with f(x)
 C	void f(int *num) → call with f(&x)
 Go	func f(num *int) → call with f(&x)
 ```
-
 
 
 ## Conditionals
