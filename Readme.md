@@ -22,6 +22,8 @@
 - [Go Memory Allocation](#go-memory-allocation)
 - [Constant](#Constant)
 - [Pointers](#Pointers)
+- [Conditionals](#Conditionals)
+- [Switch](#Switch)
 
 
 
@@ -499,7 +501,7 @@ if age>=18 {
 ```
 - Condition must evaluate to a boolean (true or false).
 
-- Curly braces {} are mandatory even for a single line of code.
+- Curly braces `{}` are `mandatory` even for a single line of code.
 
 - No parentheses around the condition
 
@@ -519,7 +521,7 @@ if score>=90 {
 }
 
 ```
-- else if handles multiple conditions sequentially
+- `else if` handles multiple conditions sequentially
 
 ### Short Statement in if
 
@@ -555,7 +557,7 @@ day := "Tuesday"
     }
 ```
 - default is optional but recommended
-- No break needed: Go automatically stops after the first match
+- `No break needed`: Go automatically stops after the first match
 
 ### Multiple Cases in One Line
 ```go
@@ -608,9 +610,6 @@ case 3:
 ```
 - fallthrough forces execution to the next case, even if it doesn’t match.
 - Use carefully—most of the time, Go’s default “break after case” is safer
-
-
-
 
 
 ## Loops
