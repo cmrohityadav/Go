@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 	"vittaindicator/internal/config"
 	"vittaindicator/internal/types"
@@ -50,7 +51,7 @@ func PriceBandScheduler(cfg config.Config) {
 		}
 
 		sCurrentWD, _ := os.Getwd()
-		csvPath := filepath.Join(sCurrentWD, "storage", "download", "sec_list_17102025.csv")
+		csvPath := filepath.Join(sCurrentWD, "storage", "download", "sec_list_31102025.csv")
 
 
 		log.Println("[PriceBandScheduler] Running PriceBandInsert...")
@@ -103,14 +104,26 @@ func PriceBandInsert(db *sql.DB, csvPath string) error {
 	return nil
 }
 
+func cleanSymbol(s string) string {
+    s = strings.TrimSpace(s)            // Remove leading/trailing spaces
+    s = strings.Trim(s, "\"")           // Remove double quotes
+    s = strings.ToUpper(s)              // Uppercase for uniformity
+    return s
+}
+
 func parsePriceBandRow(rec []string) types.PriceBand {
-	band, _ := strconv.Atoi(rec[3])
+	band := 0
+	if rec[3] != "" && rec[3] != "-" && rec[3] != "No Band" {
+		if val, err := strconv.Atoi(rec[3]); err == nil {
+			band = val
+		}
+	}
 	return types.PriceBand{
-		Symbol:  rec[0],
-		Series:  rec[1],
-		Name:    rec[2],
-		Band:    band,
-		Remarks: rec[4],
+		Symbol:  cleanSymbol(rec[0]),
+        Series:  strings.TrimSpace(rec[1]),
+        Name:    strings.TrimSpace(rec[2]),
+        Band:    band,
+        Remarks: strings.TrimSpace(rec[4]),
 	}
 }
 
