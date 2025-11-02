@@ -655,11 +655,12 @@ for index, value := range nums {
     fmt.Println("Index:", index, "Value:", value)
 }
 ```
+
 ## Arrays
 - An array is a fixed-size, ordered collection of elements all of the same type
 - Define size (mandatory in Go)
 ```go
-var arr[4]int
+var arr [4]int
 // array length
 fmt.Println(len(arr));
 
@@ -671,7 +672,7 @@ fmt.Println(arr);
 
 
 
-var vals[4]bool;
+var vals [4]bool;
 vals[2]=true;
 fmt.Println(vals);
 // [false false true false]
@@ -696,7 +697,7 @@ nums:=[]string{"rohit","yadav"};
 
 
 
-var rollNo[]int;
+var rollNo []int;
 // Above uninitialized slice is nill
 
 var prices=make([]int,2);
@@ -704,11 +705,6 @@ var prices=make([]int,2);
 
 fmt.Println(cap(prices));
 // capacity -> maximium numbers of elements can fit
-
-
-
-
-
 
 ```
 
