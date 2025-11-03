@@ -68,7 +68,7 @@ func BhavcopyScheduler(cfg config.Config) {
 			log.Println("Unable to get Working directory:", err)
 			return
 		}
-		sBhavcopyPath := filepath.Join(sCurrentWD, "storage", "download", "BhavCopy_NSE_CM_0_0_0_20251031_F_0000.csv")
+		sBhavcopyPath := filepath.Join(sCurrentWD, "storage", "download", "BhavCopy_NSE_CM_0_0_0_20251103_F_0000.csv")
 
 		if err := BhavCopyInsert(db, sBhavcopyPath); err != nil {
 			log.Println("BhavCopyInsert failed:", err)

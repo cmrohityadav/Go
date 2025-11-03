@@ -51,7 +51,7 @@ func PriceBandScheduler(cfg config.Config) {
 		}
 
 		sCurrentWD, _ := os.Getwd()
-		csvPath := filepath.Join(sCurrentWD, "storage", "download", "sec_list_31102025.csv")
+		csvPath := filepath.Join(sCurrentWD, "storage", "download", "sec_list_03112025.csv")
 
 
 		log.Println("[PriceBandScheduler] Running PriceBandInsert...")
