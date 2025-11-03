@@ -1,0 +1,36 @@
+{
+    "serverip":"localhost",
+    "port":8000,
+    "bhavcopyurl":{
+        "nse":{
+            "url":"https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_%yyyy%mm%dd_F_0000.csv.zip",
+            "time":"23:30"
+
+        },
+        "bse":{
+            "url":"bse.in",
+            "time":"02.42"
+        }
+
+    },
+    "priceband":{
+        "nse":{
+            "url":"https://nsearchives.nseindia.com/content/equities/sec_list_%dd%mm%yyyy.csv",
+            "time":"23:30"
+
+        },
+        "bse":{
+            "url":"bse.in",
+            "time":"20:00"
+        }
+    },
+    "database":{
+        "host": "localhost",
+        "port": 5432,
+        "user": "postgres",
+        "password": "123456",
+        "dbname": "postgres",
+        "sslmode": "disable"
+    }
+ 
+}
