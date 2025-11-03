@@ -3,8 +3,8 @@
     "port":8000,
     "bhavcopyurl":{
         "nse":{
-            "url":"https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_20251103_F_0000.csv.zip",
-            "time":"21:42"
+            "url":"https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_%yyyy%mm%dd_F_0000.csv.zip",
+            "time":"23:30"
 
         },
         "bse":{
@@ -15,8 +15,8 @@
     },
     "priceband":{
         "nse":{
-            "url":"https://nsearchives.nseindia.com/content/equities/sec_list_03112025.csv",
-            "time":"21:42"
+            "url":"https://nsearchives.nseindia.com/content/equities/sec_list_%dd%mm%yyyy.csv",
+            "time":"23:30"
 
         },
         "bse":{

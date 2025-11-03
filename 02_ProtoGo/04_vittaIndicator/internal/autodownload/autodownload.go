@@ -124,8 +124,8 @@ func scheduleDownload(url, timeStr string) {
 		log.Printf("Next download scheduled at %v (in %v)\n", downloadingTime, serverSleepTime);
 
 		time.Sleep(serverSleepTime);
-
-		DownloadFile(url);
+		formatedUrlWithDate:=utils.ParseFileNameWithDate(url,&downloadingTime)
+		DownloadFile(formatedUrlWithDate);
 
 	}
 }

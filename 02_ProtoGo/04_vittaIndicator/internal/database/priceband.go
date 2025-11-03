@@ -12,6 +12,7 @@ import (
 	"time"
 	"vittaindicator/internal/config"
 	"vittaindicator/internal/types"
+	"vittaindicator/internal/utils"
 )
 
 func PriceBandScheduler(cfg config.Config) {
@@ -50,14 +51,18 @@ func PriceBandScheduler(cfg config.Config) {
 			log.Println(err)
 		}
 
-		sCurrentWD, _ := os.Getwd()
-		csvPath := filepath.Join(sCurrentWD, "storage", "download", "sec_list_03112025.csv")
+		sCurrentWD, _ := os.Getwd();
+		
+		formatedUrl:=filepath.Base(cfg.Priceband.NSE.URL);
+		formatedUrl=utils.ParseFileNameWithDate(formatedUrl,&nextTime);
+		sBhavcopyPath := filepath.Join(sCurrentWD, "storage", "download",formatedUrl)
+		
 
 
 		log.Println("[PriceBandScheduler] Running PriceBandInsert...")
 
 
-		if err := PriceBandInsert(db, csvPath); err != nil {
+		if err := PriceBandInsert(db, sBhavcopyPath); err != nil {
 			log.Println("PriceBandInsert failed:", err)
 		} else {
 			log.Println("PriceBandInsert completed successfully.")

@@ -2,13 +2,24 @@ package utils
 
 import (
 	"archive/zip"
+	"fmt"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
+	"time"
 )
 
-func ParseUrlWithPresentDate(url string) string {
+func ParseFileNameWithDate(url string,time *time.Time) string {
+	dd:=fmt.Sprintf("%02d",time.Day());
+	mm:=fmt.Sprintf("%02d",time.Month());
+	yyyy:=fmt.Sprintf("%04d",time.Year());
+
+	url=strings.ReplaceAll(url,"%dd",dd);
+	url=strings.ReplaceAll(url,"%mm",mm);
+	url=strings.ReplaceAll(url,"%yyyy",yyyy);
+
 	return url;
 }
 
