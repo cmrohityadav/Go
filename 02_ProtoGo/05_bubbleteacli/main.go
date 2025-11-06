@@ -5,6 +5,7 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type model struct {
@@ -16,11 +17,31 @@ func (m model) Init()tea.Cmd{
 }
 
 func(m model) Update(msg tea.Msg)(tea.Model,tea.Cmd){
+	switch msg:=msg.(type){
+
+	// kya key press hui agar hui to , key ko map kro
+	case tea.KeyMsg:
+		
+		switch msg.String(){
+
+		case "ctrl+c":
+			fmt.Println("user clicked : ",msg.String());
+			return m,tea.Quit;
+		}
+
+	}
 	return m,nil;
+
+
 }
 
 func (m model) View() string{
-	return m.msg;
+	// color ansi or hex
+	style:=lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("16")).Background(lipgloss.Color("205"))
+
+	welcome:=style.Render("Welcome to Easy Trading")
+
+	return welcome;
 }
 
 
@@ -37,5 +58,4 @@ func main() {
 		fmt.Printf("Alas, There's been an error: %v",err);
 		os.Exit(1);
 	}
-	fmt.Println("Welcome Totion using Bubble Tea")
 }
