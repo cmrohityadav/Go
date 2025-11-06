@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Vitta Indicator",
+      "type": "go",
+      "request": "launch",
+      "program": "${workspaceFolder}/cmd/vittaIndicator",
+      "cwd": "${workspaceFolder}",
+      "env": {},
+      "args": []
+    }
+  ]
+}
