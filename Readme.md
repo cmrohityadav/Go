@@ -171,6 +171,7 @@ var website = "cmrohityadav.in";
 
 // No var style
 // Short declaration (only inside functions)
+// := walrus operator
 numberOfUser := 30000;
 
 
@@ -259,6 +260,22 @@ var (
 - either 32 or 64 bits dependent on the system architecture
 ### int
 - either 32 or 64 bits dependent on the system architecture
+## Go Format Specifiers
+
+| Specifier | Description                              | Example                     | Output         |
+| --------- | ---------------------------------------- | --------------------------- | -------------- |
+| `%v`      | Default format (prints the value)        | `fmt.Printf("%v", 42)`      | `42`           |
+| `%T`      | Prints the data **type** of the variable | `fmt.Printf("%T", 42)`      | `int`          |
+| `%s`      | String                                   | `fmt.Printf("%s", "Rohit")` | `Rohit`        |
+| `%d`      | Integer (base 10)                        | `fmt.Printf("%d", 42)`      | `42`           |
+| `%f`      | Floating-point (default precision 6)     | `fmt.Printf("%f", 99.5)`    | `99.500000`    |
+| `%.2f`    | Float with **2 decimal places**          | `fmt.Printf("%.2f", 99.5)`  | `99.50`        |
+| `%c`      | Character (rune → ASCII)                 | `fmt.Printf("%c", 65)`      | `A`            |
+| `%t`      | Boolean (`true`/`false`)                 | `fmt.Printf("%t", true)`    | `true`         |
+| `%p`      | Pointer address (hex)                    | `fmt.Printf("%p", &x)`      | `0xc0000140a8` |
+
+
+
 
 ## Go Memory Allocation
 ### Primitive Types (int, float, bool, etc.)
