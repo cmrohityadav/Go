@@ -19,6 +19,14 @@
 - [Start Project](#start-project-in-go-create-a-module)
 - [Variables](#variables)
 - [Primitive Data Types](#primitive-data-types)
+- [Go Memory Allocation](#go-memory-allocation)
+- [Constant](#Constant)
+- [Pointers](#Pointers)
+- [Conditionals](#Conditionals)
+- [Switch](#Switch)
+
+
+
 - [File Operations](#file-operations)
 
 - [Constants](#constants)
@@ -277,47 +285,55 @@ var (
 
 
 
+- We use `unsafe.Sizeof(variable)` to Check Size of Variable, it return in `Bytes`
 ## Go Memory Allocation
 ### Primitive Types (int, float, bool, etc.)
 ```go
 var rollno int
 ```
 - Memory allocated on stack (usually).
-
 - Default value = 0.
-
 - Sometimes compiler may escape it to heap if needed (e.g., returned from function).
 
 ```go
 var rollno int = 10
 ```
 - Memory allocated on stack (or heap if escape occurs).
-
 - Value initialized = 10
 - Rule: Primitive types always get default/assigned value
 
 ### Reference Types (map, slice, channel)
 ```go
 var mymap map[int]string
-
 ```
 - Declaration allocates header only (stack or heap).
-
 - Actual map data not allocated yet → value is nil.
-
 - Trying to use it (e.g., mymap[1] = "a") panics
 
 ```go
 var mymap = make(map[int]string)
-
 ```
 - `make` allocates actual data structure in heap.
-
 - Header still exists on stack or heap, depending on escape analysis.
-
 - Now you can safely store key-value pairs.
+- `make(T, size, capacity)`
+- T → type hota hai (sirf slice, map, ya channel ke liye valid hai).
+- size →
+    - Slice ke liye →initial length hota hai.
+    - Channel ke liye → agar aap buffer banana chahte ho to ye uska buffer size hota hai.
+    - Map ke liye → ye optional hint hai (kitni roughly entries expect karte ho).
+- capacity →
+    - Ye sirf slice ke liye hota hai (optional hai).
+    - Agar specify nahi karte, to capacity = size.
+    - Map aur channel ke liye ye parameter use nahi hota
 
-
+| Type    | Allowed Parameters            | Meaning of Parameters                            |
+| ------- | ----------------------------- | ------------------------------------------------ |
+| Slice   | `make([]T, length, capacity)` | Create slice with length & optional capacity     |
+| Map     | `make(map[K]V, hint)`         | Create map with initial capacity hint            |
+| Channel | `make(chan T, bufferSize)`    | Create channel with buffer size (0 = unbuffered) |
+  
+### How Go Allocates and Initializes Different Types
 | Type    | Declaration                | Header Memory             | Data Memory        | Default Value | Usable? |
 | ------- | -------------------------- | ------------------------- | ------------------ | ------------- | ------- |
 | int     | `var x int`                | Allocated (stack or heap) | Allocated          | 0             | ✅       |
@@ -490,7 +506,6 @@ Go	func f(num *int) → call with f(&x)
 ```
 
 
-
 ## Conditionals
 
 ### Basic if Statement
@@ -503,7 +518,7 @@ if age>=18 {
 ```
 - Condition must evaluate to a boolean (true or false).
 
-- Curly braces {} are mandatory even for a single line of code.
+- Curly braces `{}` are `mandatory` even for a single line of code.
 
 - No parentheses around the condition
 
@@ -523,7 +538,7 @@ if score>=90 {
 }
 
 ```
-- else if handles multiple conditions sequentially
+- `else if` handles multiple conditions sequentially
 
 ### Short Statement in if
 
@@ -559,7 +574,7 @@ day := "Tuesday"
     }
 ```
 - default is optional but recommended
-- No break needed: Go automatically stops after the first match
+- `No break needed`: Go automatically stops after the first match
 
 ### Multiple Cases in One Line
 ```go
@@ -614,9 +629,6 @@ case 3:
 - Use carefully—most of the time, Go’s default “break after case” is safer
 
 
-
-
-
 ## Loops
 - Unlike some languages, Go has only one loop keyword: **for**
 - Everything else is just a variation
@@ -660,11 +672,12 @@ for index, value := range nums {
     fmt.Println("Index:", index, "Value:", value)
 }
 ```
+
 ## Arrays
 - An array is a fixed-size, ordered collection of elements all of the same type
 - Define size (mandatory in Go)
 ```go
-var arr[4]int
+var arr [4]int
 // array length
 fmt.Println(len(arr));
 
@@ -676,7 +689,7 @@ fmt.Println(arr);
 
 
 
-var vals[4]bool;
+var vals [4]bool;
 vals[2]=true;
 fmt.Println(vals);
 // [false false true false]
@@ -701,7 +714,7 @@ nums:=[]string{"rohit","yadav"};
 
 
 
-var rollNo[]int;
+var rollNo []int;
 // Above uninitialized slice is nill
 
 var prices=make([]int,2);
@@ -709,11 +722,6 @@ var prices=make([]int,2);
 
 fmt.Println(cap(prices));
 // capacity -> maximium numbers of elements can fit
-
-
-
-
-
 
 ```
 

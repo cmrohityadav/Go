@@ -1,5 +1,6 @@
 package main
 
+<<<<<<< HEAD
 import "fmt"
 
 func main() {
@@ -36,4 +37,14 @@ func main() {
 
 
 
+=======
+import (
+	"fmt"
+	"unsafe"
+)
+
+func main() {
+	var name uint8;
+	fmt.Println(unsafe.Sizeof(name));
+>>>>>>> 60613b61719b6b3b8ff2cd066b093e0575cde009
 }
