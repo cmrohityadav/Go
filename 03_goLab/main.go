@@ -1,19 +1,20 @@
 package main
-
 import "fmt"
+func main(){
+	var age int;
 
-func main() {
+	fmt.Print("Enter your age: ");
+	fmt.Scan(&age);
 
-	fmt.Println("hello world")
-
-	var arr [4]int;
-
-	i:=0;
-	for i<len(arr){
-		arr[i]=i;
-		i++;
-		fmt.Println("my array value at ",i,"= ",arr[i-1]);
-		fmt.Printf("\n%p",&arr)
+	if age<18{
+		fmt.Println("your age>18: ",age);
+		fmt.Println("your age>18: ",age);
+		
+	}else if age>25{
+		fmt.Println("your age>25: ",age);
+	}else if age>30{
+		fmt.Println("your age>30: ",age);
+	}else{
+		fmt.Println("your age>: ",age);
 	}
-
 }

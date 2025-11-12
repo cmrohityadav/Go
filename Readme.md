@@ -31,6 +31,7 @@
 
 - [Constants](#constants)
 - [Pointers](#pointers)
+- [Input](#Input)
 - [Conditionals](#conditionals)
 - [Switch](#switch)
 - [Loops](#loops)
@@ -286,6 +287,7 @@ var (
 
 
 - We use `unsafe.Sizeof(variable)` to Check Size of Variable, it return in `Bytes`
+
 ## Go Memory Allocation
 ### Primitive Types (int, float, bool, etc.)
 ```go
@@ -504,6 +506,36 @@ C++	void f(int &num) → call with f(x)
 C	void f(int *num) → call with f(&x)
 Go	func f(num *int) → call with f(&x)
 ```
+
+## Input
+
+### fmt.Scan
+```go
+func main() {
+	var name string
+	fmt.Print("Enter your name: ")
+	fmt.Scan(&name)
+	fmt.Println("Hello User ,", name)
+}
+```
+- fmt.Scan(&name) → reads a word from standard input (stdin)
+- &name → pointer where the value will be stored
+- Stops reading on space or newline
+- **Scan Multiple Values**
+```go
+    var mobile int;
+	var fullName string;
+
+	fmt.Print("Enter your fullname and mobile number: ");
+	fmt.Scan(&fullName, &mobile);
+
+	fmt.Printf("\n User Name: %s and Mobile Number: %d",fullName,mobile);
+
+```
+
+### fmt.Scanln
+
+### fmt.Scanf
 
 
 ## Conditionals
