@@ -17,8 +17,9 @@
 ## Content
 - [Environment](#environment)
 - [Start Project](#start-project-in-go-create-a-module)
-- [Variables](#variables)
+- [Variable](#variable)
 - [Primitive Data Types](#primitive-data-types)
+- [Go Format Specifiers](#Go-Format-Specifiers)
 - [Go Memory Allocation](#go-memory-allocation)
 - [Constant](#Constant)
 - [Pointers](#Pointers)
