@@ -1,20 +1,18 @@
 package main
+
 import "fmt"
-func main(){
-	var age int;
 
-	fmt.Print("Enter your age: ");
-	fmt.Scan(&age);
+type student struct {
+	Name   string
+	RollNo int
+}
 
-	if age<18{
-		fmt.Println("your age>18: ",age);
-		fmt.Println("your age>18: ",age);
-		
-	}else if age>25{
-		fmt.Println("your age>25: ",age);
-	}else if age>30{
-		fmt.Println("your age>30: ",age);
-	}else{
-		fmt.Println("your age>: ",age);
-	}
+func main() {
+
+	var rohit student
+	rohit.Name = "rohit c yadav"
+	rohit.RollNo = 71
+
+	fmt.Println(rohit)
+
 }
