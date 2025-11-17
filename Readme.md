@@ -1054,6 +1054,32 @@ type Person struct {
 }
 
 ``` 
+### struct Promoting
+- Embedding = Promotion
+- Always. Automatic. Compiler feature.
+- You CANNOT turn it off.
+```go
+
+p := Person{}
+p.Name = "Rohit"
+p.Age = 23
+
+
+// Promoted fields (no need p.Address.City)
+p.City = "Delhi"
+p.State = "Delhi"
+
+
+// Instead of writing:
+p.Address.City
+p.Address.State
+
+// we can write
+p.City
+p.State
+
+```
+
 ## Interfaces
 - It is just Contract
 - An interface is a type that specifies a set of method signatures—just the method names and parameters, no code
