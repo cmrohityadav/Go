@@ -9,10 +9,11 @@ type student struct {
 
 func main() {
 
-	var rohit student
-	rohit.Name = "rohit c yadav"
-	rohit.RollNo = 71
+	p:=student{"Rohit",40}
+	
 
-	fmt.Println(rohit)
+	q:=&p;
+
+	fmt.Println(q.Name,q.RollNo)
 
 }

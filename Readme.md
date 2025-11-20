@@ -39,7 +39,7 @@
 - [Arrays](#arrays)
 - [Slices](#slices)
 - [Maps](#maps)
-- [Structs](#structs)
+- [Structs](#struct)
 - [Interfaces](#interfaces)
 - [Enums](#enums)
 - [Generics](#generics)
