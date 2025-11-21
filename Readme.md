@@ -1086,6 +1086,7 @@ p.State
 - If a type (a struct, usually) has all those methods with the same signatures, it automatically satisfies the interface.
 - No keywords like “implements” are needed
 
+
 ```go
 package main
 
@@ -1130,6 +1131,57 @@ func main() {
 | Method override      | `override` keyword optional       | Bas method signature match karo              |
 | Multiple inheritance | Limited / complex                 | Easy, ek type multiple interfaces satisfy kar sakta |
 
+
+- Contract tabhi follow honge, jab Interface k sabhi methods struct me  bhi sabhi methods ho
+```go
+package main
+
+import "fmt"
+
+type Shape interface {
+	Area() float64
+	Perimeter() float64
+}
+
+type Circle struct {
+	Redius float64
+}
+
+func (c Circle) Area() float64 {
+	return 3.14 * c.Redius * c.Redius
+}
+
+func (c Circle) Perimeter() float64 {
+	return 2 * 3.14 * c.Redius
+}
+
+type Square struct {
+	Side float64
+}
+
+func (s Square) Area() float64 {
+	return s.Side * s.Side
+}
+
+func (s Square) Perimeter() float64 {
+	return 4 * s.Side
+}
+
+func main() {
+	var myShape Shape
+
+	myShape = Circle{2}
+
+	fmt.Println("Area of Circle: ",myShape.Area());
+	fmt.Println("Perimeter of Circle: ",myShape.Perimeter());
+
+	myShape=Square{2}
+	
+	fmt.Println("Area of Square: ",myShape.Area());
+	fmt.Println("Perimeter of Square: ",myShape.Perimeter());
+
+}
+```
 
 ## Enums
 - Go doesn’t have a native enum keyword like C, Java, or Rust.

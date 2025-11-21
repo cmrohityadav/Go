@@ -2,35 +2,46 @@ package main
 
 import "fmt"
 
-type Rect struct{
-	height, width int
+type Shape interface {
+	Area() float64
+	Perimeter() float64
 }
 
-// value reciever
-func (r Rect) Area()int{
-	return r.height*r.width;
+type Circle struct {
+	Redius float64
 }
 
-// pointer reciever
-func (r *Rect) Scale(factor int){
-		r.height*=factor;
-		r.width*=factor;
+func (c Circle) Area() float64 {
+	return 3.14 * c.Redius * c.Redius
+}
+
+func (c Circle) Perimeter() float64 {
+	return 2 * 3.14 * c.Redius
+}
+
+type Square struct {
+	Side float64
+}
+
+func (s Square) Area() float64 {
+	return s.Side * s.Side
+}
+
+func (s Square) Perimeter() float64 {
+	return 4 * s.Side
 }
 
 func main() {
+	var myShape Shape
 
-	var myHouse Rect;
-	myHouse.height=10;
-	myHouse.width=50;
+	myShape = Circle{2}
 
-	fmt.Println("Area of my house: ",myHouse.Area());
+	fmt.Println("Area of Circle: ",myShape.Area());
+	fmt.Println("Perimeter of Circle: ",myShape.Perimeter());
+
+	myShape=Square{2}
 	
-	myBuilding:=Rect{10,50};
-
-	fmt.Println("my building area : ",myBuilding.Area())
-	myBuilding.Scale(10);
-	fmt.Println("my building area scale : ",myBuilding.Area());
-
-
+	fmt.Println("Area of Square: ",myShape.Area());
+	fmt.Println("Perimeter of Square: ",myShape.Perimeter());
 
 }
