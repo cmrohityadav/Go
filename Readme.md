@@ -26,11 +26,7 @@
 - [Error Handling]()
 - [Conditionals](#Conditionals)
 - [Switch](#Switch)
-
-
-
 - [File Operations](#file-operations)
-
 - [Constants](#constants)
 - [Pointers](#pointers)
 - [Input](#Input)
@@ -1264,6 +1260,8 @@ func Sum[T int | float64](a, b T) T {
 - You can start thousands of them without eating much memory
 ![Concurrency vs Parallelism](./media/ConcurrencyvsParallelism.png)
 - `do not communicate by sharing memroy..,instead,share memory by communicating`
+- Multiple goroutines ko ek hi memory (variable/map/struct) par fight mat karwao.
+Instead, goroutines ke beech data pass karo (channels se), taaki shared memory ki zaroorat hi na pade.
 ## Wait Group
 ### The Problem WaitGroup Solves
 ```go
@@ -1294,10 +1292,11 @@ func main() {
 - Each goroutine “done” lowers(-) the counter
 - Wait() blocks until the counter hits zero
 ### Basic Steps
-1. Create a WaitGroup.
-2. Add the number of goroutines.
-3. Run goroutines and call Done() when finished.
-4. Wait in main until all are done
+1. Create a WaitGroup. `(var wg sync.WaitGroup)`
+2. Add the number of goroutines. `(wg.Add(1) )`
+3. Run goroutines and call Done() when finished.  `(defer wg.Done())`
+4. Wait in main until all are done `(wg.Wait()  )`
+
 
 ```go
 package main

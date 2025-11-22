@@ -1,21 +1,26 @@
 package main
 
-import "errors"
+import (
+	"fmt"
+	"sync"
+	"time"
+)
 
-func divide(a, b int) (int, error) {
-	if b == 0 {
-		return 0, errors.New("Can not divided by zero")
-	}
-
-	return a/b, nil;
-
+func goThreadFunction(name int, wg *sync.WaitGroup) {
+	defer wg.Done();
+	fmt.Println("started thread: ", name);
+	time.Sleep(time.Second*2);
+	fmt.Println("end thread: ",name);
 }
-func main() {
 
-	result,err:=divide(10,0);
-	if err!=nil{
-		println("Error: ",err.Error())
+
+func main() {
+	var wg sync.WaitGroup;
+
+	for i:= range 20{
+		wg.Add(1);
+		go goThreadFunction(i,&wg)
 	}
 
-	println("Result: ",result)
+	wg.Wait()
 }
