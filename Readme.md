@@ -23,6 +23,7 @@
 - [Go Memory Allocation](#go-memory-allocation)
 - [Constant](#Constant)
 - [Pointers](#Pointers)
+- [Error Handling]()
 - [Conditionals](#Conditionals)
 - [Switch](#Switch)
 
@@ -538,6 +539,39 @@ func main() {
 
 ### fmt.Scanf
 
+
+## Error Handling
+- Go me exceptions nahi hote (try/catch nahi hota)
+- Go me explicit error return hota hai, jisse code predictable aur safe ban jata hai
+### Basic Error Example
+```go
+package main
+
+import "errors"
+
+func divide(a, b int) (int, error) {
+	if b == 0 {
+		return 0, errors.New("Can not divided by zero")
+	}
+
+	return a/b, nil;
+
+}
+func main() {
+
+	result,err:=divide(10,0);
+	if err!=nil{
+		println("Error: ",err.Error())
+	}
+
+	println("Result: ",result)
+}
+```
+### fmt.Errorf() – Formatted + Wrapped Error (Best Practice)
+- %w original error ko wrap karta hai (error chain preserve)
+```go
+return fmt.Errorf("db scan failed: %w", err)
+```
 
 ## Conditionals
 

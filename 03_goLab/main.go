@@ -1,47 +1,21 @@
 package main
 
-import "fmt"
+import "errors"
 
-type Shape interface {
-	Area() float64
-	Perimeter() float64
+func divide(a, b int) (int, error) {
+	if b == 0 {
+		return 0, errors.New("Can not divided by zero")
+	}
+
+	return a/b, nil;
+
 }
-
-type Circle struct {
-	Redius float64
-}
-
-func (c Circle) Area() float64 {
-	return 3.14 * c.Redius * c.Redius
-}
-
-func (c Circle) Perimeter() float64 {
-	return 2 * 3.14 * c.Redius
-}
-
-type Square struct {
-	Side float64
-}
-
-func (s Square) Area() float64 {
-	return s.Side * s.Side
-}
-
-func (s Square) Perimeter() float64 {
-	return 4 * s.Side
-}
-
 func main() {
-	var myShape Shape
 
-	myShape = Circle{2}
+	result,err:=divide(10,0);
+	if err!=nil{
+		println("Error: ",err.Error())
+	}
 
-	fmt.Println("Area of Circle: ",myShape.Area());
-	fmt.Println("Perimeter of Circle: ",myShape.Perimeter());
-
-	myShape=Square{2}
-	
-	fmt.Println("Area of Square: ",myShape.Area());
-	fmt.Println("Perimeter of Square: ",myShape.Perimeter());
-
+	println("Result: ",result)
 }
