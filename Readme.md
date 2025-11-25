@@ -46,6 +46,8 @@
 - [Channels](#channels)
 - [Mutex](#mutex)
 - [Package](#package)
+- [HTTP Client](#http-client)
+- [HTTP Server](#HTTP-Server)
 - [Compiled Programs](#compiled-programs)
 - [Object-Oriented in Go](#object-oriented-in-go)
 - [Missing Features](#missing-features)
