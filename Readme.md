@@ -1568,7 +1568,7 @@ func main() {
 | ---------- | -------------------- | ------------------- |
 | Unbuffered | Until receiver ready | Until sender ready  |
 | Buffered   | When buffer full     | When buffer empty   |
-
+- Buffered Channel , reciever k end jab bhi empty hoga block ho jayega
 
 ### Channel Direction (Send-only / Receive-only)
 - Sometimes a function sirf send karega, ya sirf receive karega.
