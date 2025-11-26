@@ -2240,11 +2240,14 @@ func anyHandleFunc(w http.ResponseWriter, r *http.Request){
 func main() {
     fmt.Println("Hello");
 
+    http.HandleFunc("/anyhandlefunc",anyHandleFunc)
+    
+    http.Handle("/anyhandlerfunc",http.HandlerFunc(anyHandlerFunc)); 
     http.Handle("/anyhandler",anyHandler());
     http.Handle("/anyhandlerObject",anyHandlerObject{});
-    http.Handle("/anyhandlerfunc",http.HandlerFunc(anyHandlerFunc)); 
+    
 
-    http.HandleFunc("/anyhandlefunc",anyHandleFunc)
+    
 
     http.ListenAndServe("0.0.0.0:8080",nil);
 

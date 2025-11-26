@@ -2,25 +2,17 @@ package main
 
 import (
 	"fmt"
-	"sync"
-	"time"
+	"net/http"
 )
 
-func goThreadFunction(name int, wg *sync.WaitGroup) {
-	defer wg.Done();
-	fmt.Println("started thread: ", name);
-	time.Sleep(time.Second*2);
-	fmt.Println("end thread: ",name);
+func anyHandleFunc(res http.ResponseWriter,req *http.Request){
+	fmt.Fprintln(res,"Hello rohit")	
 }
-
-
 func main() {
-	var wg sync.WaitGroup;
+	fmt.Println("Welcome to HTTP")
+	
+	
+	http.HandleFunc("/hello",anyHandleFunc)
 
-	for i:= range 20{
-		wg.Add(1);
-		go goThreadFunction(i,&wg)
-	}
-
-	wg.Wait()
+	http.ListenAndServe("0.0.0.0:8000",nil);
 }
