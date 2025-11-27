@@ -20,6 +20,14 @@ It leverages HTTP methods to perform CRUD (Create, Read, Update, Delete) operati
 # Content
 
 ---
+
+## Terms
+
+- `Serialization` (`struct → JSON/string/binary`)
+- `Marshalling` = converting a Go struct → JSON
+- `Deserialization` (`JSON/string/binary → struct/object`)
+- `Unmarshalling` = converting JSON → Go struct
+
 ## Methods
 
 - **GET**  
