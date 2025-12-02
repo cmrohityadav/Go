@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"log"
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/lib/pq"
@@ -45,6 +47,25 @@ func main() {
 	if _,err:=db.Exec(createTable);err!=nil{
 		log.Fatal("failed to create the table");
 	}
+
+	e.POST("/users",func(c echo.Context)error{
+		u:=new(User);
+		
+		if err:=c.Bind(u);err!=nil{
+			return c.JSON(400,map[string]string{"error":"Invalid request body"})
+		}
+
+		var id int;
+		err:=db.QueryRow("Insert into users(name,email,age)VALUES($1,$2,$3) Returning id",u.Name,u.Email,u.Age).Scan(&id);
+
+		if err!=nil{
+			return c.JSON(500,map[string]string{"error":err.Error()});
+		}
+
+		u.ID=id;
+
+		return c.JSON(http.StatusCreated,u);
+	})
 
 	e.Logger.Fatal(e.Start(":8000"));
 
