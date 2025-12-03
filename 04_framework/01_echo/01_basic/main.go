@@ -67,6 +67,25 @@ func main() {
 		return c.JSON(http.StatusCreated,u);
 	})
 
+	e.GET("users",func(c echo.Context) error {
+		rows,err:=db.Query("SELECT id,name,email,age FROM users");
+		if err!=nil{
+			return c.JSON(500,map[string]string{"error":err.Error()});
+		}
+		defer rows.Close();
+
+		var users []User;
+
+		for rows.Next(){
+			var user User;
+			if err:=rows.Scan(&user.ID,&user.Name,&user.Email,&user.Age); err!=nil{
+				return c.JSON(500,map[string]string{"error":err.Error()});
+			}
+			users=append(users,user);
+		}
+		return c.JSON(http.StatusOK,users);
+	})
+
 	e.Logger.Fatal(e.Start(":8000"));
 
 }
