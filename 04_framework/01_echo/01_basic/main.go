@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -85,6 +86,26 @@ func main() {
 		}
 		return c.JSON(http.StatusOK,users);
 	})
+
+	e.GET("users/:id",func(c echo.Context) error {
+		id:=c.Param("id");
+		intId,err:=strconv.Atoi(id);
+		if err!=nil{
+			return c.JSON(http.StatusBadRequest,map[string]string{"error":err.Error()});
+		}
+
+		var user User
+		err=db.QueryRow("SELECT id,name,email,age FROM users WHERE id=$1",intId).Scan(&user.ID,&user.Name,&user.Email,&user.Age);
+
+		if err!=nil{
+			return c.JSON(http.StatusNotFound,map[string]string{"error":err.Error()});
+		}
+
+		return c.JSON(http.StatusOK,user);
+
+	})
+
+	
 
 	e.Logger.Fatal(e.Start(":8000"));
 
