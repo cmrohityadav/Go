@@ -105,7 +105,32 @@ func main() {
 
 	})
 
-	
+	e.PUT("users/:id",func(c echo.Context)error{
+		id:=c.Param("id");
+		intId,err:=strconv.Atoi(id);
+		if err!=nil{
+			return c.JSON(http.StatusBadRequest,map[string]string{"error":err.Error()});
+		}
+		
+		user:=new(User);
+
+		if err:=c.Bind(user);err!=nil{
+			return c.JSON(http.StatusBadRequest,map[string]string{"error":err.Error()});
+		}
+
+		result,err:=db.Exec("UPDATE users SET name=$1 WHERE id=$2",user.Name,intId);
+		if err!=nil{
+			return c.JSON(http.StatusInternalServerError,map[string]string{"error":err.Error()});
+		}
+
+		rowsAffected,_:=result.RowsAffected();
+		if rowsAffected==0{
+			return c.JSON(http.StatusNotFound,map[string]string{"error":"User not found"})
+		}
+
+		user.ID=intId;
+		return c.JSON(http.StatusOK,user);
+	})
 
 	e.Logger.Fatal(e.Start(":8000"));
 
