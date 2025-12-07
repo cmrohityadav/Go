@@ -132,6 +132,22 @@ func main() {
 		return c.JSON(http.StatusOK,user);
 	})
 
+	e.DELETE("users/:id", func (c echo.Context)error{
+		id:=c.Param("id");
+		intId,_:=strconv.ParseInt(id,10,0);
+ 
+		result,err:=db.Exec("DELETE FROM users WHERE id=$1",intId);
+		if err!=nil{
+			return c.JSON(http.StatusBadRequest,map[string]string{"error":err.Error()});
+		}
+
+		if rowEffect,_:=result.RowsAffected();rowEffect==0{
+			return c.JSON(http.StatusBadRequest,map[string]string{"error":"try with other id,this row not existed"});
+		}
+
+		return c.JSON(http.StatusOK,map[string]string{"success":"successfully deleted record"})
+	})
+
 	e.Logger.Fatal(e.Start(":8000"));
 
 }
