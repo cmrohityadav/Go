@@ -160,3 +160,84 @@ id := c.Get("userId")
 app.use((err, req, res, next) => ...)
 ```
 - Echo me ye built-in hai. Bas return err karo, kaam khatam.
+
+### e.Start(":3000")
+- Start() function HTTP server ko start karta hai.
+- `:` ka matlab → machine ka default IP use karna.
+```js
+// similiar in Express
+app.listen(3000)
+```
+
+| Code                          | Meaning                              |
+| ----------------------------- | ------------------------------------ |
+| `e.Start(":3000")`            | Bind to **all interfaces (0.0.0.0)** |
+| `e.Start("127.0.0.1:3000")`   | Local only                           |
+| `e.Start("192.168.x.x:3000")` | LAN network                          |
+| `e.Start("<public-ip>:3000")` | Public facing server                 |
+
+
+
+### e.Logger.Fatal(...)
+
+- error ko log (print) karta hai, aur
+- program ko turant bandh (exit) kar deta hai.
+
+### e.StartTLS(":443", "cert.pem", "key.pem")
+
+### e.Shutdown(ctx context.Context)
+- Shutdown() Echo server ko gracefully stop (properly band) karta hai
+- Graceful shutdown = background requests complete ho jaye, phir server band ho
+- Zor se band nahi karta, lehje se politely band karta hai
+- Server pending requests complete karke phir close hota hai
+
+### e.Any()
+- Echo me ek route banata hai jo saare HTTP methods accept karta hai
+- GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD etc
+```go
+e.Any("/api/user", func(c echo.Context) error {
+	return c.String(200, "This route accepts ANY HTTP method")
+})
+```
+- Is route ko call karoge:
+  -  GET /api/user
+  -  POST /api/user
+  -  DELETE /api/user
+  -  PUT /api/user
+  -  ➡️ Sabko yeh handle karega!
+```js
+app.all("/api/user", (req, res) => {
+  res.send("This accepts any method");
+});
+```
+### e.Group()
+- e.Group() Echo me route grouping ke liye use hota hai
+- Same prefix / same middleware / same version / same permission wale routes ko ek group me put kar sakte ho
+```go
+api := e.Group("/api")
+
+api.GET("/users", getUsers)
+api.POST("/users", createUser)
+api.GET("/products", getProducts)
+
+```
+- Actual routes kya banenge?
+| Route               |
+| ------------------- |
+| `/api/users`        |
+| `/api/users` (POST) |
+| `/api/products`     |
+
+```js
+//router.js
+const router = express.Router();
+
+router.get("/users", ...)
+router.post("/users", ...)
+//app.js
+app.use("/api", router)
+```
+
+### e.File(routePath, fileLocation)
+- e.File() Echo ka method hai jo client ko ek single file serve karta hai (PDF, Image, HTML, JS, etc.).
+- `e.File("/", "public/index.html")`
