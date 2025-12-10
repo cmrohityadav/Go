@@ -241,3 +241,49 @@ app.use("/api", router)
 ### e.File(routePath, fileLocation)
 - e.File() Echo ka method hai jo client ko ek single file serve karta hai (PDF, Image, HTML, JS, etc.).
 - `e.File("/", "public/index.html")`
+
+
+## JWT (JSON Web Token)
+- ek compact, URL-safe token hota hai jo client ↔ server ke beech securely claims/identity transfer karne ke liye use hota hai
+- JWT consists of 3 base64Url encoded parts separated by dots
+- `header.payload.signature`
+### Header (Metadata)
+| Key   | Meaning                          | Example         |
+| ----- | -------------------------------- | --------------- |
+| `alg` | Algorithm used to sign the token | HS256, RS256    |
+| `typ` | Token type                       | usually `"JWT"` |
+
+```json
+{
+  "alg": "HS256",
+  "typ": "JWT"
+}
+```
+### Payload (User Data / Claims)
+- Payload ke andar user related information ya token specific details hote hain
+
+| Type                        | Meaning                              |
+| --------------------------- | ------------------------------------ |
+| `iss`                       | Issuer (Token kisne issue kiya)      |
+| `sub`                       | Subject (Token kis user ke liye hai) |
+| `exp`                       | Expiry time                          |
+| `iat`                       | Issued at                            |
+| `id`, `email`, `role`, etc. | Custom data                          |
+
+```json
+{
+  "id": "123",
+  "name": "Rohit",
+  "role": "admin",
+  "exp": 17000000
+}
+```
+### Signature (Verification)
+- It is a cryptograhic proof that
+1. The token was created by someone who knows the secret/private key
+2. The token was not tampered with after it was issued
+Without the correct key, we cannot produce the correct signature
+- Signature ensure karta hai ki token tampered (changed) nahi hua hai
+
+
+
