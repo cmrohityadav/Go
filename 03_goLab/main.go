@@ -1,18 +1,19 @@
 package main
 
-import (
-	"fmt"
-	"net/http"
-)
+import "fmt"
 
-func anyHandleFunc(res http.ResponseWriter,req *http.Request){
-	fmt.Fprintln(res,"Hello rohit")	
-}
 func main() {
-	fmt.Println("Welcome to HTTP")
-	
-	
-	http.HandleFunc("/hello",anyHandleFunc)
+	var name string="rohit"
+	fmt.Println(name)
 
-	http.ListenAndServe("0.0.0.0:8000",nil);
+
+	var amount=1452
+	fmt.Println(amount)
+
+	stock:="TCS"
+	fmt.Println(stock)
+
+
+
+	
 }
