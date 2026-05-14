@@ -232,6 +232,11 @@ var (
 	)
 
 ```
+### Zero Value or default value
+- Zero value for `int` = `0` 
+- Zero value for `bool` = `false`
+- Zero value for `string`=`""`
+- map,slice -> nil
 
 
 ## Primitve Data type
@@ -246,9 +251,7 @@ var (
 | **string**| `"hi"`  | Immutable sequence of bytes (UTF-8 encoded text)                |
 | **bool**  | `true`  | Boolean logic (`true` or `false`)                               |
 
-- Zero value for `int` = `0` 
-- Zero value for `bool` = `false`
-- Zero value for `string`=`""`
+
 
 ### int
 - int8
