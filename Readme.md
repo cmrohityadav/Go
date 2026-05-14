@@ -312,6 +312,47 @@ var (
 | `func` | 8 bytes |
 
 
+## Constant
+- constant is a name that’s bound to a fixed value at compile time.
+Once defined, it cannot change during the lifetime of the program
+
+```go
+// Untyped constant
+const pi=3.14;
+
+// Typed constant
+const maxUser int=420;
+
+// Multiple constants in a block
+const (
+    portNumber=4000;
+    greeting="Good Morning"
+)
+
+
+// iota – Constant Generator
+
+type Weekday int
+
+const (
+    Sunday Weekday = iota
+    Monday
+    Tuesday
+    Wednesday
+    Thursday
+    Friday
+    Saturday
+)
+
+```
+- if we use **first Letter Capital** the it like: **Public**
+```go
+const LoginToken string = "abcdefg"
+```
+
+- numberOfUser := 30000 // This code is not allow in public,it can be only use in method / function
+
+
 ## Go Format Specifiers
 
 | Specifier | Description                              | Example                     | Output         |
@@ -453,46 +494,6 @@ ch <- 5                  // ✅ works
 
 
 ```
-
-## Constant
-- constant is a name that’s bound to a fixed value at compile time.
-Once defined, it cannot change during the lifetime of the program
-
-```go
-// Untyped constant
-const pi=3.14;
-
-// Typed constant
-const maxUser int=420;
-
-// Multiple constants in a block
-const (
-    portNumber=4000;
-    greeting="Good Morning"
-)
-
-
-// iota – Constant Generator
-
-type Weekday int
-
-const (
-    Sunday Weekday = iota
-    Monday
-    Tuesday
-    Wednesday
-    Thursday
-    Friday
-    Saturday
-)
-
-```
-- if we use **first Letter Capital** the it like: **Public**
-```go
-const LoginToken string = "abcdefg"
-```
-
-- numberOfUser := 30000 // This code is not allow in public,it can be only use in method / function
 
 
 ## Pointers
