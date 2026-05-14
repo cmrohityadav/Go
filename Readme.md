@@ -253,25 +253,65 @@ var (
 
 
 
-### int
-- int8
+### Integer Types
 
-- int16
+| Type             | Size             | Range                  |
+| ---------------- | ---------------- | ---------------------- |
+| `int8`           | 1 byte           | -128 to 127            |
+| `uint8` / `byte` | 1 byte           | 0 to 255               |
+| `int16`          | 2 bytes          | -32,768 to 32,767      |
+| `uint16`         | 2 bytes          | 0 to 65,535            |
+| `int32` / `rune` | 4 bytes          | -2^31 to 2^31-1        |
+| `uint32`         | 4 bytes          | 0 to 2^32-1            |
+| `int64`          | 8 bytes          | -2^63 to 2^63-1        |
+| `uint64`         | 8 bytes          | 0 to 2^64-1            |
+| `int`            | 8 bytes (64-bit) | architecture dependent |
+| `uint`           | 8 bytes (64-bit) | architecture dependent |
+| `uintptr`        | 8 bytes (64-bit) | stores pointer value   |
 
-- int32
 
-- int64
+### Floating Point Types
+| Type      | Size    | Precision          |
+| --------- | ------- | ------------------ |
+| `float32` | 4 bytes | ~6 decimal digits  |
+| `float64` | 8 bytes | ~15 decimal digits |
 
-### uint
+### pointer Types
+| Type | Size             |
+| ---- | ---------------- |
+| `*T` | 8 bytes (64-bit) |
 
-### byte
-- alias for int32
-### rune
-- alias for int32
-### uint
-- either 32 or 64 bits dependent on the system architecture
-### int
-- either 32 or 64 bits dependent on the system architecture
+### Slice Types
+| Type    | Size              |
+| ------- | ----------------- |
+| `slice` | 24 bytes (64-bit) |
+
+8 bytes pointer
+8 bytes length
+8 bytes capacity
+= 24 bytes
+
+### Map Types
+| Type  | Size                   |
+| ----- | ---------------------- |
+| `map` | 8 bytes header pointer |
+
+### Interface Types
+| Type          | Size     |
+| ------------- | -------- |
+| `interface{}` | 16 bytes |
+
+### Channel Types
+| Type     | Size    |
+| -------- | ------- |
+| `chan T` | 8 bytes |
+
+### function Types
+| Type   | Size    |
+| ------ | ------- |
+| `func` | 8 bytes |
+
+
 ## Go Format Specifiers
 
 | Specifier | Description                              | Example                     | Output         |
