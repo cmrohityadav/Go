@@ -126,6 +126,8 @@ go get <package_name>
 
 ## First Programm
 - main function Go program ka entry point hai
+- Executable/app → package main + func main() required hai
+- Reusable library/package → package main ki zaroorat nah
 ```go
 package main
 
