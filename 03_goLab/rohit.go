@@ -4,19 +4,23 @@ import "fmt"
 
 func main() {
 
-	var name="rohit";
-	fmt.Println(name)
+	isAdmin:=true
+	isLogin:=true
+	age:=19
 
-	var surname string="yadav"
-	fmt.Println(surname)
+	if isAdmin && isLogin && age>18{
+		fmt.Println("Welcome")
+	}else{
+		fmt.Println("Welcome Not")
+	}
 
-	age:=10;
-	fmt.Println(age)
+	perItem:=10;
+	item:=5;
+	if total:=item*perItem;total>100{
+		fmt.Println("Free Delivery Avaialble")
+	}else{
+		fmt.Println("NO Free Delivery Avaialble")
+	}
 
-	fmt.Println("hello")
-
-	like,comment:=100,40
-	fmt.Println(like)
-	fmt.Println(comment)
 
 }
