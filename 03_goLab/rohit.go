@@ -4,22 +4,14 @@ import "fmt"
 
 func main() {
 
-	isAdmin:=true
-	isLogin:=true
-	age:=19
+	var ages[3] int
 
-	if isAdmin && isLogin && age>18{
-		fmt.Println("Welcome")
-	}else{
-		fmt.Println("Welcome Not")
-	}
+	ages[0]=00
+	ages[1]=10
+	ages[2]=20
 
-	perItem:=10;
-	item:=5;
-	if total:=item*perItem;total>100{
-		fmt.Println("Free Delivery Avaialble")
-	}else{
-		fmt.Println("NO Free Delivery Avaialble")
+	for i:=0;i<3;i++{
+		fmt.Println(ages[i])
 	}
 
 

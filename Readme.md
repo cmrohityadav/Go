@@ -788,6 +788,7 @@ for index, value := range nums {
 - An array is a fixed-size, ordered collection of elements all of the same type
 - Define size (mandatory in Go)
 ```go
+// var varName Type
 var arr [4]int
 // array length
 fmt.Println(len(arr));
@@ -807,6 +808,7 @@ fmt.Println(vals);
 // bydefault all will false
 // int -> 0, string-> "",bool ->false
 
+//Array literal
 nums:=[3]string{"rohit","yadav","yadav"};
 
 
