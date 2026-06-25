@@ -889,6 +889,94 @@ That returned function itself takes one int and returns an int
 - An array is a fixed-size, ordered collection of elements all of the same type
 - Define size (mandatory in Go)
 ```go
+// Array Literal
+var ltp = [5]int{1, 2, 3, 4, 5}
+ltp := [5]int{1, 2, 3, 4, 5}
+
+names := [2]string{"rohit", "yadav"}
+
+// Compiler counts size automatically
+ltp := [...]int{1, 2, 3, 4, 5}
+
+// Empty Array (all elements initialized to zero value)
+var ltp [5]int
+// [0 0 0 0 0]
+
+// Another Example
+var rollNo [3]int
+// [0 0 0]
+
+// Partial Initialization
+ltp := [5]int{1, 2}
+// [1 2 0 0 0]
+
+// Initialize Specific Indexes
+ltp := [5]int{
+    0: 10,
+    2: 30,
+    4: 50,
+}
+// [10 0 30 0 50]
+
+// Multiline Array Literal
+ltp := [5]int{
+    1,
+    2,
+    3,
+    4,
+    5,
+}
+
+// Array of Strings
+names := [3]string{
+    "Rohit",
+    "Yadav",
+    "Go",
+}
+
+// 2D Array
+matrix := [2][3]int{
+    {1, 2, 3},
+    {4, 5, 6},
+}
+
+// Array Length
+fmt.Println(len(ltp))
+
+// Array Comparison
+a := [3]int{1,2,3}
+b := [3]int{1,2,3}
+
+fmt.Println(a == b) // true
+
+// Copy Array
+a := [3]int{1,2,3}
+b := a
+
+b[0] = 100
+
+fmt.Println(a) // [1 2 3]
+fmt.Println(b) // [100 2 3]
+
+// Arrays are Value Types
+// Entire array gets copied
+
+// Taking Address of Array
+arr := [5]int{1,2,3,4,5}
+
+ptr := &arr
+
+fmt.Println((*ptr)[0])
+
+// Array to Slice
+arr := [5]int{1,2,3,4,5}
+
+slice := arr[:]
+
+// slice = [1 2 3 4 5]
+
+```
+```go
 // var varName Type
 var arr [4]int
 // array length
@@ -926,15 +1014,26 @@ nums:=[2][2]int{{3,4},{5,6}};
 ## Slice
 - Dynamic Array
 ```go
+//Slice Literal
+var ltp = []int{1, 2, 3, 4, 5}
+ltp := []int{1, 2, 3, 4, 5}
 nums:=[]string{"rohit","yadav"};
 
+// Empty Slice Literal
+var ltp = []int{}
+ltp := []int{}
 
+// Nil Slice //Length = 0, Capacity = 0, Value = nil
+var ltp []int
 
 var rollNo []int;
 // Above uninitialized slice is nill
 
+// Using make()
 var prices=make([]int,2);
 //it set all 2 element to Zero: eg.  [0 0]
+ltp := make([]int, 5)
+ltp := make([]int, 5, 10)
 
 fmt.Println(cap(prices));
 // capacity -> maximium numbers of elements can fit
