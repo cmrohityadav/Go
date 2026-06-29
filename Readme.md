@@ -1111,9 +1111,11 @@ for k,v:=range m {
 
 ### Deletion
 ```go
-delete(m,"rohit");
+delete(m,"rohit"); //Sirf ek key remove karta hai
+
+clear(m) //Saari keys remove karta hai
 ```
-### Checking key
+### Checking key/Comma-Ok Idiom
 ```go
 m:=map[int]string{1:"rohit",2:"yadav"};
 
@@ -1125,6 +1127,7 @@ if ok {
     fmt.Println("Not Okay");
 }
 ```
+- agar key nhi present hai to value ZERO return hogi
 
 
 ## Struct

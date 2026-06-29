@@ -12,8 +12,17 @@ func main() {
 	}
 
 	fmt.Println(stk)
+	delete(stk,"tcs")
+	var scrip =[]string{"tcs","wipro","groww","apple","sony"}
 
-	for key,value:=range stk{
+	for key,value:=range scrip{
 		fmt.Println("key: ",key," Value: ",value)
+		val,ok:=stk[value]
+		if ok{
+			fmt.Println("This  key is present",key,"Value :",val)
+		}else{
+			fmt.Println("This nottt key is present",key,"Value :",val)
+
+		}
 	}
 }
