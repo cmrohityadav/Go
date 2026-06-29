@@ -1051,14 +1051,44 @@ fmt.Println(cap(prices));
 m:=make(map[keyType]keyValueType);
 m:=make(map[int]string);
 
+var m = make(map[string]int)
+
+//  with initial capacity
+// Capacity is optional (only hint for performance)
+m := make(map[string]int, 10)
+
 // using Map literal
 m:=map[string]int{"rohit":1,"yadav":2};
+var m = map[string]int{
+    "A": 1,
+    "B": 2,
+}
 
-// declareing then assigning
+// Empty Map Literal
+m := map[string]int{}
+
+// Declare then initialize
 var m map[string]int;
 m=make(map[string]int);
 
+//Nested Maps
+students := map[string]map[string]int{
+    "Rohit": {
+        "Math": 90,
+        "Go":   95,
+    },
+}
 
+// Map of Arrays
+m := map[string][3]int{
+    "A": {1,2,3},
+}
+
+//Map of Slices
+m := map[string][]int{
+    "A": {1,2,3},
+    "B": {4,5},
+}
 ```
 ### Access
 ```go 

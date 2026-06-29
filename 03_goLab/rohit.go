@@ -4,11 +4,16 @@ import "fmt"
 
 func main() {
 
-	var ltp =[4]int{0,1,2,3}
-	a:=&ltp;
+	stk:=map[string]int{
+		"tcs":2400,
+		"wipro":1400,
+		"groww":205,
+		"apple":5000,
+	}
 
-	fmt.Println((a))
-	fmt.Println(a[2])
-	fmt.Println((*a)[2])
-	fmt.Println((*a))
+	fmt.Println(stk)
+
+	for key,value:=range stk{
+		fmt.Println("key: ",key," Value: ",value)
+	}
 }
