@@ -814,7 +814,17 @@ _, second,third := multipleReturn();
 fmt.Println(second, number);
 
 ```
+### named return value
+- A naked `return` returns their current values
 
+```go
+func divide(a, b int) (quotient int, remainder int) {
+    quotient = a / b
+    remainder = a % b
+    return
+}
+
+```
 ### Variadic Function
 - Accepts any number of arguments of the same type.
 - Inside, the parameter behaves like a slice
@@ -822,7 +832,7 @@ fmt.Println(second, number);
 ```go
 func sum(nums ...int) int {
     total := 0
-    for _, n := range nums {
+    for index, n := range nums {
         total += n
     }
     return total
@@ -839,7 +849,34 @@ square := func(x int) int {
 }
 fmt.Println(square(4)) // 16
 ```
+### IIFE (Immediately Invoked Function Expression)
+```go
+func main() {
+    func(name string) {
+        fmt.Println("Hello,", name)
+    }("Rohit")
+}
 
+result := func() int {
+    total := 0
+
+    for i := 1; i <= 5; i++ {
+        total += i
+    }
+
+    return total
+}()
+
+fmt.Println(result) // 15
+
+x := 5
+
+func() {
+    y := x * 2
+    fmt.Println(y)
+}() 
+// fmt.Println(y) // Compile error
+```
 ### Functions in Go are first-class citizens
 #### Assign to a Variable
 
