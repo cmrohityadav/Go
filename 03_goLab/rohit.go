@@ -2,24 +2,16 @@ package main
 
 import "fmt"
 
-func Print(x int) {
-	fmt.Println("Normal:", x)
+func Sum() (result int) {
+
+	defer func() {
+		result=10
+		fmt.Println("defer",result)
+	}()
+
+	return result
 }
 
 func main() {
-	a := 10
-
-	defer Print(a)
-
-	defer func() {
-		fmt.Println("Closure:", a)
-	}()
-
-	defer func(x int) {
-		fmt.Println("Anonymous Parameter:", x)
-	}(a)
-
-	a++
-
-	fmt.Println("Current:", a)
+	fmt.Println(Sum())
 }

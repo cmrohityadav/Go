@@ -1062,6 +1062,8 @@ func main() {
 	fmt.Println("Current:", a)
 }
 ```
+- `return expression` pehle evaluate hoti hai, phir defer chalta hai
+
 
 ## Arrays
 - An array is a fixed-size, ordered collection of elements all of the same type
