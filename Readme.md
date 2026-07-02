@@ -35,6 +35,7 @@
 - [Loops](#loops)
 - [Functions](#functions)
 - [Error return Pattern](#error-return-pattern)
+- [Defer](#defer)
 - [Arrays](#arrays)
 - [Slices](#slices)
 - [Maps](#maps)
@@ -1028,6 +1029,39 @@ func main() {
 
 ### `errors.Join()`
 - n Number of error ko ek me krne k liye
+
+## Defer
+- `defer` function ke end me execute hota hai.
+- Multiple `defer` LIFO (Last In, First Out) order me chalte hain.
+- Arguments `defer` register hote hi evaluate ho jaate hain.
+- Anonymous function latest variable values dekh sakta hai.
+```go
+package main
+
+import "fmt"
+
+func Print(x int) {
+	fmt.Println("Normal:", x)
+}
+
+func main() {
+	a := 10
+
+	defer Print(a)
+
+	defer func() {
+		fmt.Println("Closure:", a)
+	}()
+
+	defer func(x int) {
+		fmt.Println("Anonymous Parameter:", x)
+	}(a)
+
+	a++
+
+	fmt.Println("Current:", a)
+}
+```
 
 ## Arrays
 - An array is a fixed-size, ordered collection of elements all of the same type

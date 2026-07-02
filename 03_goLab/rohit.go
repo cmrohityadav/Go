@@ -1,26 +1,25 @@
 package main
 
-import (
-	"errors"
-	"fmt"
-)
+import "fmt"
 
-func Divide(a, b int) (int, error) {
-	if b == 0 {
-		return 0, errors.New("division by zero")
-	}
-	return a/b,nil
+func Print(x int) {
+	fmt.Println("Normal:", x)
 }
+
 func main() {
-	var quotient int
-	var err error
+	a := 10
 
-	quotient, err = Divide(4, 0)
+	defer Print(a)
 
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
+	defer func() {
+		fmt.Println("Closure:", a)
+	}()
 
-	fmt.Println("Quotient:", quotient)
+	defer func(x int) {
+		fmt.Println("Anonymous Parameter:", x)
+	}(a)
+
+	a++
+
+	fmt.Println("Current:", a)
 }
