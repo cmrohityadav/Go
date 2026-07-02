@@ -1,28 +1,26 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
+func Divide(a, b int) (int, error) {
+	if b == 0 {
+		return 0, errors.New("division by zero")
+	}
+	return a/b,nil
+}
 func main() {
+	var quotient int
+	var err error
 
-	stk:=map[string]int{
-		"tcs":2400,
-		"wipro":1400,
-		"groww":205,
-		"apple":5000,
+	quotient, err = Divide(4, 0)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
 	}
 
-	fmt.Println(stk)
-	delete(stk,"tcs")
-	var scrip =[]string{"tcs","wipro","groww","apple","sony"}
-
-	for key,value:=range scrip{
-		fmt.Println("key: ",key," Value: ",value)
-		val,ok:=stk[value]
-		if ok{
-			fmt.Println("This  key is present",key,"Value :",val)
-		}else{
-			fmt.Println("This nottt key is present",key,"Value :",val)
-
-		}
-	}
+	fmt.Println("Quotient:", quotient)
 }

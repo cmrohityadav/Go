@@ -33,6 +33,8 @@
 - [Conditionals](#conditionals)
 - [Switch](#switch)
 - [Loops](#loops)
+- [Functions](#functions)
+- [Error return Pattern](#error-return-pattern)
 - [Arrays](#arrays)
 - [Slices](#slices)
 - [Maps](#maps)
@@ -40,7 +42,6 @@
 - [Interfaces](#interfaces)
 - [Enums](#enums)
 - [Generics](#generics)
-- [Functions](#functions)
 - [Goroutines](#goroutines)
 - [WaitGroup](#waitgroup)
 - [Channels](#channels)
@@ -921,6 +922,112 @@ func main() {
 ```
 - func(int) int: Return type: instead of a simple type (like int), it returns a function.
 That returned function itself takes one int and returns an int
+
+## Error return Pattern
+- `not nil` = `Failure/Error`
+- nil = Success
+```go
+package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+func Divide(a, b int) (int, error) {
+	if b == 0 {
+		return 0, errors.New("division by zero")
+	}
+	return a/b,nil
+}
+func main() {
+	var quotient int
+	var err error
+
+	quotient, err = Divide(4, 0)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	fmt.Println("Quotient:", quotient)
+}
+```
+### errors.New()
+- Creates a new error with a fixed message.
+- `err := errors.New("database connection failed")`
+
+### `errors.Is()`
+- errors.Is() wrapped error ke andar bhi check karta hai.
+- agar formated/wrapped error msg me error mila to true return krta hai
+```go
+var ErrUserNotFound = errors.New("user not found")
+func GetUser(id int) error {
+	if id == 0 {
+        //Error Wrapping
+		return fmt.Errorf("GetUser failed: %w", ErrUserNotFound)
+	}
+
+	return nil
+}
+
+// now error=> GetUser failed: user not found
+err == ErrUserNotFound => False
+
+errors.Is(err, ErrUserNotFound) // True
+
+```
+### `errors.As()`
+```go
+package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+// Custom Error
+type ValidationError struct {
+	Field string
+}
+
+// ValidationError now implements the error interface
+func (v ValidationError) Error() string {
+	return v.Field + " is invalid"
+}
+
+
+
+func Register(name string) error {
+	if name == "" {
+		return ValidationError{
+			Field: "Name",
+		}
+	}
+	return nil
+}
+
+func main() {
+
+	err = Register("")
+
+	var ve ValidationError
+
+	if errors.As(err, &ve) {
+		fmt.Println("Field:", ve.Field)
+		fmt.Println("Message:", ve.Error())
+	}
+
+	fmt.Println(err)
+}
+
+```
+### `errors.Unwrap()`
+- Unwrap() ek layer neeche le jata hai, fir Original Error deta hai
+
+### `errors.Join()`
+- n Number of error ko ek me krne k liye
 
 ## Arrays
 - An array is a fixed-size, ordered collection of elements all of the same type
