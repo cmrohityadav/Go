@@ -504,6 +504,9 @@ ch <- 5                  // ✅ works
 - A pointer is a variable that stores the memory address of another variable
 - Instead of copying a value, you pass around a “reference” to where that value lives in memory
 - Think of it like sharing a Google Drive link instead of sending a huge video file. You can edit the video in one place and everyone sees the update
+-  **32-bit architecture:** 4 bytes
+- **64-bit architecture:** 8 bytes (most modern systems)
+
 ### compare with c/c++
 ```bash
 # c/c++
@@ -548,10 +551,12 @@ var x int          // declare x as int, default value is 0
     fmt.Println(y)     // 42
 ```
 - **func changeByReference(&num int) is: ❌ Invalid in Go**
+- Function define krte waqt hamesha Paramater me pointer hi rakhna hai `func f(num *int)`, not by reference `func f(&num int)`
 ```bash
 C++	void f(int &num) → call with f(x)
+Go  func f(&num int) ->call with f(x) // ❌
 
-C	void f(int *num) → call with f(&x)
+C++	void f(int *num) → call with f(&x)
 Go	func f(num *int) → call with f(&x)
 ```
 
