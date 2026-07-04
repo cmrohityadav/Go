@@ -519,7 +519,8 @@ var pMyPointer *int
 # note: here’s no alternative syntax
 var name *Type 
 ```
-- get address/reference : &anyVariable
+- Default value is nil
+- ge t address/reference : &anyVariable
 - dereference: *anyPointerVariable
 ### example of pointers
 ```go
@@ -1414,6 +1415,10 @@ func main() {
 func (o order) PrintSummary() {
     fmt.Printf("Order %s of amount %.2f is %s\n", o.id, o.amount, o.status)
 }
+// Go me function/method ko kisi function ke andar define nahi kar sakte
+
+
+
 
 // (o order) → value receiver → gets a copy of the struct.
 
@@ -1427,7 +1432,7 @@ func (o order) PrintSummary() {
 
 - Just like constructor in other programming language
 ```go
-func newOrder(id string,amount float32,status)*orde{
+func newOrder(id string,amount float32,status)*order{
     // initial setup goes here...
     myOrder:=order{
         id:id,
@@ -1454,6 +1459,7 @@ type Person struct {
 ``` 
 ### struct Promoting
 - Embedding = Promotion
+- Promotion hota hai jab struct embed karte ho: means no field name
 - Always. Automatic. Compiler feature.
 - You CANNOT turn it off.
 ```go
@@ -1476,6 +1482,55 @@ p.Address.State
 p.City
 p.State
 
+```
+- Promotion nahi hota jab field ko name dete ho
+- Non -Pointer
+```go
+package main
+
+import "fmt"
+
+type Person struct {
+	Name string
+}
+
+type Employee struct {
+	P Person // Named field
+}
+
+func main() {
+	e := Employee{
+		P: Person{Name: "Rohit"},
+	}
+
+	fmt.Println(e.P.Name) // ✅ Rohit
+	// fmt.Println(e.Name) // ❌ Error: Employee has no field Name
+}
+```
+- Pointer field
+```go
+package main
+
+import "fmt"
+
+type Person struct {
+	Name string
+}
+
+type Employee struct {
+	P *Person // Named pointer field
+}
+
+func main() {
+	p := &Person{Name: "Rohit"}
+
+	e := Employee{
+		P: p,
+	}
+
+	fmt.Println(e.P.Name) // ✅ Rohit
+	// fmt.Println(e.Name) // ❌ Error: Employee has no field Name
+}
 ```
 
 ## Interfaces
