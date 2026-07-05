@@ -2665,9 +2665,120 @@ myapp/
 └── README.md
 
 ```
+## HTTP Client
+- HTTP stands for Hypertext Transfer Protocol
+- It is a layer 7 protocol of the OSI network model
+- The net/http package export default HTTP Client
+
+| Function / Method              | Short Example                                                       | Kya karta hai (use)                                                            | Short Signature                                                        | Package         |
+| ------------------------------ | ------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------- | --------------- |
+| `http.Get`                     | `resp, _ := http.Get("https://api.example.com")`                    | Quick GET request                                                              | `func Get(url string)`                                                 | `net/http`      |
+| `http.Post`                    | `resp, _ := http.Post(url, "application/json", bytes.NewReader(b))` | Simple POST                                                                    | `func Post(url, contentType string, body io.Reader)`                   | `net/http`      |
+| `http.NewRequest`              | `req, _ := http.NewRequest("PUT", url, bytes.NewReader(b))`         | Custom request banata hai                                                      | `func NewRequest(method, url string, body io.Reader)`                  | `net/http`      |
+| `http.NewRequestWithContext`   | `req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)`        | Context ke sath request                                                        | `func NewRequestWithContext(ctx, method, url, body)`                   | `net/http`      |
+| `req.WithContext`              | `req = req.WithContext(ctx)`                                        | Existing request me context attach karna                                       | `func (r *Request) WithContext(ctx)`                                   | `net/http`      |
+| `client.Do`                    | `resp, _ := client.Do(req)`                                         | Generic way to send request                                                    | `func (c *Client) Do(req *Request)`                                    | `net/http`      |
+| **`client := &http.Client{}`** | `client := &http.Client{Timeout: 10*time.Second}`                   | Custom client banata hai — timeout, transport, keepalive etc set karne ke liye | `type Client struct { Timeout time.Duration; Transport RoundTripper }` | `net/http`      |
+| `resp.Body.Close()`            | `defer resp.Body.Close()`                                           | Body close karna (must)                                                        | `func (rc io.ReadCloser) Close()`                                      | `io`            |
+| `json.NewDecoder`              | `json.NewDecoder(resp.Body).Decode(&out)`                           | Direct JSON decode from body                                                   | `func NewDecoder(r io.Reader)`                                         | `encoding/json` |
+| `req.Header.Set` / `Add`       | `req.Header.Set("Authorization","Bearer token")`                    | Headers set/add karna                                                          | `type Header map[string][]string`                                      | `net/http`      |
+                 |
+
+
+
 
 ## HTTP Server
+| Express (Node.js) | Golang                |
+| ----------------- | --------------------- |
+| express()         | http package          |
+| app.get()         | http.HandleFunc()     |
+| req               | *http.Request         |
+| res               | http.ResponseWriter   |
+| app.listen()      | http.ListenAndServe() |
+| middleware        | HTTP middleware       |
 
+### `http.HandleFunc()`
+```go
+func HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request))
+```
+```txt
+// JS
+app.get(
+    "/",                     // 1st parameter
+    (req, res) => {}         // 2nd parameter
+)
+
+// Go
+http.HandleFunc(
+    "/",     // First parameter (URL pattern)
+    home     // Second parameter (function reference)
+)
+```
+### `*http.Request`
+- http.Request ek struct hai
+- Isme client ki puri request ki information hoti hai
+- r Request struct ka address (pointer) store karta hai, poora struct copy nahi hota
+- Large struct copy nahi hota
+- Better Performance.
+- Same Request object middleware aur handlers share karte hain.
+- Original request ko modify bhi kar sakte hain
+
+### `http.ResponseWriter`
+- http.ResponseWriter ek interface hai.
+- Iska use client (browser) ko HTTP Response bhejne ke liye hota hai
+```go
+
+// Write()
+// Response body client ko bhejta hai
+w.Write([]byte("Hello World"))
+
+// WriteHeader()
+// HTTP Status Code set karta hai
+w.WriteHeader(http.StatusCreated) // 201
+
+
+// Header()
+// Response Headers set karta hai.
+w.Header().Set("Content-Type", "application/json")
+
+
+```
+
+### `http.ListenAndServe()`
+- http.ListenAndServe() HTTP Server ko start karta hai
+- Ye given port par requests listen karta hai aur incoming requests ko handle karta hai
+- `func ListenAndServe(addr string, handler Handler) error`
+- `http.ListenAndServe(":8080", nil)`
+- handler Handler: Ye batata hai ki request ko kaun handle karega
+- Agar handler = nil ho to Go automatically: `DefaultServeMux`
+
+
+### Understanding Go's HTTP Handler System
+```go
+type Handler interface{
+
+    ServeHTTP(http.ResponseWriter,*http.Request)
+
+}
+
+// Ye ek new type hai: Function Type
+type HandlerFunc func(http.ResponseWriter,*http.Request)
+
+func (f HandlerFunc) ServeHTTP(w http.ResponseWriter,r *http.Request){
+
+    f(w,r)
+
+}
+
+func Handle(pattern string, handler Handler)
+
+func HandleFunc(path string,f func(ResponseWriter,*Request)){
+
+    Handle(path, HandlerFunc(f))
+
+}
+```
+- 
 ### All possible handler registration methods
 ```go
 package main
@@ -2755,26 +2866,6 @@ func main() {
 
 
 ```
-
-## HTTP Client
-- HTTP stands for Hypertext Transfer Protocol
-- It is a layer 7 protocol of the OSI network model
-- The net/http package export default HTTP Client
-
-| Function / Method              | Short Example                                                       | Kya karta hai (use)                                                            | Short Signature                                                        | Package         |
-| ------------------------------ | ------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------- | --------------- |
-| `http.Get`                     | `resp, _ := http.Get("https://api.example.com")`                    | Quick GET request                                                              | `func Get(url string)`                                                 | `net/http`      |
-| `http.Post`                    | `resp, _ := http.Post(url, "application/json", bytes.NewReader(b))` | Simple POST                                                                    | `func Post(url, contentType string, body io.Reader)`                   | `net/http`      |
-| `http.NewRequest`              | `req, _ := http.NewRequest("PUT", url, bytes.NewReader(b))`         | Custom request banata hai                                                      | `func NewRequest(method, url string, body io.Reader)`                  | `net/http`      |
-| `http.NewRequestWithContext`   | `req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)`        | Context ke sath request                                                        | `func NewRequestWithContext(ctx, method, url, body)`                   | `net/http`      |
-| `req.WithContext`              | `req = req.WithContext(ctx)`                                        | Existing request me context attach karna                                       | `func (r *Request) WithContext(ctx)`                                   | `net/http`      |
-| `client.Do`                    | `resp, _ := client.Do(req)`                                         | Generic way to send request                                                    | `func (c *Client) Do(req *Request)`                                    | `net/http`      |
-| **`client := &http.Client{}`** | `client := &http.Client{Timeout: 10*time.Second}`                   | Custom client banata hai — timeout, transport, keepalive etc set karne ke liye | `type Client struct { Timeout time.Duration; Transport RoundTripper }` | `net/http`      |
-| `resp.Body.Close()`            | `defer resp.Body.Close()`                                           | Body close karna (must)                                                        | `func (rc io.ReadCloser) Close()`                                      | `io`            |
-| `json.NewDecoder`              | `json.NewDecoder(resp.Body).Decode(&out)`                           | Direct JSON decode from body                                                   | `func NewDecoder(r io.Reader)`                                         | `encoding/json` |
-| `req.Header.Set` / `Add`       | `req.Header.Set("Authorization","Bearer token")`                    | Headers set/add karna                                                          | `type Header map[string][]string`                                      | `net/http`      |
-                 |
-
 
 
 
