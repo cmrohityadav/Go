@@ -125,7 +125,7 @@ go get <package_name>
 - `go get` is used to download and install packages from remote repositories.
 - It does not handle versioning.
 - This command fetches the package and its dependencies (if any)
-
+- `go.sum` verify karta hai ki download hua package wahi original package hai, usme koi tampering nahi hui.
 ## First Programm
 - main function Go program ka entry point hai
 - Executable/app → package main + func main() required hai
@@ -2623,6 +2623,47 @@ func main() {
     utils1.Hello() // prints "Hello from pkg1"
     utils2.Hello() // prints "Hello from pkg2"
 }
+```
+### Folder Structure
+```txt
+myapp/
+│
+├── cmd/
+│   └── api/
+│       └── main.go          # Application entry point
+│
+├── internal/
+│   ├── config/
+│   ├── middleware/
+│   ├── user/
+│   │   ├── handler.go
+│   │   ├── service.go
+│   │   ├── repository.go
+│   │   ├── model.go
+│   │   └── routes.go
+│   │
+│   ├── auth/
+│   │   ├── handler.go
+│   │   ├── service.go
+│   │   ├── repository.go
+│   │   ├── model.go
+│   │   └── routes.go
+│   │
+│   └── product/
+│       ├── handler.go
+│       ├── service.go
+│       ├── repository.go
+│       ├── model.go
+│       └── routes.go
+│
+├── pkg/                     # Optional reusable code
+├── migrations/
+├── docs/
+├── .env
+├── go.mod
+├── go.sum
+└── README.md
+
 ```
 
 ## HTTP Server
