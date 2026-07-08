@@ -2907,11 +2907,16 @@ func getInfo(w http.ResponseWriter,r *http.Request){
 	query.Set("mobile","9988774455") // Sets a value. If the key already exists, it replaces all existing values
 	fmt.Fprintf(w, "After Set() Mobile : %s\n", query.Get("mobile"))
 
+
+
+
 	// -------------------- Add() --------------------
 	// Add() : It does not replace existing values
 	query.Add("lang", "Python")
 	query.Add("lang", "JavaScript")
 	fmt.Fprintf(w, "After Add() Languages : %v\n", query["lang"])
+
+
 
 	// -------------------- Del() --------------------
 	// Del() : Deletes a key completely
@@ -2919,25 +2924,40 @@ func getInfo(w http.ResponseWriter,r *http.Request){
 	fmt.Fprintf(w, "After Del() surname : %q\n", query.Get("surname"))
 
 
+
+
 	// -------------------- Has() --------------------
 	// Has() : Checks whether a key exists
 	fmt.Fprintf(w, "Has name? %v\n", query.Has("name"))
 	fmt.Fprintf(w, "Has surname? %v\n", query.Has("surname"))
 	
+
+
+
+
 	// -------------------- Encode() --------------------
 	// Encode() : Converts the map back into a URL query string
 	encoded := query.Encode()
 
 	fmt.Fprintf(w, "\nEncoded Query:\n%s\n", encoded)
 
+
+
+
+
+
 	// -------------------- Access All Values --------------------
 	fmt.Fprintf(w, "\nAll Languages : %v\n", query["lang"])
     
+
+
 
 	// -------------------- Check Key Exists --------------------
 	if langs, ok := query["lang"]; ok {
 		fmt.Fprintf(w, "Lang exists : %v\n", langs)
 	}
+
+
 
 	// -------------------- Iterate --------------------
 	fmt.Fprintf(w, "\nIterating Query Params:\n")
@@ -2957,6 +2977,375 @@ func main() {
 }
 
 ```
+
+### Path Parameters
+### Headers 
+- Headers are extra information sent with an HTTP request or response.
+- Example Request Headers:
+```
+GET /getinfo HTTP/1.1
+Host: localhost:3000
+User-Agent: PostmanRuntime/7.43.0
+Authorization: Bearer abc123
+Content-Type: application/json
+Accept: application/json
+X-App-Version: 1.0
+```
+
+- `r.Header` → returns request headers
+- Return Type:
+```go
+http.Header
+```
+
+- Internal Type:
+```go
+map[string][]string
+```
+
+- `header["key"]` → returns all values (`[]string`)
+- `header.Get("key")` → returns first value (`string`)
+
+```go
+package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+func getInfo(w http.ResponseWriter, r *http.Request) {
+
+	header := r.Header // type: http.Header (map[string][]string)
+
+	fmt.Println(header)
+
+	// Example Output:
+	// map[
+	//     Accept:[application/json]
+	//     Authorization:[Bearer abc123]
+	//     Content-Type:[application/json]
+	//     User-Agent:[PostmanRuntime/7.43.0]
+	// ]
+
+
+	// -------------------- Get() --------------------
+	userAgent := header.Get("User-Agent")
+	auth := header.Get("Authorization")
+	contentType := header.Get("Content-Type")
+	accept := header.Get("Accept")
+
+	fmt.Fprintf(w, "User-Agent : %s\n", userAgent)
+	fmt.Fprintf(w, "Authorization : %s\n", auth)
+	fmt.Fprintf(w, "Content-Type : %s\n", contentType)
+	fmt.Fprintf(w, "Accept : %s\n", accept)
+
+
+
+	// -------------------- Values() --------------------
+	// Returns all values of a header
+
+	header.Add("Accept", "text/html")
+
+	fmt.Fprintf(w, "\nValues(Accept) : %v\n", header.Values("Accept"))
+
+
+
+	// -------------------- Add() --------------------
+	// Adds a new value without replacing existing values
+
+	header.Add("X-Language", "Go")
+	header.Add("X-Language", "Python")
+
+	fmt.Fprintf(w, "After Add() X-Language : %v\n", header["X-Language"])
+
+
+
+	// -------------------- Set() --------------------
+	// Replaces all existing values
+
+	header.Set("Content-Type", "text/plain")
+
+	fmt.Fprintf(w, "After Set() Content-Type : %s\n",
+		header.Get("Content-Type"))
+
+
+
+	// -------------------- Del() --------------------
+	// Deletes a header completely
+
+	header.Del("Authorization")
+
+	fmt.Fprintf(w, "After Del() Authorization : %q\n",
+		header.Get("Authorization"))
+
+
+
+	// -------------------- Has() --------------------
+	// Checks whether a header exists
+
+	fmt.Fprintf(w, "Has User-Agent ? %v\n",
+		header.Has("User-Agent"))
+
+	fmt.Fprintf(w, "Has Authorization ? %v\n",
+		header.Has("Authorization"))
+
+
+
+	// -------------------- Access All Values --------------------
+	fmt.Fprintf(w, "\nAll X-Language : %v\n",
+		header["X-Language"])
+
+
+
+	// -------------------- Check Key Exists --------------------
+	if langs, ok := header["X-Language"]; ok {
+		fmt.Fprintf(w, "X-Language exists : %v\n", langs)
+	}
+
+
+
+	// -------------------- Iterate --------------------
+	fmt.Fprintf(w, "\nIterating Headers:\n")
+
+	for key, values := range header {
+		fmt.Fprintf(w, "%s = %v\n", key, values)
+	}
+
+
+
+	// -------------------- Response Headers --------------------
+	// Headers sent back to the client
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("X-App-Version", "1.0")
+	w.Header().Add("X-Powered-By", "Go")
+	w.Header().Add("X-Powered-By", "net/http")
+
+	w.Write([]byte(`{"status":"success"}`))
+}
+
+func main() {
+
+	http.HandleFunc("/getinfo", getInfo)
+
+	err := http.ListenAndServe(":3000", nil)
+
+	if err != nil {
+		fmt.Println("Error while booting up server :", err)
+	}
+}
+```
+
+---
+
+
+### JSON Response
+- JSON (JavaScript Object Notation) is the most common format used to send data from a server to a client.
+- Go provides the `encoding/json` package to convert Go data into JSON.
+- `json.Marshal()` → Converts Go data into JSON (`[]byte`).
+- `json.NewEncoder(w).Encode()` → Converts Go data into JSON and writes it directly to the HTTP response.
+- Always set the response header:
+```go
+w.Header().Set("Content-Type", "application/json")
+```
+
+#### 
+#### Returning a Map
+```go
+func getUser(w http.ResponseWriter,r *http.Request){
+	if r.Method==http.MethodGet{
+		w.Header().Set("Content-Type","application/json")
+
+		response:=map[string]any{
+			"success":true,
+			"message":"User Found",
+		}
+
+		json.NewEncoder(w).Encode(response)
+		w.WriteHeader(http.StatusOK)
+		return
+	}else{
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		w.Write([]byte("Please Check Request Method"))
+	}
+
+	
+}
+
+```
+
+#### json.Marshal()
+```go
+type User struct{
+	Username string `json:"username"`
+	Password string  `json:"password"`
+	Opt      int  `json:"opt"`
+}
+func getUser(w http.ResponseWriter,r *http.Request){
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Name", "Yadav")
+
+	user:=User{
+		Username: "cmrohityadav",
+		Password: "rohit",
+		Opt: 123,
+	}
+
+	jsonData,err:=json.Marshal(user)
+	if err!=nil{
+		http.Error(w,err.Error(),http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(jsonData)
+
+}
+
+```
+#### json.NewEncoder()
+```go
+type User struct {
+	Name string `json:"name"`
+	Age  int    `json:"age"`
+    Opt  int    `json:"opt,omitempty"`
+}
+
+func getUser(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+
+	user := User{
+		Name: "Rahul",
+		Age:  24,
+	}
+
+	err := json.NewEncoder(w).Encode(user)
+
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+}
+```
+### Request Body
+- JSON Decode is used to convert incoming JSON into a Go struct.
+- Go provides two common ways:
+  - `json.Unmarshal()` → Decode from `[]byte`
+  - `json.NewDecoder(r.Body).Decode()` → Decode directly from HTTP Request Body
+
+---
+```json
+{
+  "name": "Rahul",
+  "age": 18,
+  "city": "Jaunpur"
+}
+```
+#### Struct json.Unmarshal()
+```go
+type User struct {
+	Name string `json:"name"`
+	Age  int    `json:"age"`
+	City string `json:"city"`
+}
+
+func createUser(w http.ResponseWriter, r *http.Request) {
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var user User
+
+	err = json.Unmarshal(body, &user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	fmt.Printf("%+v\n", user)
+
+	fmt.Fprintf(w, "User Created Successfully")
+}
+```
+#### map json.Unmarshal()
+```go
+func createUser(w http.ResponseWriter, r *http.Request) {
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var data map[string]any
+
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println(data)
+
+	fmt.Fprintf(w, "Received Successfully")
+}
+
+```
+#### Struct json.NewDecoder()
+```go
+type User struct {
+	Name string `json:"name"`
+	Age  int    `json:"age"`
+	City string `json:"city"`
+}
+
+func createUser(w http.ResponseWriter, r *http.Request) {
+
+	var user User
+
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	fmt.Printf("%+v\n", user)
+
+	fmt.Fprintf(w, "User Created Successfully")
+}
+
+```
+#### map json.NewDecoder()
+```go
+func createUser(w http.ResponseWriter, r *http.Request) {
+
+	var data map[string]any
+
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println(data)
+
+	fmt.Fprintf(w, "Received Successfully")
+}
+
+```
+
+## Form Data
+## Response Headers
+## Status Codes
+## File Upload
+## Cookies
+## Middleware
+## Context
+## Serving Static Files
 
 
 
