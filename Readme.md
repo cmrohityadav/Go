@@ -2979,8 +2979,12 @@ func main() {
 ```
 
 ### Path Parameters
-### Headers 
+### Headers Request and Response
 - Headers are extra information sent with an HTTP request or response.
+- Both request headers (r.Header) and response headers (w.Header()) are of the same type: `http.Header`
+- `type Header map[string][]string`
+- `r.Header` → Read what the client sent.
+- `w.Header()` → Write what the server will send.
 - Example Request Headers:
 ```
 GET /getinfo HTTP/1.1
@@ -3150,32 +3154,28 @@ func main() {
 w.Header().Set("Content-Type", "application/json")
 ```
 
-#### 
-#### Returning a Map
+#### json.Marshal() with Map
 ```go
-func getUser(w http.ResponseWriter,r *http.Request){
-	if r.Method==http.MethodGet{
-		w.Header().Set("Content-Type","application/json")
+func getUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
-		response:=map[string]any{
-			"success":true,
-			"message":"User Found",
-		}
-
-		json.NewEncoder(w).Encode(response)
-		w.WriteHeader(http.StatusOK)
-		return
-	}else{
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		w.Write([]byte("Please Check Request Method"))
+	response := map[string]any{
+		"success": true,
+		"message": "User Found",
+		"id":      101,
 	}
 
-	
+	jsonData, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 }
-
 ```
-
-#### json.Marshal()
+#### json.Marshal() with struct
 ```go
 type User struct{
 	Username string `json:"username"`
@@ -3203,7 +3203,33 @@ func getUser(w http.ResponseWriter,r *http.Request){
 }
 
 ```
-#### json.NewEncoder()
+
+####  json.NewEncoder with Map
+```go
+func getUser(w http.ResponseWriter,r *http.Request){
+	if r.Method==http.MethodGet{
+		w.Header().Set("Content-Type","application/json")
+
+		response:=map[string]any{
+			"success":true,
+			"message":"User Found",
+		}
+
+		json.NewEncoder(w).Encode(response)
+		w.WriteHeader(http.StatusOK)
+		return
+	}else{
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		w.Write([]byte("Please Check Request Method"))
+	}
+
+	
+}
+
+```
+
+
+#### json.NewEncoder() with struct
 ```go
 type User struct {
 	Name string `json:"name"`
@@ -3295,7 +3321,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 }
 
 ```
-#### Struct json.NewDecoder()
+#### json.NewDecoder() with  Struct 
 ```go
 type User struct {
 	Name string `json:"name"`
@@ -3319,7 +3345,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 }
 
 ```
-#### map json.NewDecoder()
+#### json.NewDecoder() with map
 ```go
 func createUser(w http.ResponseWriter, r *http.Request) {
 
