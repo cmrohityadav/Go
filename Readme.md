@@ -2755,6 +2755,13 @@ w.Header().Set("Content-Type", "application/json")
 
 ### Understanding Go's HTTP Handler System
 ```go
+type MyInt int
+
+var x int = 10
+
+y := MyInt(x)
+```
+```go
 type Handler interface{
 
     ServeHTTP(http.ResponseWriter,*http.Request)
@@ -3364,11 +3371,123 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 
 ```
 
-## Form Data
-## Response Headers
+### Form Data
+- Form Data is data sent by the client (browser, Postman, frontend, etc.) to the server using an HTML form or an HTTP request
+
+1. [URL Query Parameters](#query-parameters)
+2. application/x-www-form-urlencoded
+- Before reading form values, call : r.ParseForm()
+```go
+func login(w http.ResponseWriter,r *http.Request){
+	err:=r.ParseForm() //Parses form data into r.Form and r.PostForm
+	if err!=nil{
+		http.Error(w,err.Error(),http.StatusBadRequest)
+		return;
+	}
+
+	form:=r.Form
+	// r.Form returns: url.Values = map[string][]string
+    //Contains: POST form data, URL query parameters
+
+	fmt.Println(form)
+	username:=r.Form.Get("username")
+	password:=r.Form.Get("password")
+
+	fmt.Println(username)
+	fmt.Println(password)
+}
+// - It having same method like http.Header
+// - username := r.FormValue("username")
+// - You do not need to call ParseForm() before FormValue()
+// - Internally, FormValue() automatically parses the request if needed.
+```
+
+| Method                   | Purpose                                                       |
+| ------------------------ | ------------------------------------------------------------- |
+| `r.ParseForm()`          | Parses form data into `r.Form` and `r.PostForm`               |
+| `r.Form`                 | URL query + POST form data                                    |
+| `r.PostForm`             | Only POST form data                                           |
+| `r.Form.Get()`           | Returns first value                                           |
+| `r.Form.Add()`           | Adds another value                                            |
+| `r.Form.Set()`           | Replaces existing values                                      |
+| `r.Form.Del()`           | Deletes a key                                                 |
+| `r.Form.Has()`           | Checks if key exists                                          |
+| `r.Form.Values()`        | Returns all values                                            |
+| `r.FormValue()`          | Reads one form value without explicitly calling `ParseForm()` |
+| `r.ParseMultipartForm()` | Parses `multipart/form-data` (file uploads)                   |
+| `r.FormFile()`           | Reads an uploaded file                                        |
+
+
+
+3. multipart/form-data (used for file uploads)
+
 ## Status Codes
 ## File Upload
-## Cookies
+### Cookies
+```go
+type Cookie struct {
+    Name       string
+    Value      string
+    Path       string
+    Domain     string
+    Expires    time.Time
+    MaxAge     int
+    Secure     bool
+    HttpOnly   bool
+    SameSite   SameSite
+}
+```
+#### Set Cookie
+```go
+func login(w http.ResponseWriter,r *http.Request){
+	
+	cookie:=&http.Cookie{
+		Name: "session_id",
+		Value: "secret_key",
+		HttpOnly: true,
+		Secure: true,
+	}
+
+	http.SetCookie(w,cookie)
+	w.Write([]byte("Cookie set"))
+
+}
+```
+#### Get Cookie
+```go
+func handler(w http.ResponseWriter, r *http.Request) {
+    cookie, err := r.Cookie("session_id")
+    if err != nil {
+        if err == http.ErrNoCookie {
+            w.Write([]byte("No cookie"))
+            return
+        }
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    w.Write([]byte(cookie.Value))
+}
+
+//Reading All Cookie
+func handler(w http.ResponseWriter, r *http.Request) {
+    cookies := r.Cookies()
+
+    for _, c := range cookies {
+        w.Write([]byte(c.Name + "=" + c.Value + "\n"))
+    }
+}
+
+// Update
+http.SetCookie(w, &http.Cookie{
+    Name:  "session_id",
+    Value: "new-value",
+    Path:  "/",
+})
+
+```
+- Delete by setting MaxAge to a negative value
+
 ## Middleware
 ## Context
 ## Serving Static Files

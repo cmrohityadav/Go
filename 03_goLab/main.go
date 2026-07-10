@@ -1,63 +1,27 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"io"
+	
 	"net/http"
 )
-type User struct{
-	Username string `json:"username"`
-	Password string  `json:"password"`
-	Opt      int  `json:"opt"`
-}
-func getUser(w http.ResponseWriter,r *http.Request){
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Name", "Yadav")
 
-	user:=User{
-		Username: "cmrohityadav",
-		Password: "rohit",
-		Opt: 123,
+func login(w http.ResponseWriter,r *http.Request){
+	
+	cookie:=&http.Cookie{
+		Name: "session_id",
+		Value: "secret_key",
+		HttpOnly: true,
+		Secure: true,
 	}
 
-	jsonData,err:=json.Marshal(user)
-	if err!=nil{
-		http.Error(w,err.Error(),http.StatusInternalServerError)
-		return
-	}
-
-	w.Write(jsonData)
-
-}
-
-func createUser(w http.ResponseWriter, r *http.Request) {
-
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	var data map[string]any
-
-	err = json.Unmarshal(body, &data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	fmt.Println(data)
-
-	fmt.Fprintf(w, "Received Successfully")
+	http.SetCookie(w,cookie)
+	w.Write([]byte("Cookie set"))
 
 }
 func main() {
 
-	http.HandleFunc("/getuser",getUser)
+	
+	http.HandleFunc("/login",login)
 
-	err:=http.ListenAndServe(":3000",nil)
-	if err!=nil{
-		fmt.Printf("Error while booting server %s",err)
-	}
+	http.ListenAndServe(":3000",nil)
 }
