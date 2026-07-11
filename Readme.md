@@ -2688,6 +2688,20 @@ myapp/
 
 
 ## HTTP Server
+- [Understanding Go's HTTP Handler System](#understanding-gos-http-handler-system)
+- [All possible handler registration methods](#all-possible-handler-registration-methods)
+- [Query Parameters](#query-parameters)
+- [Path Parameters](#path-parameters)
+- [Headers Request and Response](#headers-request-and-response)
+- [JSON Response](#json-response)
+- [Request Body](#request-body)
+- [Form Data](#form-data)
+- []()
+- []()
+- [Cookies](#cookies)
+- [Middleware](#middleware)
+- []()
+- []()
 | Express (Node.js) | Golang                |
 | ----------------- | --------------------- |
 | express()         | http package          |
