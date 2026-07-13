@@ -3540,6 +3540,54 @@ func main() {
 }
 
 ```
+#### Large Files
+```go
+func uploadLargeHandler(w http.ResponseWriter, r *http.Request) {
+
+    // Maximum request size (e.g. 2 GB)
+    r.Body = http.MaxBytesReader(w, r.Body, 2<<30)
+
+    mr, err := r.MultipartReader()
+    if err != nil {
+        http.Error(w, err.Error(), 400)
+        return
+    }
+
+    os.MkdirAll("uploads", 0755)
+
+    for {
+        part, err := mr.NextPart()
+        if err == io.EOF {
+            break
+        }
+        if err != nil {
+            http.Error(w, err.Error(), 500)
+            return
+        }
+
+        if part.FormName() != "video" {
+            continue
+        }
+
+        dst, err := os.Create("uploads/" + part.FileName())
+        if err != nil {
+            http.Error(w, err.Error(), 500)
+            return
+        }
+
+        _, err = io.Copy(dst, part)
+
+        dst.Close()
+
+        if err != nil {
+            http.Error(w, err.Error(), 500)
+            return
+        }
+    }
+
+    fmt.Fprintln(w, "Uploaded")
+}
+```
 
 ### Cookies
 ```go
