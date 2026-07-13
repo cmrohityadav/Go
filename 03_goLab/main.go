@@ -2,116 +2,97 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net/http"
-	"time"
+	"os"
+	"path/filepath"
 )
+func uploadHandler(w http.ResponseWriter,r *http.Request){
+	err:=r.ParseMultipartForm(5000000)
+	if err!=nil{
+		http.Error(w,err.Error(),http.StatusBadRequest)
+		return;
+	}
 
-var (
-	requestCount int
-	windowStart = time.Now()
-)
 
-func rateLimiter(next http.Handler) http.Handler {
+	file,header,err:=r.FormFile("userimg")
+	if err!=nil{
+		http.Error(w,err.Error(),http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+	
+	fmt.Println("File Name: ",header.Filename)
+	fmt.Println("Size of File: ",header.Size)
+	fmt.Println("Header: ",header.Header)
 
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	os.MkdirAll("uploads", 0755)
+	dst, err :=os.Create("uploads/"+ header.Filename)
+	if err!=nil{
+		http.Error(w,err.Error(),http.StatusInternalServerError)
+		return
+	}
+	defer dst.Close()
 
-		// time.Since(windowStart) tab se abi tak ka time difference: time.Now() - start
-		if time.Since(windowStart) > 30*time.Second {
-			requestCount = 0
-			windowStart = time.Now()
+	io.Copy(dst,file)
+
+
+}
+
+func multipleUploadHandler(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseMultipartForm(20 << 20) // 20 MB
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	os.MkdirAll("uploads", 0755)
+
+	// "userimgs" is the name attribute of the input
+	files := r.MultipartForm.File["userimgs"]
+
+	if len(files) == 0 {
+		http.Error(w, "No files uploaded", http.StatusBadRequest)
+		return
+	}
+
+	for _, header := range files {
+
+		fmt.Println("File:", header.Filename)
+		fmt.Println("Size:", header.Size)
+
+		file, err := header.Open()
+		if err != nil {
+			fmt.Println(err)
+			continue
 		}
 
-		requestCount++
-
-		if requestCount > 5 {
-			http.Error(w, "Too Many Requests", http.StatusTooManyRequests)
-			return
+		dst, err := os.Create(filepath.Join("uploads", header.Filename))
+		if err != nil {
+			file.Close()
+			fmt.Println(err)
+			continue
 		}
 
-		fmt.Println("Request:", requestCount)
+		_, err = io.Copy(dst, file)
 
-		next.ServeHTTP(w, r)
-	})
-}
+		dst.Close()
+		file.Close()
 
-func profileMiddleware(next http.Handler) http.Handler{
-	
-	return http.HandlerFunc(func(w http.ResponseWriter,r *http.Request){
-
-		fmt.Println("middleware profile start")
-
-		header:=r.Header.Get("cmrohit")
-
-		if header != "yadav" {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			return // Bahut important
+		if err != nil {
+			fmt.Println(err)
 		}
+	}
 
-		
-		next.ServeHTTP(w,r)
-	
-
-		fmt.Println("middleware profile end")
-	})
-
+	fmt.Fprintln(w, "All files uploaded successfully")
 }
-
-func logging(next http.Handler) http.Handler{
-	
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-
-		fmt.Println("========== REQUEST START ==========")
-		fmt.Println("Method :", r.Method)
-		fmt.Println("Host   :", r.Host)
-		fmt.Println("Path   :", r.URL.Path)
-		fmt.Println("Start  :", start.Format("15:04:05"))
-
-		next.ServeHTTP(w, r)
-
-		end := time.Now()
-
-		fmt.Println("End    :", end.Format("15:04:05"))
-		fmt.Println("Duration :", end.Sub(start))
-		fmt.Println("=========== REQUEST END ===========")
-		fmt.Println()
-})
-}
-
-func profile(w http.ResponseWriter,r *http.Request){
-	
-	w.Write([]byte("Welcome to Profile"))
-
-}
-func login(w http.ResponseWriter,r *http.Request){
-	
-	w.Write([]byte("Welcome to Login page"))
-
-}
-func home(w http.ResponseWriter,r *http.Request){
-	
-		w.Write([]byte("Welcome to Home page"))
-
-}
-func contact(w http.ResponseWriter,r *http.Request){
-	
-		w.Write([]byte("Welcome to contactpage"))
-
-}
-
 func main() {
 
 	mux:=http.NewServeMux()
 
-	mux.HandleFunc("/contact",contact)
-	mux.Handle("/home",http.HandlerFunc(home))
-	mux.Handle("/login",http.HandlerFunc(login))
-	mux.Handle("/profile",profileMiddleware(http.HandlerFunc(profile)))
-	
+	mux.HandleFunc("/upload",uploadHandler)
+	mux.HandleFunc("/uploads",multipleUploadHandler)
 
-	mainmultiplexing:=rateLimiter(logging(mux))
+	http.ListenAndServe(":3000",mux)
 
-
-
-	http.ListenAndServe(":3000",mainmultiplexing)
 }
