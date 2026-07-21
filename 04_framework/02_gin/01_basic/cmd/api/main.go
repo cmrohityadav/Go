@@ -22,7 +22,7 @@ func main() {
 
 	log.Println("Connected to PostgreSQL")
 
-	router := server.NewRouter()
+	router := server.NewRouter(pool)
 
 	log.Printf("Server running on :%s", cfg.ServerPort)
 
