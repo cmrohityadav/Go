@@ -41,6 +41,29 @@ func (r *postgresRepository) Create(ctx context.Context,req CreateNoteRequest,
 
 	return &note, nil
 }
+
+func (r *postgresRepository)List(ctx context.Context)([]Note,error){
+	query:="SELECT * FROM notes"
+
+	rows,err:=r.pool.Query(ctx,query);
+	if err!=nil{
+	  return []Note{},err;
+	}
+
+	defer rows.Close();
+    var notes []Note;
+	for rows.Next(){
+		var note Note;
+
+		err:=rows.Scan(&note.ID,&note.Title,&note.Content,&note.Pinned,&note.CreatedAt,&note.UpdatedAt)
+		if err!=nil{
+			return nil,err;
+		}
+		notes = append(notes, note);
+
+	}
+	return notes,nil;
+}
 /*
 func (r *postgresRepository) GetByID(
 	ctx context.Context,
@@ -71,41 +94,10 @@ func (r *postgresRepository) GetByID(
 	return &note, nil
 }
 
+*/
 
-func (r *postgresRepository) List(ctx context.Context) ([]Note, error) {
-	rows, err := r.db.QueryContext(ctx, `
-		SELECT id, title, content, pinned, created_at, updated_at
-		FROM notes
-		ORDER BY created_at DESC
-	`)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
 
-	var notes []Note
-
-	for rows.Next() {
-		var n Note
-
-		err := rows.Scan(
-			&n.ID,
-			&n.Title,
-			&n.Content,
-			&n.Pinned,
-			&n.CreatedAt,
-			&n.UpdatedAt,
-		)
-		if err != nil {
-			return nil, err
-		}
-
-		notes = append(notes, n)
-	}
-
-	return notes, rows.Err()
-}
-
+/*
 
 func (r *postgresRepository) Update(
 	ctx context.Context,

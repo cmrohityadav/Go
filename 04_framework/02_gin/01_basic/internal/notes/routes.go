@@ -13,6 +13,7 @@ func RegisterRoutes(r *gin.Engine,pool *pgxpool.Pool){
 	notesGroup:=r.Group("/notes")
 	{
 		notesGroup.POST("",handler.Create)
+		notesGroup.GET("",handler.List)
 	}
 	
 }

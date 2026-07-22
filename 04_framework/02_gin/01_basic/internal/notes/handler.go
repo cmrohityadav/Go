@@ -39,6 +39,20 @@ func (h *Handler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, note)
 }
 
+func (h *Handler)List(c *gin.Context){
+	notes,err:=h.service.List(c.Request.Context())
+	if err!=nil{
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"error":err.Error(),
+		})
+		return;
+	}
+
+	c.JSON(http.StatusOK,gin.H{
+		"list":notes,
+	})
+}
+
 /*
 func (h *Handler) GetByID(c *gin.Context) {
 

@@ -27,6 +27,16 @@ func (s *Service) Create(ctx context.Context,req CreateNoteRequest,) (*Note, err
 
 	return s.repo.Create(ctx, req)
 }
+
+func (s *Service) List(ctx context.Context)([]Note,error){
+	noteList,err:=s.repo.List(ctx)
+	if err!=nil{
+		return nil,err;
+	}
+
+	return noteList,nil;
+
+}
 /*
 func (s *Service) GetByID(
 	ctx context.Context,
