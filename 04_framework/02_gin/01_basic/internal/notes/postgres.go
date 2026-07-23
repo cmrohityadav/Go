@@ -64,6 +64,29 @@ func (r *postgresRepository)List(ctx context.Context)([]Note,error){
 	}
 	return notes,nil;
 }
+
+func (r *postgresRepository)GetById(ctx context.Context,id int)(*Note,error){
+	query := `
+		SELECT *  FROM notes
+		WHERE id = $1
+	`
+
+	var note Note
+
+	err := r.pool.QueryRow(ctx, query, id).Scan(
+		&note.ID,
+		&note.Title,
+		&note.Content,
+		&note.Pinned,
+		&note.CreatedAt,
+		&note.UpdatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &note, nil
+}
 /*
 func (r *postgresRepository) GetByID(
 	ctx context.Context,

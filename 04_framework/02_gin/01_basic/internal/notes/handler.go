@@ -2,6 +2,7 @@ package notes
 
 import (
 	"net/http"
+	"strconv"
 	// "strconv"
 
 	"github.com/gin-gonic/gin"
@@ -50,6 +51,29 @@ func (h *Handler)List(c *gin.Context){
 
 	c.JSON(http.StatusOK,gin.H{
 		"list":notes,
+	})
+}
+
+func (h *Handler) GetNoteById(c *gin.Context){
+	id:=c.Query("id");
+	iId,err:=strconv.Atoi(id);
+	if err!=nil{
+		c.JSON(http.StatusBadRequest,gin.H{
+			"Error":err.Error(),
+		})
+	}
+
+	note,err:=h.service.GetNoteById(c.Request.Context(),iId);
+	if err!=nil{
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"error":err.Error(),
+		})
+		return;
+	}
+
+	c.JSON(http.StatusOK,gin.H{
+		"status":true,
+		"data":note,
 	})
 }
 
