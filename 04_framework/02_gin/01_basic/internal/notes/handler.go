@@ -1,8 +1,10 @@
 package notes
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
+
 	// "strconv"
 
 	"github.com/gin-gonic/gin"
@@ -74,6 +76,35 @@ func (h *Handler) GetNoteById(c *gin.Context){
 	c.JSON(http.StatusOK,gin.H{
 		"status":true,
 		"data":note,
+	})
+}
+
+func(h *Handler)DeleteNoteByID(c *gin.Context){
+	sId:=c.Param("id")
+
+	if sId==""{
+		c.JSON(http.StatusBadRequest,gin.H{
+			"error":"Please provide provide id to Delete note",
+		})
+	}
+	 id,err:=strconv.Atoi(sId)
+	 if err!=nil{
+		c.JSON(http.StatusBadRequest,gin.H{
+			"error":"Please Provide Proper Id",
+		})
+	 }
+
+	isDelete,err:=h.service.DeleteById(c.Request.Context(),id);
+	 if isDelete{
+		c.JSON(http.StatusOK,gin.H{
+			"status":fmt.Sprintf("Successfully delete %s ID",sId),
+		})
+
+		return;
+	}
+	
+	c.JSON(http.StatusInternalServerError,gin.H{
+		"error":err.Error(),
 	})
 }
 

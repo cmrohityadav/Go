@@ -87,6 +87,23 @@ func (r *postgresRepository)GetById(ctx context.Context,id int)(*Note,error){
 
 	return &note, nil
 }
+
+func(r *postgresRepository)DeleteById(ctx context.Context,id int) (bool,error){
+	query:=`DELETE FROM notes WHERE id=$1`
+
+	result,err:=r.pool.Exec(ctx,query,id);
+	if err!=nil{
+		return false,err
+	}
+
+	
+	if result.RowsAffected()>0{
+		return true,nil
+	}
+	
+	return false,nil
+
+}
 /*
 func (r *postgresRepository) GetByID(
 	ctx context.Context,

@@ -8,5 +8,5 @@ type Repository interface {
 	List(ctx context.Context) ([]Note, error)
 	
 	// Update(ctx context.Context, id int, req UpdateNoteRequest) (*Note, error)
-	// Delete(ctx context.Context, id int) error
+	DeleteById(ctx context.Context, id int) (bool,error)
 }

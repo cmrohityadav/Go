@@ -45,6 +45,20 @@ func (s *Service)GetNoteById(ctx context.Context,id int)(*Note,error){
 	}
 	return note,nil;
 }
+
+func(s *Service)DeleteById(ctx context.Context,id int)(bool,error){
+	isDeleted,err:=s.repo.DeleteById(ctx,id);
+	if err!=nil{
+		return false,err
+	}
+
+	if !isDeleted{
+		return isDeleted,err
+	}
+
+	return isDeleted,nil
+
+}
 /*
 func (s *Service) GetByID(
 	ctx context.Context,

@@ -15,6 +15,7 @@ func RegisterRoutes(r *gin.Engine,pool *pgxpool.Pool){
 		notesGroup.POST("",handler.Create)
 		notesGroup.GET("",handler.List)
 		notesGroup.GET("/byid",handler.GetNoteById)
+		notesGroup.GET("/:id",handler.DeleteNoteByID)
 	}
 	
 }
