@@ -59,6 +59,15 @@ func(s *Service)DeleteById(ctx context.Context,id int)(bool,error){
 	return isDeleted,nil
 
 }
+
+func(s *Service)UpdateById(ctx context.Context,id int,updatedNote *UpdateNoteRequest)(*Note,error){
+	note,err:=s.repo.UpdateById(ctx,id,updatedNote)
+	if err!=nil{
+		return nil,err
+	}
+
+	return note,nil
+}
 /*
 func (s *Service) GetByID(
 	ctx context.Context,

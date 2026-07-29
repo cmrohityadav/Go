@@ -2,6 +2,8 @@ package notes
 
 import (
 	"context"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -102,6 +104,44 @@ func(r *postgresRepository)DeleteById(ctx context.Context,id int) (bool,error){
 	}
 	
 	return false,nil
+
+}
+
+func (r *postgresRepository)UpdateById(ctx context.Context,id int,req *UpdateNoteRequest)(*Note, error){
+	updatedValues:=[]string{}
+	args:=[]any{}
+	argPosition:=1
+
+	if req.Content!=nil{
+		updatedValues=append(updatedValues, fmt.Sprintf("content=$%d",argPosition))
+		args=append(args, req.Content);
+		argPosition++;
+	}
+
+	if req.Title!=nil{
+		updatedValues=append(updatedValues, fmt.Sprintf("title=$%d",argPosition))
+		args=append(args, req.Title);
+		argPosition++;
+	}
+
+	if req.Pinned!=nil{
+		updatedValues=append(updatedValues, fmt.Sprintf("title=$%d",argPosition))
+		args=append(args, req.Title);
+		argPosition++;
+	}
+
+	if len(updatedValues)==0{
+		return nil,fmt.Errorf("No Update Please Provide Valid data for update");
+	}
+
+	query:=fmt.Sprintf(`UPDATE notes SET %s WHERE id =$%d RETURNING id, title, content, pinned, created_at, updated_at`,strings.Join(updatedValues,", "),argPosition)
+	args=append(args, id)
+	var updatedNotes Note;
+	err:=r.pool.QueryRow(ctx,query,args...).Scan(&updatedNotes.ID,&updatedNotes.Title,&updatedNotes.Content,&updatedNotes.Pinned,&updatedNotes.CreatedAt,&updatedNotes.UpdatedAt)
+	if err!=nil{
+		return nil,err;
+	}
+	return &updatedNotes,nil
 
 }
 /*

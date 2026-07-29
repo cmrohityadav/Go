@@ -108,6 +108,45 @@ func(h *Handler)DeleteNoteByID(c *gin.Context){
 	})
 }
 
+func(h *Handler)UpdateById(c *gin.Context){
+
+	sID:=c.Param("id")
+	if sID==""{
+		c.JSON(http.StatusBadRequest,gin.H{
+			"error":"Please provide provide id to Delete note",
+		})
+	}
+	iId,err:=strconv.Atoi(sID)
+	if err!=nil{
+		c.JSON(http.StatusBadRequest,gin.H{
+			"error":"Please Provide Proper Id",
+		})
+	}
+
+	var req UpdateNoteRequest;
+
+	if err:=c.ShouldBindJSON(&req); err!=nil{
+		c.JSON(http.StatusBadGateway,gin.H{
+			"error":"Please Proper field",
+		})
+
+		return;
+	}
+
+	note,err:=h.service.UpdateById(c.Request.Context(),iId,&req);
+	if err!=nil{
+		c.JSON(http.StatusBadRequest,gin.H{
+			"error":err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusAccepted,gin.H{
+		"data":*note,
+	})
+
+}
+
 /*
 func (h *Handler) GetByID(c *gin.Context) {
 
