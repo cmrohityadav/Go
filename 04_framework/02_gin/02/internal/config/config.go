@@ -3,15 +3,18 @@ package config
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	DB_NAME     string
-	DB_PORT     string
-	DB_HOST_IP  string
-	DB_MODE     string
+	DB_USER_NAME string
+	DB_PASSWORD string
+	DB_HOST_IP string
+	DB_PORT string
+	DB_NAME string
+	DB_MODE string
 	SERVER_PORT string
 }
 
@@ -21,28 +24,43 @@ func LoadConfig() (Config, error) {
 		return Config{},err;
 	}
 
-	dbname,err:=getEnv("DB_NAME")
+	dbUserName,err:=getEnv("DB_USER_NAME")
 	if err!=nil{
 		return Config{},err
 	}
-	dbPort,err:=getEnv("DB_PORT")
+	dbPassword,err:=getEnv("DB_PASSWORD")
 	if err!=nil{
 		return Config{},err
 	}
+
 	dbHostIp,err:=getEnv("DB_HOST_IP")
 	if err!=nil{
 		return Config{},err
 	}
+
+	dbPort,err:=getEnv("DB_PORT")
+	if err!=nil{
+		return Config{},err
+	}
+	
+	dbname,err:=getEnv("DB_NAME")
+	if err!=nil{
+		return Config{},err
+	}
+	
 	dbMode,err:=getEnv("DB_MODE")
 	if err!=nil{
 		return Config{},err
 	}
+
 	serverPort,err:=getEnv("SERVER_PORT")
 	if err!=nil{
 		return Config{},err
 	}
 
 	return Config{
+		DB_USER_NAME: dbUserName,
+		DB_PASSWORD: dbPassword,
 		DB_NAME: dbname,
 		DB_PORT: dbPort,
 		DB_HOST_IP: dbHostIp,
@@ -58,5 +76,5 @@ func getEnv(key string)(string,error){
 		return "",fmt.Errorf("Missing Environment Variable %s ",key)
 	}
 
-	return value,nil;
+	return strings.TrimSpace(value),nil;
 }

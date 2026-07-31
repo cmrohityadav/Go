@@ -3,23 +3,23 @@ package main
 import (
 	"auth/internal/httpserver"
 	"log"
-	"net/http"
 )
 
 func main() {
 
-	router := httpserver.NewRouter()
+	var ptrServerObject *httpserver.MyHTTPServerApp;
+	ptrServerObject=&httpserver.MyHTTPServerApp{}
+	err:=ptrServerObject.NewSetupServer();
+	if err!=nil{
+		log.Fatalf("Unable Setup Server: %v", err)
+	}
 
-	ptrServer:=&http.Server{
-		Addr: ":3000",
-		Handler: router,
+	defer ptrServerObject.DB.Close()
+
+	err=ptrServerObject.Start()
+	if err!=nil{
+		log.Fatal(err)
 	}
-	log.Printf("Serving Going to Start on Port : %s , Please wait...",ptrServer.Addr)
-	if err:=ptrServer.ListenAndServe();err!=nil{
-		if err==http.ErrServerClosed{
-			log.Printf("Server Closed")
-			return
-		}
-		log.Fatalf("Server error: %v",err)
-	}
+
+
 }
