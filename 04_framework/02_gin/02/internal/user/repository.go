@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -18,26 +19,32 @@ func NewRepository(pool *pgxpool.Pool)*Repository{
 	return &Repository{Pool: pool}
 }
 
-func (r *Repository) Create(ctx context.Context,user *User)error{
+func(r *Repository)FindByEmail(ctx context.Context,email string)(User,error){
+	emailLower:=strings.ToLower(email);
 	row:=r.Pool.QueryRow(
 		ctx,
-		`SELECT id FROM users WHERE email=$1`,
-		user.Email,
+		`SELECT id, email, passwordhash, role FROM users WHERE email=$1`,
+		emailLower,
 	)
 
-	err:=row.Scan(&user.Id)
-	//User already exist
-	if err==nil{
-		return ErrUserAlreadyExists;
+	var user User;
+
+	err:=row.Scan(&user.Id,&user.Email,&user.PasswordHash,&user.Role)
+
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return User{}, pgx.ErrNoRows
+		}
+		return User{}, err
 	}
 
-	//DB related issue
-	if !errors.Is(err,pgx.ErrNoRows){
-		return err
-	}
-	
+	return  user,nil
 
-	err = r.Pool.QueryRow(
+}
+func (r *Repository) Create(ctx context.Context,user *User)error{
+
+
+	err := r.Pool.QueryRow(
 		ctx,
 		`INSERT INTO users (email, passwordHash, role)
 		VALUES ($1, $2, $3)
@@ -52,7 +59,5 @@ func (r *Repository) Create(ctx context.Context,user *User)error{
 	}
 
 	return nil;
-
-	
 }
 
