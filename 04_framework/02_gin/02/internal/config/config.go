@@ -16,6 +16,7 @@ type Config struct {
 	DB_NAME string
 	DB_MODE string
 	SERVER_PORT string
+	JWT_SECRET string
 }
 
 func LoadConfig() (Config, error) {
@@ -58,6 +59,13 @@ func LoadConfig() (Config, error) {
 		return Config{},err
 	}
 
+	jwtSecret,err:=getEnv("JWT_SECRET")
+	if err!=nil{
+		return Config{},err
+	}
+
+	
+
 	return Config{
 		DB_USER_NAME: dbUserName,
 		DB_PASSWORD: dbPassword,
@@ -66,6 +74,7 @@ func LoadConfig() (Config, error) {
 		DB_HOST_IP: dbHostIp,
 		DB_MODE: dbMode,
 		SERVER_PORT: serverPort,
+		JWT_SECRET:jwtSecret ,
 	},nil
 	
 }
