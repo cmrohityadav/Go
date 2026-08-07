@@ -26,7 +26,7 @@ func (myServer *MyHTTPServerApp)NewSetupServer()(error){
 		return fmt.Errorf("Unable to connect DB Check .env file :%s",err.Error())
 	}
 	
-	router := NewRouter()
+	router := NewRouter(dbPool,cfg)
 
 	myServer.Server = &http.Server{
 		Addr:    ":" + cfg.SERVER_PORT,
