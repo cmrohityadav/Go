@@ -46,3 +46,29 @@ func (h *Handler) CreateUser(c *gin.Context) {
 
 
 }
+
+func (h *Handler) Login(c *gin.Context){
+    var loginReqObj UserLoginRequest
+	err:=c.ShouldBindJSON(&loginReqObj)
+
+	if err!=nil{
+		c.JSON(http.StatusBadRequest,gin.H{
+			"message":"Please Provide Proper email and password in proper json format",
+			"error":err.Error(),
+		})
+		return;
+	}
+
+	loginResObj,err:=h.service.Login(c.Request.Context(),loginReqObj)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusAccepted,gin.H{
+		"data":loginResObj,
+	})
+
+}

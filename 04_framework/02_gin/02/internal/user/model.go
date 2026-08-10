@@ -22,3 +22,15 @@ type UserCreationResponse struct{
 	Token string `json:"token"`
 	Email string `json:"email"`
 }
+
+type UserLoginRequest struct{
+	Email string `json:"email"`
+	Password string 	`json:"password"`
+}
+
+type UserLoginResponse struct{
+	Token string `json:"token"`
+	Email string `json:"email"`
+}
+
+

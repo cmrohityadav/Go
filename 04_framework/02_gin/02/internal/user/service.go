@@ -59,3 +59,34 @@ func (s *Service) CreateUser(ctx context.Context,userCreation UserCreationReques
 	}, nil
 
 }
+
+func (s *Service) Login(ctx context.Context,loginReq UserLoginRequest)(UserLoginResponse,error){
+	emailId:=strings.ToLower(loginReq.Email)
+	if loginReq.Password=="" || len(loginReq.Password)<8 || len(loginReq.Password)>12 || emailId==""{
+		return UserLoginResponse{},errors.New("Please Provide valid Password and email, password should be more than 8 and not more than 12")
+	}
+
+	user,err:=s.repo.FindByEmail(ctx,emailId)
+	if err!=nil{
+		if errors.Is(err,pgx.ErrNoRows){
+			return UserLoginResponse{},errors.New("Please Login with Registrater email ,User not found")
+		}
+		return UserLoginResponse{},err;
+	}
+
+	err=bcrypt.CompareHashAndPassword([]byte(user.PasswordHash),[]byte(loginReq.Password))
+	if err!=nil{
+		return UserLoginResponse{},errors.New("Please Login with Correct Password")
+	}
+
+	token,err:=auth.CreateToken(s.jwtSecret,emailId,user.Role)
+	if err!=nil{
+		return UserLoginResponse{},errors.New("Fail to generated jwt token ")
+
+	}
+
+	return UserLoginResponse{
+		Token: token,
+		Email: emailId,
+	}, nil
+}

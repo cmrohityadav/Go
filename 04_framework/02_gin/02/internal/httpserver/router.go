@@ -21,6 +21,7 @@ func NewRouter(ptrDbPool *pgxpool.Pool,cfg config.Config) *gin.Engine{
 	userHanlder:=user.NewHandle(userService)
 
 	r.POST("/create",userHanlder.CreateUser)
+	r.POST("/login",userHanlder.Login)
 
 
 	return r
