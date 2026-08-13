@@ -62,7 +62,7 @@ func ParseToken(jwtSecret string,tokenString string)(Claims,error){
 				return []byte(jwtSecret),nil
 			},
 
-		jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}),
+			jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}),
 	)
 
 
