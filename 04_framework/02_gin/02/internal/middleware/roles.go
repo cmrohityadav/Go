@@ -1,0 +1,31 @@
+package middleware
+
+import (
+	"net/http"
+	"strings"
+	"structs"
+
+	"github.com/gin-gonic/gin"
+)
+
+func RequireAdmin() gin.HandlerFunc{
+	return func(c *gin.Context){
+		role,ok:=GetUserRole(c);
+		if !ok{
+			c.AbortWithStatusJSON(http.StatusUnauthorized,gin.H{
+				"error":"Unauthorized",
+			})
+			return;
+		}
+
+		if !strings.EqualFold(role,"admin"){
+			c.AbortWithStatusJSON(http.StatusForbidden,gin.H{
+				"error":"user must be admin",
+			})
+
+			return;
+		}
+
+		c.Next()
+	}
+}
